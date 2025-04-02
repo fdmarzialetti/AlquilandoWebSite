@@ -8,7 +8,5 @@ public class AlquilandoWebSiteApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(AlquilandoWebSiteApplication.class, args);
-		System.out.println("Hola");
 	}
-
 }
