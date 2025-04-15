@@ -3,6 +3,7 @@ package com.devgol53.rent_website.controllers;
 import com.devgol53.rent_website.dtos.car.CarGetDto;
 import com.devgol53.rent_website.dtos.car.CarPostDto;
 import com.devgol53.rent_website.entities.Car;
+import com.devgol53.rent_website.enums.CarStatus;
 import com.devgol53.rent_website.exceptions.CarNotFoundExeption;
 import com.devgol53.rent_website.repositories.CarRepositorie;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,12 @@ public class CarController {
     @Autowired
     CarRepositorie carRepositorie;
 
+    @GetMapping("available")
+    public List<CarGetDto> getAvailableCars(){
+        return carRepositorie.findAll().stream().filter(car->car.getStatus()== CarStatus.AVAILABLE).map(CarGetDto::new).toList();
+    }
     @GetMapping("all")
-    public List<CarGetDto> getCars(){
+    public List<CarGetDto> getAllCars(){
         return carRepositorie.findAll().stream().map(CarGetDto::new).toList();
     }
     @GetMapping("{id}")
