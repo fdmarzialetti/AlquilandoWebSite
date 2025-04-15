@@ -33,6 +33,7 @@ public class SecurityConfiguration {
                         //Rutas ADMIN
                         .requestMatchers("/pages/admin.html","/h2-console/**").hasRole("ADMIN")
                         .requestMatchers("/api/car/all").hasRole("ADMIN")
+                        .requestMatchers("/api/car/create").hasRole("ADMIN")
                         //Rutas CLIENT
                         .requestMatchers("/pages/client.html").hasRole("CLIENT")
                         //Rutas EMPLOYEE
