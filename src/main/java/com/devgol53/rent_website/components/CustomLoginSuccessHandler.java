@@ -24,13 +24,13 @@ public class CustomLoginSuccessHandler implements AuthenticationSuccessHandler {
             String role = authority.getAuthority();
 
             switch (role) {
-                case "ADMIN":
+                case "ROLE_ADMIN":
                     response.sendRedirect("/pages/admin.html");
                     return;
-                case "EMPLOYEE":
+                case "ROLE_EMPLOYEE":
                     response.sendRedirect("/pages/employee.html");
                     return;
-                case "CLIENT":
+                case "ROLE_CLIENT":
                     response.sendRedirect("/pages/client.html");
                     return;
             }

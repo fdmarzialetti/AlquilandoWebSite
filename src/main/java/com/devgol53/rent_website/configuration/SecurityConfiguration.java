@@ -1,5 +1,6 @@
 package com.devgol53.rent_website.configuration;
 
+import com.devgol53.rent_website.components.CustomAccessDeniedHandler;
 import com.devgol53.rent_website.components.CustomLoginSuccessHandler;
 import com.devgol53.rent_website.services.AppUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfiguration {
     @Autowired
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
+    @Autowired
     private CustomLoginSuccessHandler customLoginSuccessHandler;
     @Autowired
     private AppUserDetailService appUserDetailService;
@@ -26,7 +29,7 @@ public class SecurityConfiguration {
         http
                 .authorizeHttpRequests(auth -> auth
                         //Rutas Publicas
-                        .requestMatchers("/index.html").permitAll()
+                        .requestMatchers("/", "/index.html", "/css/**", "/js/**", "/images/**").permitAll()
                         //Rutas ADMIN
                         .requestMatchers("/pages/admin.html","/h2-console/**").hasRole("ADMIN")
                         .requestMatchers("/api/car/all").hasRole("ADMIN")
@@ -41,6 +44,9 @@ public class SecurityConfiguration {
                 .formLogin(form -> form
                         .successHandler(customLoginSuccessHandler)
                         .permitAll()
+                )
+                .exceptionHandling(ex -> ex
+                        .accessDeniedHandler(customAccessDeniedHandler) // 👈 clave para tu caso
                 )
                 .csrf(csrf -> csrf.disable())
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
