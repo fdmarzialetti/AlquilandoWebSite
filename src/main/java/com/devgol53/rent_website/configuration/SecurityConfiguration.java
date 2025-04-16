@@ -29,16 +29,15 @@ public class SecurityConfiguration {
         http
                 .authorizeHttpRequests(auth -> auth
                         //Rutas Publicas
-                        .requestMatchers("/", "/index.html", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/", "/index.html", "/css/**", "/js/**", "/images/**","/api/car/available").permitAll()
                         //Rutas ADMIN
                         .requestMatchers("/pages/admin.html","/h2-console/**").hasRole("ADMIN")
                         .requestMatchers("/api/car/all").hasRole("ADMIN")
+                        .requestMatchers("/api/car/create").hasRole("ADMIN")
                         //Rutas CLIENT
                         .requestMatchers("/pages/client.html").hasRole("CLIENT")
                         //Rutas EMPLOYEE
                         .requestMatchers("/pages/employee.html").hasRole("EMPLOYEE")
-                        //Rutas Autenticado
-                        .requestMatchers("/api/car/available").authenticated()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
