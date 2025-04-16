@@ -25,7 +25,7 @@ public class CarController {
     public List<CarGetDto> getAvailableCars(){
         return carRepositorie.findAll().stream().filter(car->car.getStatus()== CarStatus.AVAILABLE).map(CarGetDto::new).toList();
     }
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("all")
     public List<CarGetDto> getAllCars(){
         return carRepositorie.findAll().stream().map(CarGetDto::new).toList();
