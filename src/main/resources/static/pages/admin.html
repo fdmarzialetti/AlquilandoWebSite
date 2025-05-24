@@ -22,17 +22,18 @@
 
     <h2>Modelitos</h2>
     <ul>
-        <li v-for="(model, index) in models" :key="index">
-            <div class="card" style="width: 18rem;">
-                <img :src="model.image || 'https://via.placeholder.com/150'" class="card-img-top" alt="Imagen del modelo">
+        <li v-for="(model, index) in models" :key="index" class="mb-3">
+            <div class="card flex-row card-info" style="max-width: 100%;">
+                <img :src="model.image || 'https://via.placeholder.com/150'" class="img-fluid" style="width: 150px; object-fit: cover;" alt="Imagen del modelo">
                 <div class="card-body">
-                    <h5 class="card-title">{{ model.name }}</h5>
-                    <h5 class="card-title">{{ model.brand }}</h5>
-                    <h5 class="card-title">{{ model.price }}</h5>
+                    <h5 class="card-title mb-1">{{ model.name }}</h5>
+                    <h6 class="card-subtitle mb-1 text-muted">{{ model.brand }}</h6>
+                    <h6 class="card-subtitle mb-2 text-success">${{ model.price }}</h6>
                     <p class="card-text">
-                        {{ model.capacity, model.cancelationPolicy}}
+                        Capacidad: {{ model.capacity }}<br>
+                        Cancelación: {{ model.cancelationPolicy }}
                     </p>
-                    <a href="#" class="btn btn-primary">Ver más</a>
+                    <a href="#" class="btn btn-primary btn-sm">Ver más</a>
                 </div>
             </div>
         </li>
