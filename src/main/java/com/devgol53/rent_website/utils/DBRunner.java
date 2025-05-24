@@ -2,10 +2,13 @@ package com.devgol53.rent_website.utils;
 
 import com.devgol53.rent_website.entities.Car;
 import com.devgol53.rent_website.entities.AppUser;
+import com.devgol53.rent_website.entities.Model;
+import com.devgol53.rent_website.enums.CancelationPolicy;
 import com.devgol53.rent_website.enums.CarStatus;
 import com.devgol53.rent_website.enums.UserRol;
 import com.devgol53.rent_website.repositories.CarRepositorie;
 import com.devgol53.rent_website.repositories.AppUserRepository;
+import com.devgol53.rent_website.repositories.ModelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,9 +24,17 @@ public class DBRunner implements CommandLineRunner {
     CarRepositorie carRepositorie;
     @Autowired
     AppUserRepository userRepository;
+    @Autowired
+    ModelRepository modelRepository;
 
     @Override
     public void run(String... args) throws Exception {
+        Model modelonuevo = new Model("Renault","12",100.0,"imgendelautito",5, CancelationPolicy.FULL);
+        Model modelonuevo2 = new Model("Peugeot","206",1000.0,"imgendelautito2",300, CancelationPolicy.TWENTY);
+        Model modelonuevo3 = new Model("VolksWagen","Gol Trend",2000.0,"imgendelautito3",200, CancelationPolicy.ZERO);
+
+        modelRepository.saveAll(Arrays.asList(modelonuevo,modelonuevo2,modelonuevo3));
+
         carRepositorie.saveAll(
                 Arrays.asList(
                     new Car("Ford","Fiesta", CarStatus.MAINTENANCE),
