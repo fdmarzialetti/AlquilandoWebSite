@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @NoArgsConstructor
 @Getter
 @Setter
@@ -24,6 +27,9 @@ public class Model {
     @Enumerated(EnumType.STRING)
     private CancelationPolicy cancelationPolicy;
 
+    @OneToMany (mappedBy = "model")
+    private List<Vehicle> vehicles = new ArrayList<>();
+
     public Model(String brand, String name, Double price, String image, int capacity, CancelationPolicy cancelationPolicy) {
         this.brand = brand;
         this.name = name;
@@ -31,5 +37,9 @@ public class Model {
         this.image = image;
         this.capacity = capacity;
         this.cancelationPolicy = cancelationPolicy;
+    }
+
+    public void addVehicle(Vehicle vehicle){
+        this.vehicles.add(vehicle);
     }
 }
