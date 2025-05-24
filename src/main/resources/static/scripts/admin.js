@@ -4,13 +4,15 @@ createApp({
     data() {
         return {
             marca: "",
-            modelo: ""
+            modelo: "",
+            models:[]
         }
     },
     created() {
-
+        
     },
     mounted() {
+        this.getModels();
 
     },
     methods: {
@@ -26,6 +28,17 @@ createApp({
                 console.log(error);
                 document.getElementById("errorMsg").innerHTML = error.response?.data || "Error desconocido";
             }
+        },
+        async getModels(){
+            try {
+                const response = await axios.get('/api/model/listModels');
+                console.log(response)
+                this.models = response.data;
+            } catch (error) {
+                console.log(error);
+                document.getElementById("errorMsg").innerHTML = error.response?.data || "Error desconocido";
+            }
         }
+
     }
 }).mount('#app');
