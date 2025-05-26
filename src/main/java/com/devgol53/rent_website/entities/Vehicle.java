@@ -16,7 +16,6 @@ public class Vehicle {
     private String patent;
     private String status;
     private int yearV;
-
     public Vehicle(){};
 
     public Vehicle(String patent, String status, int year) {
