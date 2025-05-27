@@ -29,7 +29,7 @@ public class SecurityConfiguration {
         http
                 .authorizeHttpRequests(auth -> auth
                         //Rutas Publicas
-                        .requestMatchers("/", "/index.html", "/css/**", "/js/**", "/images/**","/api/car/available").permitAll()
+                        .requestMatchers("/", "/index.html","/pages/vehiculos.html","/styles/**", "/scripts/**", "/images/**").permitAll()
                         //Rutas ADMIN
                         .requestMatchers("/pages/admin.html","/h2-console/**").hasRole("ADMIN")
                         .requestMatchers("/api/car/all").hasRole("ADMIN")

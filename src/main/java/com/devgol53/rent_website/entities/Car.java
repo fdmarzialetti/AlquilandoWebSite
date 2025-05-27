@@ -2,10 +2,7 @@ package com.devgol53.rent_website.entities;
 
 import com.devgol53.rent_website.dtos.car.CarPostDto;
 import com.devgol53.rent_website.enums.CarStatus;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import javax.management.ConstructorParameters;
@@ -21,6 +18,7 @@ public class Car {
     private long id;
     private String model;
     private String brand;
+    @Enumerated(EnumType.STRING)
     private CarStatus status;
 
     public Car(String brand, String model, CarStatus status){

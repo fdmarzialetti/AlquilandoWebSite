@@ -1,0 +1,264 @@
+:root {
+  --color-principal: #223343;
+}
+
+body, html {
+  height: 100%;
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-size: cover;
+  background-color: rgba(255,255,255,0.9) !important;
+}
+
+h1{
+    color:var(--color-principal)
+}
+
+/* Navbar */
+.navbar {
+  background-color: white !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 0.5rem 1.5rem;
+  position: relative;
+  z-index: 10;
+  gap:0.5em;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+}
+
+.navbar-brand img {
+  width: 120px;
+  height: auto;
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-brand h1 {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #212529;
+}
+
+/* Banner */
+.banner {
+  background-color: var(--color-principal);
+  color: white;
+  text-align: center;
+  padding: 1rem 0;
+  font-weight: 600;
+  font-size: 1.25rem;
+  user-select: none;
+  z-index: 5;
+}
+
+/* Hero Section */
+.hero-section {
+  height: calc(100vh - 150px);
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+
+/* Bootstrap overrides - botón personalizado */
+.btn-danger {
+  background-color: #c82333;
+  border-color: #bd2130;
+  font-weight: 700;
+  transition: background-color 0.3s ease;
+}
+
+.btn-danger:hover,
+.btn-danger:focus {
+  background-color: #a71d2a;
+  border-color: #971c27;
+  color: white;
+}
+
+/* Inputs y selects */
+.form-control,
+.form-select {
+  background-color: rgba(255,255,255,0.9);
+  border-radius: 5px;
+  border: 1px solid #ced4da;
+  transition: border-color 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #223343;
+  box-shadow: 0 0 0 0.2rem rgba(34, 51, 67, 0.25);
+}
+
+/*Cards*/
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.imagen-vehiculo {
+    border-radius: 2.5em;
+    padding: 0.5em;
+    width: 18em !important;
+    height: 12em !important;
+    object-fit: cover; /* recorta sin deformar */
+    object-position: center; /* centra la imagen dentro del recorte */
+}
+
+.filtros a:hover {
+  background-color: #f1f1f1;
+  border-radius: 5px;
+}
+
+.filtro-link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #212529;
+  padding: 2px 0;
+}
+
+.filtro-link .cantidad {
+  margin-left: 0.3em;
+  font-size: 0.9em;
+  color: #6c757d;
+}
+
+.precio-input {
+  width: 6rem !important; /* ancho más angosto, ajusta según te guste */
+  height: 2rem !important;
+  padding: 0.375rem 0.5rem !important;  /* un poco menos de padding vertical y horizontal */
+}
+
+#aplicar-precio {
+  width: 38px;
+  height: 38px;
+  font-size: 1.2rem;
+  padding: 0;
+}
+
+.boton-precio{
+    width: 1.5em !important;
+    height: 1.5em!important;
+    display: flex;
+}
+
+.boton-precio:disabled{
+    background-color: #cdd0d3!important;
+    border:none;
+
+}
+
+.boton-precio p{
+    padding: 0;
+    margin-left: 0.05em ;
+    margin-bottom: 0.19em;
+}
+
+.filtro-resumen {
+  display: inline-block;
+  background-color: #f0f0f5;  /* gris muy claro */
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 0.6em;
+  padding: 0.3em 0.8em;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.grid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(48%, 1fr));
+  gap: 1rem;
+}
+
+.boton-ver-mas{
+    width: 6em;
+}
+
+.nombre-auto {
+  word-break: break-word;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .hero-section {
+    justify-content: center;
+    padding: 1rem;
+  }
+  .form-container {
+    max-width: 100%;
+    padding: 1.5rem;
+  }
+}
+
+.footer {
+  background-color: var(--color-principal);
+  color: white;
+  padding: 1.5rem 0;
+  font-size: 0.9rem;
+  user-select: none;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1rem;
+}
+
+.footer-logo img {
+  width: 100px;
+  height: auto;
+  filter: brightness(0) invert(1); /* Opcional para adaptar el logo si es oscuro */
+}
+
+.footer-text {
+  flex: 1 1 200px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.footer-links {
+  flex: 1 1 200px;
+  text-align: right;
+}
+
+.footer-links a {
+  color: white;
+  text-decoration: none;
+  margin-left: 1.2rem;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: #ff4d4d; /* Un rojo suave, acorde al btn-danger */
+}
+
+@media (max-width: 576px) {
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .footer-links {
+    text-align: center;
+    margin-top: 1rem;
+  }
+}
