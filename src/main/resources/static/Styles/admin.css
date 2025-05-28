@@ -4,6 +4,47 @@ margin:0;
 box-sizing: border-box;
 }
 
-h1{
-    color: blue;
+.card.flex-row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.card.flex-row img {
+    margin-right: 15px;
+    border-radius: 4px;
+}
+
+.card-body{
+    width: 20%;
+    padding: 5em;
+    display: flex;
+    flex-direction: row;
+    gap:1em;
+    align-items:center;
+}
+
+.card-info{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.barra-de-navegacion {
+  list-style-type: none;
+  margin: 0 auto;
+  padding: 0;
+  display:flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 400px;
+  gap: 2em;
+  background-color: #1E2A38;
+
 }

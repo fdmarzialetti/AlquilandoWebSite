@@ -1,12 +1,11 @@
 package com.devgol53.rent_website.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,6 +17,8 @@ public class Branch {
     private long id;
     private String address;
     private String city;
+    @OneToMany(mappedBy = "branch", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Vehicle> vehicles = new ArrayList<>();
 
     public Branch() {
     }

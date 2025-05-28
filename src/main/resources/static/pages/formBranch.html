@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Sucursal</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Vue 3 -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+</head>
+<body>
+<div id="app" class="container mt-5">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">Crear Nueva Sucursal</h2>
+        </div>
+        <div class="card-body">
+            <form @submit.prevent="submitForm">
+                <div class="mb-3">
+                    <label for="city" class="form-label">Ciudad:</label>
+                    <input type="text" id="city" v-model="branch.city" class="form-control" required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="address" class="form-label">Dirección:</label>
+                    <input type="text" id="address" v-model="branch.address" class="form-control" required />
+                </div>
+
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </form>
+
+            <div v-if="successMessage" class="alert alert-success mt-3" role="alert">
+                {{ successMessage }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script de Vue -->
+<script src="../scripts/formBranch.js"></script>
+
+<!-- Bootstrap JS (opcional, solo si necesitas funcionalidad JS como modales o tooltips) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
