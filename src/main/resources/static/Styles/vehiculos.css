@@ -11,12 +11,12 @@ body, html {
 }
 
 h1{
-    color:var(--color-principal)
+    color:var(--color-principal)!important;
 }
 
 /* Navbar */
 .navbar {
-  background-color: white !important;
+  background-image: url("../images/backgroundHeader.jpg");
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   padding: 0.5rem 1.5rem;
   position: relative;
@@ -46,6 +46,16 @@ h1{
   font-weight: 700;
   font-size: 1.25rem;
   color: #212529;
+}
+
+.boton-cuenta{
+  border: 1px solid var(--color-principal)!important;
+  color: var(--color-principal)!important;
+}
+
+.boton-cuenta:hover{
+  color: var(--color-principal)!important;
+  border: 1px solid var(--color-principal) !important;
 }
 
 /* Banner */
@@ -101,6 +111,10 @@ h1{
 }
 
 /*Cards*/
+
+.card{
+box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px!important;
+}
 
 img {
   max-width: 100%;
@@ -192,17 +206,7 @@ img {
   text-align: center;
 }
 
-/* Responsive */
-@media (max-width: 576px) {
-  .hero-section {
-    justify-content: center;
-    padding: 1rem;
-  }
-  .form-container {
-    max-width: 100%;
-    padding: 1.5rem;
-  }
-}
+/*Footer*/
 
 .footer {
   background-color: var(--color-principal);
@@ -252,13 +256,26 @@ img {
   color: #ff4d4d; /* Un rojo suave, acorde al btn-danger */
 }
 
+/* Responsive */
 @media (max-width: 576px) {
-  .footer-content {
-    flex-direction: column;
-    text-align: center;
+  .hero-section {
+    justify-content: center;
+    padding: 1rem;
   }
-  .footer-links {
-    text-align: center;
-    margin-top: 1rem;
+  .form-container {
+    max-width: 100%;
+    padding: 1.5rem;
   }
+   .footer-content {
+      flex-direction: column;
+      text-align: center;
+    }
+    .footer-links {
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+          .card {
+            width: 100%;
+
 }
