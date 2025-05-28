@@ -1,16 +1,19 @@
 package com.devgol53.rent_website.dtos.model;
 
-import com.devgol53.rent_website.entities.Car;
 import com.devgol53.rent_website.enums.CancelationPolicy;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import lombok.Getter;
 
-public class GetModelDTO {
-    private long id;
+@Getter
+
+public class CreateModelDTO {
     private String brand;
     private String name;
     private Double price;
     private String image;
     private int capacity;
     private CancelationPolicy cancelationPolicy;
+
+    public void createModel(){
+
+    }
 }
