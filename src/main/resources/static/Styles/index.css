@@ -11,12 +11,12 @@ body, html {
 }
 
 h1{
-    color:var(--color-principal)
+    color:var(--color-principal)!important;
 }
 
 /* Navbar */
 .navbar {
-  background-color: white !important;
+  background-image: url("../images/backgroundHeader.jpg");
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   padding: 0.5rem 1.5rem;
   position: relative;
@@ -46,6 +46,16 @@ h1{
   font-weight: 700;
   font-size: 1.25rem;
   color: #212529;
+}
+
+.boton-cuenta{
+  border: 1px solid var(--color-principal)!important;
+  color: var(--color-principal)!important;
+}
+
+.boton-cuenta:hover{
+  color: var(--color-principal)!important;
+  border: 1px solid var(--color-principal) !important;
 }
 
 /* Banner */
@@ -115,17 +125,7 @@ h1{
   box-shadow: 0 0 0 0.2rem rgba(34, 51, 67, 0.25);
 }
 
-/* Responsive */
-@media (max-width: 576px) {
-  .hero-section {
-    justify-content: center;
-    padding: 1rem;
-  }
-  .form-container {
-    max-width: 100%;
-    padding: 1.5rem;
-  }
-}
+/*Footer*/
 
 .footer {
   background-color: var(--color-principal);
@@ -173,6 +173,18 @@ h1{
 
 .footer-links a:hover {
   color: #ff4d4d; /* Un rojo suave, acorde al btn-danger */
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .hero-section {
+    justify-content: center;
+    padding: 1rem;
+  }
+  .form-container {
+    max-width: 100%;
+    padding: 1.5rem;
+  }
 }
 
 @media (max-width: 576px) {
