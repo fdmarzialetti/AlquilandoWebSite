@@ -35,13 +35,15 @@
             }
             ,
 
-    async logout(){
-            try {
-                const response = await axios.get('/logout').then(window.location.href="/index.html");
-                
-            } catch (error) {
-                console.log(error);
+    async logout() {
+                console.log("Logout ejecutado");
+                axios.get('/logout')
+                    .then(() => {
+                        window.location.href = "/index.html";
+                    })
+                    .catch(error => {
+                        console.error("Error al cerrar sesión:", error);
+                    });
             }
-        }
         }
     }).mount('#app');

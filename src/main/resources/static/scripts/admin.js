@@ -5,15 +5,11 @@ createApp({
         return {
             marca: "",
             modelo: "",
-            models:[]
-        }
-    },
-    created() {
-        
+            models: []
+        };
     },
     mounted() {
         this.getModels();
-
     },
     methods: {
         async createCar() {
@@ -29,24 +25,25 @@ createApp({
                 document.getElementById("errorMsg").innerHTML = error.response?.data || "Error desconocido";
             }
         },
-        async getModels(){
+        async getModels() {
             try {
                 const response = await axios.get('/api/model/listModels');
-                console.log(response)
+                console.log("Modelos cargados:", response.data);
                 this.models = response.data;
             } catch (error) {
                 console.log(error);
                 document.getElementById("errorMsg").innerHTML = error.response?.data || "Error desconocido";
             }
         },
-        async logout(){
-            try {
-                const response = await axios.get('/logout').then(window.location.href="/index.html");
-                
-            } catch (error) {
-                console.log(error);
-            }
+        async logout() {
+            console.log("Logout ejecutado");
+            axios.get('/logout')
+                .then(() => {
+                    window.location.href = "/index.html";
+                })
+                .catch(error => {
+                    console.error("Error al cerrar sesión:", error);
+                });
         }
-
     }
 }).mount('#app');

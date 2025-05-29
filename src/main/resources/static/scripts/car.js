@@ -50,5 +50,7 @@
                     this.fetchedCar = null;
                 }
             }
+
+
         }
     }).mount('#app');
