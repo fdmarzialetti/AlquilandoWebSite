@@ -28,6 +28,16 @@
                         });
                 }
             }
+            ,
+
+    async logout(){
+            try {
+                const response = await axios.get('/logout').then(window.location.href="/index.html");
+                
+            } catch (error) {
+                console.log(error);
+            }
+        }
         },
         mounted() {
             this.loadBranches();
