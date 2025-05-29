@@ -13,14 +13,18 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
+
     @Autowired
     private CustomAccessDeniedHandler customAccessDeniedHandler;
+
     @Autowired
     private CustomLoginSuccessHandler customLoginSuccessHandler;
+
     @Autowired
     private AppUserDetailService appUserDetailService;
 
@@ -28,29 +32,34 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        //Rutas Publicas
-                        .requestMatchers("/", "/index.html","/pages/vehiculos.html","/styles/**", "/scripts/**", "/images/**").permitAll()
-                        //Rutas ADMIN
-                        .requestMatchers("/pages/admin.html","/h2-console/**").hasRole("ADMIN")
-                        .requestMatchers("/api/car/all").hasRole("ADMIN")
-                        .requestMatchers("/api/car/create").hasRole("ADMIN")
-                        //Rutas CLIENT
+                        // Rutas públicas
+                        .requestMatchers("/", "/index.html", "/login.html", "/styles/**", "/scripts/**", "/images/**").permitAll()
+                        // Rutas según roles
+                        .requestMatchers("/pages/admin.html", "/h2-console/**", "/api/car/all", "/api/car/create").hasRole("ADMIN")
                         .requestMatchers("/pages/client.html").hasRole("CLIENT")
-                        //Rutas EMPLOYEE
                         .requestMatchers("/pages/employee.html").hasRole("EMPLOYEE")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
+                        .loginPage("/login.html")
+                        .loginProcessingUrl("/login") // asegura que Spring escuche POST /login
+                        .defaultSuccessUrl("/index.html", true) // fallback si no usás customLoginSuccessHandler
                         .successHandler(customLoginSuccessHandler)
+                        .failureUrl("/pages/login.html?error=true") // redirige si el login falla
                         .permitAll()
                 )
                 .exceptionHandling(ex -> ex
-                        .accessDeniedHandler(customAccessDeniedHandler) // 👈 clave para tu caso
+                        .accessDeniedHandler(customAccessDeniedHandler)
                 )
-                .csrf(csrf -> csrf.disable())
-                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()));
+                .csrf(csrf -> csrf.disable()) // si usás POST sin token
+                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable())); // para H2 console
 
         return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -60,8 +69,9 @@ public class SecurityConfiguration {
         return auth.build();
     }
 
+    // 🔥 Esto es clave para que Spring reconozca tu servicio
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public UserDetailsService userDetailsService() {
+        return appUserDetailService;
     }
 }
