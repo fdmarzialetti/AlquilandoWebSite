@@ -1,0 +1,29 @@
+package com.devgol53.rent_website.entities;
+
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import java.util.ArrayList;
+import java.util.List;
+
+@Getter
+@Setter
+@Entity
+public class Branch {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Setter(AccessLevel.NONE)
+    private long id;
+    private String address;
+    private String city;
+    @OneToMany(mappedBy = "branch", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Vehicle> vehicles = new ArrayList<>();
+
+    public Branch() {
+    }
+    public Branch(String city, String address) {
+        this.city = city;
+        this.address = address;
+    }
+}

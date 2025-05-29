@@ -19,6 +19,10 @@ public class Vehicle {
     private int yearV;
 
     @ManyToOne
+    @JoinColumn(name = "branch_id")
+    private Branch branch;
+
+    @ManyToOne
     private Model model;
 
     public Vehicle(){};
