@@ -5,54 +5,54 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Alquilando - Admin</title>
   <link rel="stylesheet" href="../styles/addModel.css" />
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
 </head>
 <body id="app">
 
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg bg-white shadow-sm px-4 py-2">
-    <a class="navbar-brand d-flex align-items-center" href="#">
-      <img src="../images/logo-alquilando.jpg" alt="Alquilando Logo" />
-      <h1 class="ms-2">Alquilando</h1>
-    </a>
-    <div class="ms-auto">
-      <div class="dropdown">
-        <button class="btn btn-custom fw-bold dropdown-toggle" type="button" id="dropdownCuenta"
-          data-bs-toggle="dropdown" aria-expanded="false">
-          Cuenta
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownCuenta">
-          <li><a class="dropdown-item" href="#">Iniciar sesión</a></li>
-          <li><a class="dropdown-item" href="#">Registrarse</a></li>
-        </ul>
-      </div>
+  <div class="d-flex justify-content-between">
+        <h1>Admin Page</h1>
+        <button class="btn btn-outline-dark" @click="logout">Cerrar Sesion</button>
     </div>
-  </nav>
 
-  <!-- Barra de navegación oscura -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="font-family: sans-serif;">
-  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="font-family: sans-serif;">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto barra-de-navegacion">
-      <li class="nav-item active">
-        <a class="nav-link text-white" href="#">Empleados <span class="visually-hidden">(current)</span></a>
-      </li>
-      <li class="nav-item active">
-        <a class="nav-link text-white" href="#">Vehiculos <span class="visually-hidden">(current)</span></a>
-      </li>
-      <li class="nav-item active">
-        <a class="nav-link text-white" href="#">Modelos <span class="visually-hidden">(current)</span></a>
-      </li>
-      <li class="nav-item active">
-        <a class="nav-link text-white" href="#">Sucursales <span class="visually-hidden">(current)</span></a>
-      </li>
-    </ul>
-  </div>
-</nav>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 barra-de-navegacion">
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="../pages/listModels.html">Modelos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="../pages/listBranches.html">Sucursales</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#">Vehículos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="#">Empleados</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Acciones
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="../pages/formBranch.html">Crear Sucursal</a></li>
+                            <li><a class="dropdown-item" href="../pages/addModel.html">Crear Modelo</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Otra acción</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
 <!-- Banner debajo de la barra -->
 <div class="banner bg-secondary text-white fw-semibold fs-4 p-3">
@@ -116,10 +116,17 @@
     </div>
   </div>
 
-  <!-- Scripts -->
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <script src="../scripts/addmodel.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+ <!-- Scripts -->
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="../scripts/addmodel.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Bootstrap JS (opcional, solo si necesitas funcionalidad JS como modales o tooltips) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<!-- Bootstrap JS (incluye Popper para dropdowns, tooltips, etc.) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-RvGg7Bk8r1eF3Yh9PnFKZb2GFaKbU4kzwmU4IuzGxFptu5IhQ0yoaKaK5S67xI+C" crossorigin="anonymous"></script>
 </body>
 </html>
