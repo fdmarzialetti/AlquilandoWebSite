@@ -51,8 +51,8 @@ public class DBRunner implements CommandLineRunner {
                 )
         );
         carRepositorie.save(new Car("VolksWagen","Suran",CarStatus.MAINTENANCE));
-        userRepository.save(new AppUser("Maria","Ceccato","00000000","","mariaceccato@gmail.com", passwordEncoder.encode("Alquilando"), UserRol.ADMIN));
-        userRepository.save(new AppUser("Fernando","Marzialetti","35060094","","fdmarzialetti@gmail.com", passwordEncoder.encode("DevGol53"), UserRol.CLIENT));
-        userRepository.save(new AppUser("Martin","Esquercia","11111111","","martincito@gmail.com", passwordEncoder.encode("aguantelafalopa"), UserRol.EMPLOYEE));
+        userRepository.save(new AppUser("Maria","Ceccato","00000000","","mariaceccato@gmail.com", passwordEncoder.encode("123456"), UserRol.ADMIN));
+        userRepository.save(new AppUser("Fernando","Marzialetti","35060094","","fdmarzialetti@gmail.com", passwordEncoder.encode("123456"), UserRol.CLIENT));
+        userRepository.save(new AppUser("Martin","Esquercia","11111111","","martincito@gmail.com", passwordEncoder.encode("aguantelaMERKAAAA"), UserRol.EMPLOYEE));
     }
 }

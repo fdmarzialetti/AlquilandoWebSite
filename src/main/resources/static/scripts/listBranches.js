@@ -28,6 +28,17 @@
                         });
                 }
             }
+            ,
+
+        async logout() {
+                axios.get('/logout')
+                    .then(() => {
+                        window.location.href = "/index.html";
+                    })
+                    .catch(error => {
+                        console.error("Error al cerrar sesión:", error);
+                    });
+        }
         },
         mounted() {
             this.loadBranches();

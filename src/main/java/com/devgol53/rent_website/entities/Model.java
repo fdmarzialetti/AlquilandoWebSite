@@ -1,5 +1,7 @@
 package com.devgol53.rent_website.entities;
 
+
+import com.devgol53.rent_website.dtos.model.CreateModelDTO;
 import com.devgol53.rent_website.enums.CancelationPolicy;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -37,6 +39,15 @@ public class Model {
         this.image = image;
         this.capacity = capacity;
         this.cancelationPolicy = cancelationPolicy;
+    }
+
+    public Model(CreateModelDTO modelDto){
+        this.brand = modelDto.getBrand();
+        this.name = modelDto.getName();
+        this.price = modelDto.getPrice();
+        this.image = modelDto.getImage();
+        this.capacity = modelDto.getCapacity();
+        this.cancelationPolicy = modelDto.getCancelationPolicy();
     }
 
     public void addVehicle(Vehicle vehicle){

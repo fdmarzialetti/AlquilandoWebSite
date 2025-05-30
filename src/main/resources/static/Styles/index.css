@@ -1,0 +1,199 @@
+:root {
+  --color-principal: #223343;
+}
+
+body, html {
+  height: 100%;
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1400&q=80') no-repeat center center;
+  background-size: cover;
+}
+
+h1{
+    color:var(--color-principal)!important;
+}
+
+/* Navbar */
+.navbar {
+  background-image: url("../images/backgroundHeader.jpg");
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 0.5rem 1.5rem;
+  position: relative;
+  z-index: 10;
+  gap:0.5em;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+}
+
+.navbar-brand img {
+  width: 120px;
+  height: auto;
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-brand h1 {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #212529;
+}
+
+.boton-cuenta{
+  border: 1px solid var(--color-principal)!important;
+  color: var(--color-principal)!important;
+}
+
+.boton-cuenta:hover{
+  color: var(--color-principal)!important;
+  border: 1px solid var(--color-principal) !important;
+}
+
+/* Banner */
+.banner {
+  background-color: var(--color-principal);
+  color: white;
+  text-align: center;
+  padding: 1rem 0;
+  font-weight: 600;
+  font-size: 1.25rem;
+  user-select: none;
+  z-index: 5;
+}
+
+/* Hero Section */
+.hero-section {
+  height: calc(100vh - 150px);
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Form Container */
+.form-container {
+  max-width: 400px;
+  background-color: rgba(255, 255, 255, 0.9)!important;
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  width: 100%;
+}
+
+/* Form Title */
+.form-container h5 {
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+/* Bootstrap overrides - botón personalizado */
+.btn-danger {
+  background-color: #c82333;
+  border-color: #bd2130;
+  font-weight: 700;
+  transition: background-color 0.3s ease;
+}
+
+.btn-danger:hover,
+.btn-danger:focus {
+  background-color: #a71d2a;
+  border-color: #971c27;
+  color: white;
+}
+
+/* Inputs y selects */
+.form-control,
+.form-select {
+  background-color: rgba(255,255,255,0.9);
+  border-radius: 5px;
+  border: 1px solid #ced4da;
+  transition: border-color 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #223343;
+  box-shadow: 0 0 0 0.2rem rgba(34, 51, 67, 0.25);
+}
+
+/*Footer*/
+
+.footer {
+  background-color: var(--color-principal);
+  color: white;
+  padding: 1.5rem 0;
+  font-size: 0.9rem;
+  user-select: none;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1rem;
+}
+
+.footer-logo img {
+  width: 100px;
+  height: auto;
+  filter: brightness(0) invert(1); /* Opcional para adaptar el logo si es oscuro */
+}
+
+.footer-text {
+  flex: 1 1 200px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.footer-links {
+  flex: 1 1 200px;
+  text-align: right;
+}
+
+.footer-links a {
+  color: white;
+  text-decoration: none;
+  margin-left: 1.2rem;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: #ff4d4d; /* Un rojo suave, acorde al btn-danger */
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .hero-section {
+    justify-content: center;
+    padding: 1rem;
+  }
+  .form-container {
+    max-width: 100%;
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  .footer-links {
+    text-align: center;
+    margin-top: 1rem;
+  }
+}
