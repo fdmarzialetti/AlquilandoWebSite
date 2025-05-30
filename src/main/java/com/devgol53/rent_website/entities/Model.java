@@ -29,7 +29,10 @@ public class Model {
     @Enumerated(EnumType.STRING)
     private CancelationPolicy cancelationPolicy;
 
-    @OneToMany (mappedBy = "model")
+    @OneToMany (mappedBy = "model", cascade = CascadeType.PERSIST)
+    private List<Reservation> reservations = new ArrayList<>();
+
+    @OneToMany (mappedBy = "model", cascade = CascadeType.PERSIST)
     private List<Vehicle> vehicles = new ArrayList<>();
 
     public Model(String brand, String name, Double price, String image, int capacity, CancelationPolicy cancelationPolicy) {
@@ -52,5 +55,8 @@ public class Model {
 
     public void addVehicle(Vehicle vehicle){
         this.vehicles.add(vehicle);
+    }
+    public void addReservation(Reservation reservation){
+        this.reservations.add(reservation);
     }
 }

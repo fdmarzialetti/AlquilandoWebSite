@@ -3,6 +3,9 @@ import com.devgol53.rent_website.enums.UserRol;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -20,6 +23,9 @@ public class AppUser {
     @Enumerated(EnumType.STRING)
     private UserRol rol;
 
+    @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST)
+    private List<Reservation> reservations = new ArrayList<>();
+
     public AppUser(String name, String lastname, String dni, String phone, String email, String password, UserRol rol) {
         this.name = name;
         this.lastname = lastname;
@@ -29,4 +35,6 @@ public class AppUser {
         this.password = password;
         this.rol = rol;
     }
+
+    public void addReservation(Reservation reservation){this.reservations.add(reservation);}
 }
