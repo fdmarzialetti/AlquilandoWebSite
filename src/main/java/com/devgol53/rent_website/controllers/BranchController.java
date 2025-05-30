@@ -3,6 +3,7 @@ package com.devgol53.rent_website.controllers;
 import com.devgol53.rent_website.entities.Branch;
 import com.devgol53.rent_website.repositories.BranchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,8 +17,17 @@ public class BranchController {
     private BranchRepository branchRepository;
 
     @PostMapping
-    public Branch createBranch(@RequestBody Branch branch) {
-        return branchRepository.save(branch);
+    public ResponseEntity<?> createBranch(@RequestBody Branch branch) {
+        // Validación: evitar duplicados
+        if (branchRepository.existsByCityAndAddress(branch.getCity(), branch.getAddress())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body("Ya existe una sucursal con esa ciudad y dirección.");
+        }
+
+        // Si no existe, se guarda
+        Branch saved = branchRepository.save(branch);
+        return ResponseEntity.ok(saved);
     }
     @GetMapping
     public List<Branch> getAllBranches() {
