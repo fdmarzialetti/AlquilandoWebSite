@@ -13,10 +13,12 @@ import com.devgol53.rent_website.repositories.ModelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
@@ -36,8 +38,8 @@ public class ModelController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/create")
-    public ResponseEntity<String> createModel(@RequestBody CreateModelDTO modelDto){
+    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> createModel(@RequestBody CreateModelDTO modelDto) throws IOException {
         if(!modelRepository.existsByBrandAndName(modelDto.getBrand(),modelDto.getName())) {
             Model newModel = new Model(modelDto);
             modelRepository.save(newModel);
@@ -46,8 +48,8 @@ public class ModelController {
         return ResponseEntity.status(HttpStatus.CONFLICT).body("Ya existe el modelo");
     }
 
-    @GetMapping("/avalaibleModels")
-    public List<AvalaibleModelDTO> getAvalaibleModels(
+    @GetMapping("/availableModels")
+    public List<AvalaibleModelDTO> getAvailableModels(
             @RequestParam LocalDate startDate,
             @RequestParam LocalDate endDate,
             @RequestParam long branchId){

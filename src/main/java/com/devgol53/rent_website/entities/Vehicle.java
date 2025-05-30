@@ -25,11 +25,11 @@ public class Vehicle {
     @OneToMany (mappedBy = "vehicle", cascade = CascadeType.PERSIST)
     private List<Reservation> reservations = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "branch_id")
     private Branch branch;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Model model;
 
     public Vehicle(){};
@@ -49,6 +49,11 @@ public class Vehicle {
     public void addModel(Model model){
         this.model=model;
         model.addVehicle(this);
+    }
+
+    public void addBranch(Branch branch){
+        this.branch=branch;
+        branch.addVehicle(this);
     }
 
     public boolean hasOverlappingReservation(LocalDate startDate, LocalDate endDate) {

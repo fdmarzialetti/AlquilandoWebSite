@@ -31,6 +31,10 @@ public class Branch {
         this.address = address;
     }
 
+
+    public void addVehicle(Vehicle vehicle){
+        this.vehicles.add(vehicle);
+    }
     public void addReservation(Reservation reservation){
         this.reservations.add(reservation);
     }

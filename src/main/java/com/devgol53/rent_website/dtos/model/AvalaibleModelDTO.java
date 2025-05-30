@@ -11,7 +11,7 @@ public class AvalaibleModelDTO {
     private String brand;
     private String name;
     private Double price;
-    private String image;
+    private byte[] image;
     private int capacity;
     private CancelationPolicy cancelationPolicy;
 
