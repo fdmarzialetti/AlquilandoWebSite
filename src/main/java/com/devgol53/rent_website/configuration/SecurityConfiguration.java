@@ -1,6 +1,7 @@
 package com.devgol53.rent_website.configuration;
 
 import com.devgol53.rent_website.components.CustomAccessDeniedHandler;
+import com.devgol53.rent_website.components.CustomAuthenticationFailureHandler;
 import com.devgol53.rent_website.components.CustomLoginSuccessHandler;
 import com.devgol53.rent_website.services.AppUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class SecurityConfiguration {
     private CustomLoginSuccessHandler customLoginSuccessHandler;
 
     @Autowired
+    private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+
+    @Autowired
     private AppUserDetailService appUserDetailService;
 
     @Bean
@@ -42,10 +46,9 @@ public class SecurityConfiguration {
                 )
                 .formLogin(form -> form
                         .loginPage("/login.html")
-                        .loginProcessingUrl("/login") // asegura que Spring escuche POST /login
-                        .defaultSuccessUrl("/index.html", true) // fallback si no usás customLoginSuccessHandler
+                        .loginProcessingUrl("/login")
                         .successHandler(customLoginSuccessHandler)
-                        .failureUrl("/pages/login.html?error=true") // redirige si el login falla
+                        .failureHandler(customAuthenticationFailureHandler)
                         .permitAll()
                 )
                 .exceptionHandling(ex -> ex
@@ -69,9 +72,4 @@ public class SecurityConfiguration {
         return auth.build();
     }
 
-    // 🔥 Esto es clave para que Spring reconozca tu servicio
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return appUserDetailService;
-    }
 }

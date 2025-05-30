@@ -17,13 +17,20 @@ public class AppUserDetailService implements UserDetailsService {
     private AppUserRepository appUserRepository;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        System.out.println("🟡 Buscando usuario: " + username);
 
-        AppUser user = appUserRepository.findByEmail(username).orElseThrow(()->new UsernameNotFoundException("No se encontro el usuario con email "+username));
+        AppUser user = appUserRepository.findByEmail(username)
+                .orElseThrow(() -> {
+                    System.out.println("🔴 Usuario no encontrado: " + username);
+                    return new UsernameNotFoundException("No se encontró el usuario con email " + username);
+                });
+
+        System.out.println("🟢 Usuario encontrado: " + user.getEmail());
 
         return User.builder()
-                .username(user.getEmail()) // usamos email como username
-                .password(user.getPassword()) // debe estar encriptada
-                .roles(user.getRol().name()) // ejemplo: ADMIN
+                .username(user.getEmail())
+                .password(user.getPassword())
+                .roles(user.getRol().name())
                 .build();
     }
 }
