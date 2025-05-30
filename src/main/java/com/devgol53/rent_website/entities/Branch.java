@@ -17,6 +17,10 @@ public class Branch {
     private long id;
     private String address;
     private String city;
+
+    @OneToMany(mappedBy = "branch", cascade = CascadeType.PERSIST)
+    private List<Reservation> reservations = new ArrayList<>();
+
     @OneToMany(mappedBy = "branch", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Vehicle> vehicles = new ArrayList<>();
 
@@ -26,4 +30,13 @@ public class Branch {
         this.city = city;
         this.address = address;
     }
+
+
+    public void addVehicle(Vehicle vehicle){
+        this.vehicles.add(vehicle);
+    }
+    public void addReservation(Reservation reservation){
+        this.reservations.add(reservation);
+    }
+
 }

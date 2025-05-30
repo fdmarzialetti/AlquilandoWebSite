@@ -1,11 +1,35 @@
+const { createApp } = Vue;
 
-document.getElementById('formularioBuscarVehiculo').addEventListener('submit', function (e) {
-    e.preventDefault(); // Evita el envío normal
-
-    const fechaInicio = document.getElementById('fechaInicio').value;
-    const fechaFin = document.getElementById('fechaFin').value;
-    const sucursal = document.getElementById('sucursal').value;
-
-    // Redirección con parámetros
-    window.location.href = `./pages/vehiculos.html?fechaInicio=${encodeURIComponent(fechaInicio)}&fechaFin=${encodeURIComponent(fechaFin)}&sucursal=${encodeURIComponent(sucursal)}`;
-});
+createApp({
+    data() {
+        return {
+            branches: [],
+            selectedBranchId: "",
+            fechaInicio: "",
+            fechaFin: ""
+        };
+    },
+    mounted() {
+        this.loadBranches();
+    },
+    methods: {
+        loadBranches() {
+            axios.get("/api/branches")
+                .then(response => {
+                    console.log("RESPONSE:", response);
+                    this.branches = response.data;
+                })
+                .catch(error => {
+                    console.error("ERROR AL CARGAR SUCURSALES:", error);
+                });
+        },
+        submitForm() {
+            if (!this.fechaInicio || !this.fechaFin || !this.selectedBranchId) {
+                alert("Por favor, complete todos los campos.");
+                return;
+            }
+            const url = `./pages/vehiculos.html?fechaInicio=${encodeURIComponent(this.fechaInicio)}&fechaFin=${encodeURIComponent(this.fechaFin)}&sucursal=${encodeURIComponent(this.selectedBranchId)}`;
+            window.location.href = url;
+        }
+    }
+}).mount('#app');

@@ -2,16 +2,25 @@ package com.devgol53.rent_website.controllers;
 
 import com.devgol53.rent_website.dtos.car.CarGetDto;
 import com.devgol53.rent_website.dtos.car.CarPostDto;
+import com.devgol53.rent_website.dtos.model.AvalaibleModelDTO;
 import com.devgol53.rent_website.dtos.model.CreateModelDTO;
+import com.devgol53.rent_website.entities.Branch;
 import com.devgol53.rent_website.entities.Car;
 import com.devgol53.rent_website.entities.Model;
+import com.devgol53.rent_website.entities.Vehicle;
+import com.devgol53.rent_website.repositories.BranchRepository;
 import com.devgol53.rent_website.repositories.ModelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -20,6 +29,8 @@ public class ModelController {
 
     @Autowired
     private ModelRepository modelRepository;
+    @Autowired
+    private BranchRepository branchRepository;
 
     @GetMapping("/listModels")
     public List<Model> getModels(){
@@ -27,8 +38,8 @@ public class ModelController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/create")
-    public ResponseEntity<String> createModel(@RequestBody CreateModelDTO modelDto){
+    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> createModel(@RequestBody CreateModelDTO modelDto) throws IOException {
         if(!modelRepository.existsByBrandAndName(modelDto.getBrand(),modelDto.getName())) {
             Model newModel = new Model(modelDto);
             modelRepository.save(newModel);
@@ -36,4 +47,20 @@ public class ModelController {
         }
         return ResponseEntity.status(HttpStatus.CONFLICT).body("Ya existe el modelo");
     }
+
+    @GetMapping("/availableModels")
+    public List<AvalaibleModelDTO> getAvailableModels(
+            @RequestParam LocalDate startDate,
+            @RequestParam LocalDate endDate,
+            @RequestParam long branchId){
+        Branch branch = branchRepository.findById(branchId).get();
+        List<AvalaibleModelDTO> availableModels = branch.getVehicles().stream()
+                .filter(v -> !v.hasOverlappingReservation(startDate, endDate)) // vehículos SIN reservas en esas fechas
+                .map(Vehicle::getModel) // obtener el modelo de cada vehículo
+                .distinct() // eliminar modelos repetidos
+                .map(AvalaibleModelDTO::new)
+                .toList();
+        return availableModels;
+    }
+
 }

@@ -6,6 +6,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -18,11 +22,14 @@ public class Vehicle {
     private String status;
     private int yearV;
 
-    @ManyToOne
+    @OneToMany (mappedBy = "vehicle", cascade = CascadeType.PERSIST)
+    private List<Reservation> reservations = new ArrayList<>();
+
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "branch_id")
     private Branch branch;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Model model;
 
     public Vehicle(){};
@@ -42,6 +49,25 @@ public class Vehicle {
     public void addModel(Model model){
         this.model=model;
         model.addVehicle(this);
+    }
+
+    public void addBranch(Branch branch){
+        this.branch=branch;
+        branch.addVehicle(this);
+    }
+
+    public boolean hasOverlappingReservation(LocalDate startDate, LocalDate endDate) {
+        for (Reservation reservation : reservations) {
+            LocalDate resStart = reservation.getStartDate();
+            LocalDate resEnd = reservation.getEndDate();
+
+            boolean overlap = !resEnd.isBefore(startDate) && !resStart.isAfter(endDate);
+
+            if (overlap) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
