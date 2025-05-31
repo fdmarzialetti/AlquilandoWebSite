@@ -145,7 +145,11 @@
           </div>
           <span class="fs-5 fw-semibold text-success mb-0">${{model.price}}</span>
         </div>
-        <a href="#" class="btn btn-outline-primary boton-ver-mas">Ver más</a>
+        <a :href="`vehiculosDetalle.html?brand=${encodeURIComponent(model.brand)}&name=${encodeURIComponent(model.name)}`"
+   class="btn btn-outline-primary boton-ver-mas">
+   Ver más
+</a>
+
       </div>
     </div>
   </div>

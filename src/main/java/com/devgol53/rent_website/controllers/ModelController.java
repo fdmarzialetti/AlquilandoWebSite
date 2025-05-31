@@ -1,17 +1,13 @@
 package com.devgol53.rent_website.controllers;
 
-import com.devgol53.rent_website.dtos.car.CarGetDto;
-import com.devgol53.rent_website.dtos.car.CarPostDto;
 import com.devgol53.rent_website.dtos.model.AvalaibleModelDTO;
 import com.devgol53.rent_website.dtos.model.CreateModelDTO;
 import com.devgol53.rent_website.entities.Branch;
-import com.devgol53.rent_website.entities.Car;
 import com.devgol53.rent_website.entities.Model;
 import com.devgol53.rent_website.entities.Vehicle;
 import com.devgol53.rent_website.repositories.BranchRepository;
 import com.devgol53.rent_website.repositories.ModelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -61,6 +56,16 @@ public class ModelController {
                 .map(AvalaibleModelDTO::new)
                 .toList();
         return availableModels;
+    }
+
+    @GetMapping("/detalle")
+    public ResponseEntity<Model> getModelByBrandAndName(
+            @RequestParam String brand,
+            @RequestParam String name) {
+
+        return modelRepository.findByBrandAndName(brand, name)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
 }
