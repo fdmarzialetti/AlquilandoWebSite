@@ -2,6 +2,7 @@ package com.devgol53.rent_website.controllers;
 
 import com.devgol53.rent_website.dtos.model.AvalaibleModelDTO;
 import com.devgol53.rent_website.dtos.model.CreateModelDTO;
+import com.devgol53.rent_website.dtos.model.GetModelDTO;
 import com.devgol53.rent_website.entities.Branch;
 import com.devgol53.rent_website.entities.Model;
 import com.devgol53.rent_website.entities.Vehicle;
@@ -59,12 +60,12 @@ public class ModelController {
     }
 
     @GetMapping("/detalle")
-    public ResponseEntity<Model> getModelByBrandAndName(
+    public ResponseEntity<GetModelDTO> getModelByBrandAndName(
             @RequestParam String brand,
             @RequestParam String name) {
 
         return modelRepository.findByBrandAndName(brand, name)
-                .map(ResponseEntity::ok)
+                .map(m->ResponseEntity.status(HttpStatus.OK).body(new GetModelDTO(m)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
