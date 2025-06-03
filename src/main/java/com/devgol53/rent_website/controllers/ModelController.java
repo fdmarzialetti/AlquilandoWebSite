@@ -29,17 +29,16 @@ public class ModelController {
     private BranchRepository branchRepository;
 
     @GetMapping("/listModels")
-    public List<Model> getModels(){
-        return modelRepository.findAll();
+    public List<GetModelDTO> getModels(){
+        return modelRepository.findAll().stream().map(GetModelDTO::new).toList();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> createModel(@RequestBody CreateModelDTO modelDto) throws IOException {
-        if(!modelRepository.existsByBrandAndName(modelDto.getBrand(),modelDto.getName())) {
+    public ResponseEntity<String> createModel(@ModelAttribute CreateModelDTO modelDto) throws IOException {
+        if (!modelRepository.existsByBrandAndName(modelDto.getBrand(), modelDto.getName())) {
             Model newModel = new Model(modelDto);
             modelRepository.save(newModel);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Modelo creado prueba 1");
+            return ResponseEntity.status(HttpStatus.CREATED).body("Modelo creado");
         }
         return ResponseEntity.status(HttpStatus.CONFLICT).body("Ya existe el modelo");
     }

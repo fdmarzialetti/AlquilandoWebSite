@@ -1,9 +1,13 @@
 package com.devgol53.rent_website.controllers;
 
+import com.devgol53.rent_website.dtos.branch.BranchGetDTO;
 import com.devgol53.rent_website.entities.Branch;
 import com.devgol53.rent_website.repositories.BranchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
