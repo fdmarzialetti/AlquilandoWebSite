@@ -8,7 +8,7 @@ createApp({
       precio: null,
       capacidad: null,
       politica: null,
-      imagen: null
+      imagen: {}
     };
   }, created() { },
   mounted() {
@@ -24,19 +24,18 @@ createApp({
       }
     },
     handleFileUpload(event) {
-      this.imagen = "imegen autito";
+      this.image = event.target.files[0];
     },
     async createModel() {
       try {
-        let modelo = {
-          brand: this.marca,
-          name: this.modelo,
-          price: this.precio,
-          image: this.imagen,
-          capacity: this.capacidad,
-          cancelationPolicy: this.politica
-        }
-        const res = await axios.post('/api/model/create', modelo).then(respuesta => {
+        const formData = new FormData();
+        formData.append("brand", this.marca);
+        formData.append("name", this.modelo);
+        formData.append("price",this.precio)
+        formData.append("image", this.image);
+        formData.append("capacity",this.capacidad);
+        formData.append("cancelationPolicy",this.politica)
+        const res = await axios.post('/api/model/create', formData).then(respuesta => {
           console.log("Modelo creado:", respuesta);
           Swal.fire({
             title: "Modelo creado con exito!",
@@ -46,15 +45,7 @@ createApp({
 
             window.location.href = "./admin.html";
           });
-
-
         })
-
-
-
-
-
-
       } catch (error) {
         Swal.fire({
           icon: "error",
@@ -64,15 +55,13 @@ createApp({
         console.error(error);
       }
     },
+    async logout() {
+      try {
+        const response = await axios.get('/logout').then(window.location.href = "/index.html");
 
-    async logout(){
-            try {
-                const response = await axios.get('/logout').then(window.location.href="/index.html");
-                
-            } catch (error) {
-                console.log(error);
-            }
-        }
-
+      } catch (error) {
+        console.log(error);
+      }
+    }
   }
 }).mount('#app');
