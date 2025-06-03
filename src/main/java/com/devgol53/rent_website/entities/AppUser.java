@@ -1,7 +1,10 @@
 package com.devgol53.rent_website.entities;
+import com.devgol53.rent_website.dtos.appUser.AppUserPostDTO;
 import com.devgol53.rent_website.enums.UserRol;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +37,16 @@ public class AppUser {
         this.email = email;
         this.password = password;
         this.rol = rol;
+    }
+
+    public AppUser(AppUserPostDTO appUserPostDTO, String password){
+        this.name = appUserPostDTO.getName();
+        this.lastname = appUserPostDTO.getLastname();
+        this.dni = appUserPostDTO.getDni();
+        this.phone = appUserPostDTO.getPhone();
+        this.email = appUserPostDTO.getEmail();
+        this.rol = appUserPostDTO.getRol();
+        this.password = password;
     }
 
     public void addReservation(Reservation reservation){this.reservations.add(reservation);}
