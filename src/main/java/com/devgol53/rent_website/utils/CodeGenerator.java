@@ -3,7 +3,7 @@ package com.devgol53.rent_website.utils;
 import java.security.SecureRandom;
 
 public class CodeGenerator {
-    private static final String CARACTERES = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private static final String CARACTERES = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     private static final int LONGITUD = 8;
     private static final SecureRandom random = new SecureRandom();
 

@@ -9,7 +9,8 @@ createApp({
                 dni: '',
                 email: '',
                 password: '',
-                rol: 'CLIENT' // Rol puede venir fijo o asignarse en el backend
+                rol: 'CLIENT',
+                phone:''
             },
             mensaje: ''
         };
