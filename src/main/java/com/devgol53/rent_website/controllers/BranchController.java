@@ -3,7 +3,6 @@ package com.devgol53.rent_website.controllers;
 import com.devgol53.rent_website.entities.Branch;
 import com.devgol53.rent_website.repositories.BranchRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,15 +28,24 @@ public class BranchController {
         Branch saved = branchRepository.save(branch);
         return ResponseEntity.ok(saved);
     }
-    @GetMapping
-    public List<Branch> getAllBranches() {
-        return branchRepository.findAll();
+
+    @GetMapping()
+    public List<BranchGetDTO> getAllBranches() {
+        return branchRepository.findAll().stream().map(BranchGetDTO::new).toList();
     }
 
     @DeleteMapping("/{id}")
     public void deleteBranch(@PathVariable Long id) {
         branchRepository.deleteById(id);
     }
+
+    @GetMapping("/{id}")
+    public BranchGetDTO getBranchById(@PathVariable Long id) {
+        Branch branch = branchRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sucursal no encontrada"));
+        return new BranchGetDTO(branch);
+    }
+
 
 
 }

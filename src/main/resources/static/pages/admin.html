@@ -61,6 +61,16 @@
     <!-- Tu script personalizado -->
     <script src="../scripts/admin.js"></script>
 
-
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        if (params.get("error")) {
+          const errorDiv = document.getElementById("errorMsg");
+          if (errorDiv) {
+            errorDiv.classList.remove("d-none");
+          }
+        }
+    </script>
 </body>
 </html>
+
+

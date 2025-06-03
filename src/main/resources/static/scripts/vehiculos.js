@@ -16,36 +16,71 @@ desdeInput.addEventListener('input', checkInputs);
 hastaInput.addEventListener('input', checkInputs);
 
 // Función para obtener parámetros de URL
-  function getParam(name) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(name);
+function getParam(name) {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(name);
+}
+
+// Obtener valores de la URL
+const fechaInicio = getParam('fechaInicio');
+const fechaFin = getParam('fechaFin');
+const sucursal = getParam('sucursal');
+
+const contenedorFiltros = document.getElementById('filtros-fecha-sucursal');
+
+
+const { createApp } = Vue;
+
+createApp({
+  data() {
+    return {
+      marca: "",
+      modelo: "",
+      branch: {},
+      fechaInicio: getParam('fechaInicio'),
+      fechaFin: getParam('fechaFin'),
+      branchId: getParam('sucursal'),
+      models: []
+    };
+  },
+  mounted() {
+    this.getBranchById(this.branchId);
+    this.getAvailableModels();
+  },
+  methods: {
+    async getBranchById(id) {
+      try {
+        const response = await axios.get(`/api/branches/${id}`);
+        this.branch = response.data;
+      } catch (error) {
+        console.log(error);
+        document.getElementById("errorMsg").innerHTML = error.response?.data || "Error desconocido";
+      }
+    },
+    async getAvailableModels() {
+      try {
+        const response = await axios.get(`/api/model/availableModels`, {
+          params: {
+            startDate: this.fechaInicio,
+            endDate: this.fechaFin,
+            branchId: this.branchId,
+          }
+        });
+        this.models = response.data;
+        console.log(this.models);
+      } catch (error) {
+        console.error("Error al obtener vehículos:", error);
+      }
+    },
+    async logout() {
+      console.log("Logout ejecutado");
+      axios.get('/logout')
+        .then(() => {
+          window.location.href = "/index.html";
+        })
+        .catch(error => {
+          console.error("Error al cerrar sesión:", error);
+        });
+    }
   }
-
-  // Obtener valores de la URL
-  const fechaInicio = getParam('fechaInicio');
-  const fechaFin = getParam('fechaFin');
-  const sucursal = getParam('sucursal');
-
-  const contenedorFiltros = document.getElementById('filtros-fecha-sucursal');
-
-  // Crear y agregar elementos solo si existen los valores
-  if (fechaInicio) {
-    const spanInicio = document.createElement('span');
-     spanInicio.className = 'filtro-resumen';
-    spanInicio.textContent = `Inicio: ${fechaInicio}`;
-    contenedorFiltros.appendChild(spanInicio);
-  }
-
-  if (fechaFin) {
-    const spanFin = document.createElement('span');
-    spanFin.className = 'filtro-resumen';
-    spanFin.textContent = `Fin: ${fechaFin}`;
-    contenedorFiltros.appendChild(spanFin);
-  }
-
-  if (sucursal) {
-    const spanSucursal = document.createElement('span');
-    spanSucursal.className = 'filtro-resumen';
-    spanSucursal.textContent = `Sucursal: ${sucursal}`;
-    contenedorFiltros.appendChild(spanSucursal);
-  }
+}).mount('#app');

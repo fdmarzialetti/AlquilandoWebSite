@@ -22,10 +22,6 @@
                 <label for="password" class="form-label">Contraseña</label>
                 <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required>
             </div>
-            <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="remember">
-                <label class="form-check-label text-small" for="remember">Recordarme</label>
-            </div>
             <div class="d-grid mb-3">
                 <button type="submit" class="btn btn-login">Iniciar sesión</button>
             </div>
@@ -33,9 +29,20 @@
                 ¿No tenés cuenta? <a href="#">Registrarse</a>
             </div>
         </form>
+        <!-- Mensaje de error (aparece dinámicamente si hay error) -->
+        <div id="errorMsg" class="alert alert-danger text-center mt-3 d-none">
+            Usuario o contraseña incorrectos
+        </div>
         <hr>
     </div>
 
-    
+
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        if (params.get("error") === "true") {
+            document.getElementById("errorMsg").classList.remove("d-none");
+        }
+    </script>
 </body>
 </html>

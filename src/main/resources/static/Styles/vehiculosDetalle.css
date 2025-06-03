@@ -1,0 +1,277 @@
+/* ===== ESTILOS PARA DETALLE DE VEHÍCULO ===== */
+
+/* Elementos con posición fija para evitar movimientos */
+.fixed-position {
+  position: relative;
+  transform: none !important;
+  transition: none !important;
+}
+
+/* Contenedor de imagen del vehículo - SIN MOVIMIENTO */
+.vehicle-image-container {
+  width: 100%;
+  height: 350px; /* Altura fija preestablecida */
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  position: relative;
+}
+
+/* Imagen del vehículo - SIN EFECTOS DE MOVIMIENTO */
+.vehicle-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Mantiene la relación de aspecto */
+  /* Removido el efecto hover y transform */
+}
+
+/* Contenedor de detalles del vehículo - POSICIÓN ESTABLE */
+.vehicle-details {
+  height: auto;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  min-height: 350px; /* Altura mínima para mantener consistencia */
+}
+
+/* Título del vehículo */
+.vehicle-title {
+  color: #2c3e50;
+  margin-bottom: 15px;
+  font-size: 1.8rem;
+}
+
+/* Precio del vehículo */
+.vehicle-price {
+  margin-bottom: 20px;
+  font-size: 1.4rem;
+}
+
+/* Contenedor de especificaciones - POSICIÓN FIJA */
+.vehicle-specs.fixed-specs {
+  background-color: white;
+  border-radius: 6px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 15px;
+  margin-bottom: 25px;
+  position: relative;
+}
+
+/* Items de especificaciones - SIN MOVIMIENTO */
+.spec-item.fixed-spec {
+  padding: 12px 0;
+  border-bottom: 1px solid #eee;
+  font-size: 1rem;
+  color: #495057;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* Removido el efecto hover */
+}
+
+.spec-item.fixed-spec:last-child {
+  border-bottom: none;
+}
+
+.spec-item.fixed-spec strong {
+  color: #2c3e50;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.spec-value {
+  text-align: right;
+  font-weight: 500;
+}
+
+/* ===== BOTÓN CONFIRMAR RESERVA ===== */
+.reservation-section {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.btn-confirmar-reserva {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  width: 100%;
+  max-width: 300px;
+}
+
+.btn-confirmar-reserva:hover {
+  background: linear-gradient(135deg, #218838, #1ea085);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+}
+
+.btn-confirmar-reserva:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+/* Estilos para el navbar */
+.navbar {
+  border-bottom: 1px solid #dee2e6;
+}
+
+.navbar h1 {
+  color: #2c3e50;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+/* Botón personalizado */
+.btn-custom {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-custom:hover {
+  background-color: #0056b3;
+  color: white;
+}
+
+.boton-cuenta {
+  font-size: 0.95rem;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Tablets */
+@media (max-width: 991px) {
+  .vehicle-image-container {
+    height: 300px;
+  }
+  
+  .vehicle-title {
+    font-size: 1.6rem;
+  }
+  
+  .vehicle-price {
+    font-size: 1.2rem;
+  }
+  
+  .vehicle-details {
+    min-height: 300px;
+  }
+}
+
+/* Móviles */
+@media (max-width: 767px) {
+  .vehicle-image-container {
+    height: 250px; /* Altura más pequeña en móviles */
+    margin-bottom: 30px;
+  }
+  
+  .vehicle-details {
+    margin-top: 0;
+    padding: 15px;
+    min-height: auto;
+  }
+  
+  .vehicle-title {
+    font-size: 1.4rem;
+    text-align: center;
+  }
+  
+  .vehicle-price {
+    font-size: 1.1rem;
+    text-align: center;
+  }
+  
+  .vehicle-specs.fixed-specs {
+    padding: 15px;
+  }
+  
+  .spec-item.fixed-spec {
+    padding: 10px 0;
+    font-size: 0.95rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .spec-value {
+    text-align: left;
+    margin-top: 5px;
+  }
+  
+  .navbar h1 {
+    font-size: 1.3rem;
+  }
+  
+  .btn-confirmar-reserva {
+    padding: 12px 30px;
+    font-size: 1rem;
+  }
+}
+
+/* Móviles pequeños */
+@media (max-width: 575px) {
+  .vehicle-image-container {
+    height: 200px;
+  }
+  
+  .container {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  
+  .vehicle-title {
+    font-size: 1.2rem;
+  }
+  
+  .vehicle-price {
+    font-size: 1rem;
+  }
+  
+  .navbar {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+  
+  .btn-confirmar-reserva {
+    padding: 10px 25px;
+    font-size: 0.95rem;
+  }
+}
+
+/* ===== ELIMINADAS LAS ANIMACIONES DE MOVIMIENTO ===== */
+
+/* Sombras mejoradas */
+.vehicle-specs.fixed-specs {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e9ecef;
+}
+
+.vehicle-image {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Asegurar que no hay movimientos no deseados */
+* {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.fixed-position * {
+  transform: none !important;
+}

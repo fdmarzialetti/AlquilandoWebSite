@@ -1,14 +1,12 @@
 package com.devgol53.rent_website.dtos.model;
-
-import com.devgol53.rent_website.entities.Car;
 import com.devgol53.rent_website.entities.Model;
 import com.devgol53.rent_website.enums.CancelationPolicy;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
-public class GetModelDTO {
+@NoArgsConstructor
+public class AvalaibleModelDTO {
     private long id;
     private String brand;
     private String name;
@@ -17,7 +15,7 @@ public class GetModelDTO {
     private int capacity;
     private CancelationPolicy cancelationPolicy;
 
-    public  GetModelDTO(Model model){
+    public AvalaibleModelDTO(Model model){
         this.id = model.getId();
         this.brand = model.getBrand();
         this.name = model.getName();
