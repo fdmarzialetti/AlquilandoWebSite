@@ -10,11 +10,14 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
 @Component
 public class DBRunner implements CommandLineRunner {
+    @Autowired
+    ReservationRepository reservationRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
     @Autowired
@@ -83,7 +86,7 @@ public class DBRunner implements CommandLineRunner {
         modelRepository.saveAll(Arrays.asList(modelonuevo,modelonuevo2,modelonuevo3));
 
         branchRepository.saveAll(Arrays.asList(branch1,branch2,branch3));
-
+        //vehicle repository
         vehicleRepository.save(autonuevo1);
         vehicleRepository.save(autonuevo2);
         vehicleRepository.save(autonuevo3);
@@ -95,8 +98,70 @@ public class DBRunner implements CommandLineRunner {
         vehicleRepository.save(autonuevo9);
         vehicleRepository.save(autonuevo10);
 
+        AppUser client1 = new AppUser("Fernando","Marzialetti","35060094","","fdmarzialetti@gmail.com", passwordEncoder.encode("123456"), UserRol.CLIENT);
+
+
+        //Reservation repository
+        Reservation reservation1 = new Reservation("ABCDEF", LocalDate.of(2025, 6, 3), LocalDate.of(2025, 6, 25), 20000.0);
+        reservation1.addClient(client1);
+        reservation1.addModel(modelonuevo);
+        reservation1.addBranch(branch1);
+
+        Reservation reservation2 = new Reservation("ZXCVBN", LocalDate.of(2025, 7, 1), LocalDate.of(2025, 7, 6), 15000.0);
+        reservation2.addClient(client1);
+        reservation2.addModel(modelonuevo2);
+        reservation2.addBranch(branch2);
+
+        Reservation reservation3 = new Reservation("QWERTY", LocalDate.of(2025, 6, 10), LocalDate.of(2025, 6, 14), 18000.0);
+        reservation3.addClient(client1);
+        reservation3.addModel(modelonuevo3);
+        reservation3.addBranch(branch3);
+
+        Reservation reservation4 = new Reservation("LMNOPQ", LocalDate.of(2025, 6, 15), LocalDate.of(2025, 6, 19), 13000.0);
+        reservation4.addClient(client1);
+        reservation4.addModel(modelonuevo);
+        reservation4.addBranch(branch1);
+
+        Reservation reservation5 = new Reservation("GHJKLM", LocalDate.of(2025, 7, 10), LocalDate.of(2025, 7, 14), 17000.0);
+        reservation5.addClient(client1);
+        reservation5.addModel(modelonuevo2);
+        reservation5.addBranch(branch2);
+
+        Reservation reservation6 = new Reservation("ASDFGH", LocalDate.of(2025, 7, 20), LocalDate.of(2025, 7, 24), 16000.0);
+        reservation6.addClient(client1);
+        reservation6.addModel(modelonuevo3);
+        reservation6.addBranch(branch3);
+
+        Reservation reservation7 = new Reservation("POIUYT", LocalDate.of(2025, 8, 1), LocalDate.of(2025, 8, 5), 14000.0);
+        reservation7.addClient(client1);
+        reservation7.addModel(modelonuevo);
+        reservation7.addBranch(branch1);
+
+        Reservation reservation8 = new Reservation("MNBVCX", LocalDate.of(2025, 8, 10), LocalDate.of(2025, 8, 15), 19000.0);
+        reservation8.addClient(client1);
+        reservation8.addModel(modelonuevo2);
+        reservation8.addBranch(branch2);
+
+        Reservation reservation9 = new Reservation("TREWQA", LocalDate.of(2025, 8, 20), LocalDate.of(2025, 8, 25), 21000.0);
+        reservation9.addClient(client1);
+        reservation9.addModel(modelonuevo3);
+        reservation9.addBranch(branch3);
+
+        Reservation reservation10 = new Reservation("YUIOPL", LocalDate.of(2025, 9, 1), LocalDate.of(2025, 9, 5), 15500.0);
+        reservation10.addClient(client1);
+        reservation10.addModel(modelonuevo2);
+        reservation10.addBranch(branch1);
+
+
+        //appUsers
         userRepository.save(new AppUser("Maria","Ceccato","00000000","","mariaceccato@gmail.com", passwordEncoder.encode("123456"), UserRol.ADMIN));
-        userRepository.save(new AppUser("Fernando","Marzialetti","35060094","","fdmarzialetti@gmail.com", passwordEncoder.encode("123456"), UserRol.CLIENT));
+        userRepository.save(client1);
         userRepository.save(new AppUser("Martin","Esquercia","11111111","","martincito@gmail.com", passwordEncoder.encode("aguantelaMERKAAAA"), UserRol.EMPLOYEE));
+
+        reservationRepository.saveAll(List.of(
+                reservation1, reservation2, reservation3, reservation4, reservation5,
+                reservation6, reservation7, reservation8, reservation9, reservation10
+        ));
+
     }
 }

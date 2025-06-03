@@ -58,20 +58,32 @@ createApp({
       }
     },
     async getAvailableModels() {
-      try {
-        const response = await axios.get(`/api/model/availableModels`, {
-          params: {
-            startDate: this.fechaInicio,
-            endDate: this.fechaFin,
-            branchId: this.branchId,
-          }
-        });
-        this.models = response.data;
-        console.log(this.models);
-      } catch (error) {
-        console.error("Error al obtener vehículos:", error);
+  try {
+    const response = await axios.get(`/api/model/availableModels`, {
+      params: {
+        startDate: this.fechaInicio,
+        endDate: this.fechaFin,
+        branchId: this.branchId,
       }
-    },
+    });
+
+    // Calcular cantidad de días (inclusive)
+    const start = new Date(this.fechaInicio);
+    const end = new Date(this.fechaFin);
+    const timeDiff = end.getTime() - start.getTime();
+    const days = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)) + 1;
+
+    // Agregar el precio final a cada modelo
+    this.models = response.data.map(model => ({
+      ...model,
+      finalPrice: model.price * days
+    }));
+
+    console.log(this.models);
+  } catch (error) {
+    console.error("Error al obtener vehículos:", error);
+  }
+},
     async logout() {
       console.log("Logout ejecutado");
       axios.get('/logout')
