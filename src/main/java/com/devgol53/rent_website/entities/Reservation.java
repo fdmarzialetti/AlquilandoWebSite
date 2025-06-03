@@ -40,14 +40,11 @@ public class Reservation {
 
     // private Valoration valoration;
 
-    public Reservation(String code,LocalDate startDate, LocalDate endDate, Branch branch, Model model, Double payment, AppUser client) {
+    public Reservation(String code,LocalDate startDate, LocalDate endDate, Double payment) {
         this.code = code;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.branch = branch;
-        this.model = model;
         this.payment = payment;
-        this.client = client;
     }
 
     public Reservation(String code, ReservationPostDto reservationPostDto){
