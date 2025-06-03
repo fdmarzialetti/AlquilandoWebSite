@@ -2,8 +2,10 @@ package com.devgol53.rent_website.controllers;
 
 import com.devgol53.rent_website.dtos.car.CarGetDto;
 import com.devgol53.rent_website.dtos.vehicle.VehicleCreateDTO;
+import com.devgol53.rent_website.entities.Branch;
 import com.devgol53.rent_website.entities.Model;
 import com.devgol53.rent_website.entities.Vehicle;
+import com.devgol53.rent_website.repositories.BranchRepository;
 import com.devgol53.rent_website.repositories.ModelRepository;
 import com.devgol53.rent_website.repositories.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +20,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/vehicle")
 public class VehicleController {
     @Autowired
+    BranchRepository branchRepository;
+    @Autowired
     VehicleRepository vehicleRepository;
     @Autowired
     ModelRepository modelRepository;
-    @PostMapping("createVehicle")
+    @PostMapping("/createVehicle")
     public ResponseEntity<String> createVehicle(@RequestBody VehicleCreateDTO vehicleCreateDTO){
         Model model = modelRepository.getById(vehicleCreateDTO.getModelId());
-        if(model!=null){
+        Branch branch = branchRepository.getById(vehicleCreateDTO.getBranchId());
+        if(model!=null && branch!=null){
             Vehicle newVehicle = new Vehicle(vehicleCreateDTO);
             newVehicle.addModel(model);
+            newVehicle.addBranch(branch);
             vehicleRepository.save(newVehicle);
             modelRepository.save(model);
             return ResponseEntity.status(HttpStatus.CREATED).body("Vehiculo creado exitosamente");
