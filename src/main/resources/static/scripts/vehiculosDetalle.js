@@ -16,7 +16,7 @@ createApp({
     this.startDate = params.get("startDate");
     this.endDate = params.get("endDate");
     this.finalPrice = params.get("price");
-    
+
     this.getVehicleDetail(brand, name);
   },
   methods: {
@@ -29,5 +29,21 @@ createApp({
         console.error("Error al obtener el modelo:", error);
       }
     },
-  },
+
+    confirmarReserva() {
+      const params = new URLSearchParams({
+        brand: this.vehicle.brand,
+        name: this.vehicle.name,
+        startDate: this.startDate,
+        endDate: this.endDate,
+        price: this.finalPrice,
+        pricePerDay: this.vehicle.price,
+        capacity: this.vehicle.capacity,
+        cancelationPolicy: this.vehicle.cancelationPolicy
+      });
+
+      window.location.href = `formPay.html?${params.toString()}`;
+    }
+  }
 }).mount("#app");
+
