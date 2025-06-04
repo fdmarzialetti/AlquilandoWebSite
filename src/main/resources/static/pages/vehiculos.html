@@ -145,7 +145,7 @@
           </div>
           <span class="fs-5 fw-semibold text-success mb-0">${{model.finalPrice}}</span>
         </div>
-        <a :href="`vehiculosDetalle.html?brand=${encodeURIComponent(model.brand)}&name=${encodeURIComponent(model.name)}`"
+        <a :href="`vehiculosDetalle.html?brand=${encodeURIComponent(model.brand)}&name=${encodeURIComponent(model.name)}&startDate=${encodeURIComponent(fechaInicio)}&endDate=${encodeURIComponent(fechaFin)}&price=${encodeURIComponent(model.finalPrice)}`"
    class="btn btn-outline-primary boton-ver-mas">
    Ver más
 </a>

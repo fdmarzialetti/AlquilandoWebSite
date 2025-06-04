@@ -25,7 +25,6 @@
       <h1>Alquilando</h1>
       <div class="ms-auto">
         <div class="dropdown">
-          <!-- Botón desplegable -->
           <button class="btn btn-custom fw-bold dropdown-toggle boton-cuenta" type="button" id="dropdownCuenta"
             data-bs-toggle="dropdown" aria-expanded="false">
             Cuenta
@@ -40,8 +39,9 @@
 
     <!-- Contenido principal -->
     <main class="container py-5" v-if="vehicle">
+      <h2 class="fw-bold vehicle-title text-center text-md-start mb-4">{{ vehicle.brand }} {{ vehicle.name }}</h2>
       <div class="row">
-        <!-- Columna de la imagen - Posición fija -->
+        <!-- Columna de la imagen -->
         <div class="col-md-6">
           <div class="vehicle-image-container fixed-position">
             <img :src="'data:image/jpeg;base64,' + vehicle.image" alt="Imagen del vehículo"
@@ -49,30 +49,42 @@
           </div>
         </div>
 
-        <!-- Columna de detalles - Posición fija -->
+        <!-- Columna de la información -->
         <div class="col-md-6">
-          <div class="vehicle-details fixed-position">
-            <h2 class="fw-bold vehicle-title">{{ vehicle.brand }} {{ vehicle.name }}</h2>
-            <p class="fs-5 text-success fw-semibold vehicle-price">Precio: ${{ vehicle.price }}</p>
-
-            <!-- Especificaciones con posición fija -->
-            <div class="vehicle-specs fixed-specs">
-              <div class="spec-item fixed-spec">
+          <div class="card border-0 shadow-sm p-3">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex justify-content-between">
+                <strong>Reserva desde:</strong>
+                <span class="text-primary">{{ startDate }}</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between">
+                <strong>Hasta:</strong>
+                <span class="text-primary">{{ endDate }}</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between">
+                <strong>Precio por día:</strong>
+                <span class="text-success fw-bold">${{ vehicle.price }}</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between">
+                <strong>Precio final:</strong>
+                <span class="text-success fw-bold">${{ finalPrice }}</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between">
                 <strong>Capacidad:</strong>
-                <span class="spec-value">{{ vehicle.capacity }} personas</span>
-              </div>
-              <div class="spec-item fixed-spec">
+                <span>{{ vehicle.capacity }} personas</span>
+              </li>
+              <li class="list-group-item d-flex justify-content-between">
                 <strong>Política de cancelación:</strong>
-                <span class="spec-value">
+                <span>
                   {{
-                  vehicle.cancelationPolicy === 'TWENTY' ? '20%' :
-                  vehicle.cancelationPolicy === 'FULL' ? '100%' :
-                  vehicle.cancelationPolicy === 'ZERO' ? '0%' :
-                  vehicle.cancelationPolicy
+                    vehicle.cancelationPolicy === 'TWENTY' ? '20%' :
+                    vehicle.cancelationPolicy === 'FULL' ? '100%' :
+                    vehicle.cancelationPolicy === 'ZERO' ? '0%' :
+                    vehicle.cancelationPolicy
                   }}
                 </span>
-              </div>
-            </div>
+              </li>
+            </ul>
 
             <!-- Botón Confirmar Reserva -->
             <div class="reservation-section">
