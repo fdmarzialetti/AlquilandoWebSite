@@ -26,6 +26,11 @@ public class AppUser {
     @Enumerated(EnumType.STRING)
     private UserRol rol;
 
+    @ManyToOne
+    @JoinColumn(name = "branch_id")
+    private Branch branch;
+
+
     @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST)
     private List<Reservation> reservations = new ArrayList<>();
 

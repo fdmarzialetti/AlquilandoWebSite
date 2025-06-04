@@ -44,4 +44,13 @@ public class ClientController {
     public List<AppUserGetDTO> getAllClients() {
         return appUserRepository.findAll().stream().filter(u->u.getRol().equals(UserRol.CLIENT)).map(AppUserGetDTO::new).toList();
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteClient(@PathVariable Long id) {
+        return appUserRepository.findById(id).map(client -> {
+            appUserRepository.delete(client);
+            return ResponseEntity.ok().build();
+        }).orElse(ResponseEntity.notFound().build());
+    }
+
 }
