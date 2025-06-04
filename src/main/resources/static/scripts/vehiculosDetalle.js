@@ -4,12 +4,19 @@ createApp({
   data() {
     return {
       vehicle: {},
+      startDate: "",
+      endDate: "",
+      finalPrice: ""
     };
   },
   mounted() {
     const params = new URLSearchParams(window.location.search);
     const brand = params.get("brand");
     const name = params.get("name");
+    this.startDate = params.get("startDate");
+    this.endDate = params.get("endDate");
+    this.finalPrice = params.get("price");
+    
     this.getVehicleDetail(brand, name);
   },
   methods: {

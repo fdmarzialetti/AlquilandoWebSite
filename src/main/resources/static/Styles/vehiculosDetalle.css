@@ -96,7 +96,7 @@
 }
 
 .btn-confirmar-reserva {
-  background: linear-gradient(135deg, #28a745, #20c997);
+  background-color: #1E2A38;
   color: white;
   border: none;
   padding: 15px 40px;
@@ -105,7 +105,7 @@
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+  box-shadow: 0 4px 12px rgba(30, 42, 56, 0.3);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   width: 100%;
@@ -113,14 +113,14 @@
 }
 
 .btn-confirmar-reserva:hover {
-  background: linear-gradient(135deg, #218838, #1ea085);
+  background-color: #16202A;
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+  box-shadow: 0 6px 16px rgba(30, 42, 56, 0.4);
 }
 
 .btn-confirmar-reserva:active {
   transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+  box-shadow: 0 2px 8px rgba(30, 42, 56, 0.3);
 }
 
 /* Estilos para el navbar */
