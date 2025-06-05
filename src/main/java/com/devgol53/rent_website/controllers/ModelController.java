@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/model")
@@ -47,14 +49,35 @@ public class ModelController {
     public List<AvalaibleModelDTO> getAvailableModels(
             @RequestParam LocalDate startDate,
             @RequestParam LocalDate endDate,
-            @RequestParam long branchId){
-        Branch branch = branchRepository.findById(branchId).get();
-        List<AvalaibleModelDTO> availableModels = branch.getVehicles().stream()
-                .filter(v -> !v.hasOverlappingReservation(startDate, endDate)) // vehículos SIN reservas en esas fechas
-                .map(Vehicle::getModel) // obtener el modelo de cada vehículo
-                .distinct() // eliminar modelos repetidos
-                .map(AvalaibleModelDTO::new)
+            @RequestParam long branchId) {
+
+        Branch branch = branchRepository.findById(branchId)
+                .orElseThrow(() -> new RuntimeException("Branch not found"));
+
+        // Agrupamos vehículos por modelo
+        Map<Model, Long> modelToVehicleCount = branch.getVehicles().stream()
+                .collect(Collectors.groupingBy(Vehicle::getModel, Collectors.counting()));
+
+        List<AvalaibleModelDTO> availableModels = modelToVehicleCount.entrySet().stream()
+                .filter(entry -> {
+                    Model model = entry.getKey();
+                    long totalVehicles = entry.getValue();
+
+                    // Filtramos las reservas de este modelo que se solapan con el rango dado
+                    long overlappingReservations = model.getReservations().stream()
+                            .filter(res -> {
+                                LocalDate resStart = res.getStartDate();
+                                LocalDate resEnd = res.getEndDate();
+                                return !resEnd.isBefore(startDate) && !resStart.isAfter(endDate);
+                            })
+                            .count();
+
+                    // Solo devolvemos el modelo si tiene más vehículos que reservas superpuestas
+                    return overlappingReservations < totalVehicles;
+                })
+                .map(entry -> new AvalaibleModelDTO(entry.getKey()))
                 .toList();
+
         return availableModels;
     }
 
