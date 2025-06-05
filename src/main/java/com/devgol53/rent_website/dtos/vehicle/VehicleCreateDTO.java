@@ -1,6 +1,5 @@
 package com.devgol53.rent_website.dtos.vehicle;
 
-import com.devgol53.rent_website.entities.Vehicle;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
