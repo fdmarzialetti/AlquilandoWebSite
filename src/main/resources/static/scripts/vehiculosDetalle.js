@@ -7,6 +7,8 @@ createApp({
       startDate: "",
       endDate: "",
       finalPrice: "",
+      branchId:"",
+      modelId:"",
       isAuthenticated: false
     };
   },
@@ -17,8 +19,10 @@ createApp({
     this.startDate = params.get("startDate");
     this.endDate = params.get("endDate");
     this.finalPrice = params.get("price");
-
+    this.branchId = params.get("branchId");
+    this.modelId = params.get("modelId");
     this.getVehicleDetail(brand, name);
+    this.checkAuth();
   },
   methods: {
     async getVehicleDetail(brand, name) {
@@ -45,9 +49,8 @@ createApp({
     startDate: this.startDate,
     endDate: this.endDate,
     price: this.finalPrice,
-    pricePerDay: this.vehicle.price,
-    capacity: this.vehicle.capacity,
-    cancelationPolicy: this.vehicle.cancelationPolicy
+    modelId:this.modelId,
+    branchId:this.branchId
   });
 
   window.location.href = `formPay.html?${params.toString()}`;
