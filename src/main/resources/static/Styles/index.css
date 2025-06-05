@@ -68,6 +68,10 @@ h1{
   font-size: 1.25rem;
   user-select: none;
   z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap:2em;
 }
 
 /* Hero Section */

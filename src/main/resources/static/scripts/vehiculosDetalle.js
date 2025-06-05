@@ -6,7 +6,8 @@ createApp({
       vehicle: {},
       startDate: "",
       endDate: "",
-      finalPrice: ""
+      finalPrice: "",
+      isAuthenticated: false
     };
   },
   mounted() {
@@ -31,19 +32,46 @@ createApp({
     },
 
     confirmarReserva() {
-      const params = new URLSearchParams({
-        brand: this.vehicle.brand,
-        name: this.vehicle.name,
-        startDate: this.startDate,
-        endDate: this.endDate,
-        price: this.finalPrice,
-        pricePerDay: this.vehicle.price,
-        capacity: this.vehicle.capacity,
-        cancelationPolicy: this.vehicle.cancelationPolicy
-      });
+  if (!this.isAuthenticated) {
+    // Redirige al login con return para evitar que siga el flujo
+    window.location.href = "/login.html";
+    return;
+  }
 
-      window.location.href = `formPay.html?${params.toString()}`;
-    }
+  // Si está autenticado, continúa con la redirección al pago
+  const params = new URLSearchParams({
+    brand: this.vehicle.brand,
+    name: this.vehicle.name,
+    startDate: this.startDate,
+    endDate: this.endDate,
+    price: this.finalPrice,
+    pricePerDay: this.vehicle.price,
+    capacity: this.vehicle.capacity,
+    cancelationPolicy: this.vehicle.cancelationPolicy
+  });
+
+  window.location.href = `formPay.html?${params.toString()}`;
+},
+    checkAuth() {
+            axios.get("/api/user/isAuthenticated")
+                .then(response => {
+                    this.isAuthenticated = response.data === true;
+                })
+                .catch(error => {
+                    console.error("Error al verificar autenticación:", error);
+                    this.isAuthenticated = false;
+                });
+        },
+        logout() {
+            axios.post("/logout") // Cambiá este endpoint si usás otro.
+                .then(() => {
+                    this.isAuthenticated = false;
+                    window.location.href = "/index.html"; // o donde quieras redirigir después del logout
+                })
+                .catch(error => {
+                    console.error("Error al cerrar sesión:", error);
+                });
+        }
   }
 }).mount("#app");
 
