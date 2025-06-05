@@ -17,9 +17,15 @@ createApp({
         });
     },
     logout() {
-      // Acción de logout básica
-      alert("Sesión cerrada (funcionalidad a implementar)");
-    }
+            axios.post("/logout") // Cambiá este endpoint si usás otro.
+                .then(() => {
+                    this.isAuthenticated = false;
+                    window.location.href = "/index.html"; // o donde quieras redirigir después del logout
+                })
+                .catch(error => {
+                    console.error("Error al cerrar sesión:", error);
+                });
+        }
   },
   mounted() {
     this.loadVehicles();
