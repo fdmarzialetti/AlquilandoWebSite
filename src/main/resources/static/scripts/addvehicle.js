@@ -59,7 +59,7 @@ createApp({
               title: "Vehículo creado con éxito",
               icon: "success"
             }).then(() => {
-              window.location.href = "./admin.html";
+              window.location.href = "./listVehicles.html";
             });
 
           } catch (error) {
