@@ -51,15 +51,14 @@ public class DBRunner implements CommandLineRunner {
         Vehicle autonuevo9 = new Vehicle("zxc741", "disponible", 2014);
         Vehicle autonuevo10 = new Vehicle("vbn258", "disponible", 2016);
 
-
         Model modelonuevo = new Model("Renault","12",100.0,ImageReader.readImage("static/images/Vehicles/Renault12.JPG"),5, CancelationPolicy.FULL);
         Model modelonuevo2 = new Model("Peugeot","206",1000.0,ImageReader.readImage("static/images/Vehicles/Peugeot206.JPG"),300, CancelationPolicy.TWENTY);
         Model modelonuevo3 = new Model("VolksWagen","Gol Trend",2000.0,ImageReader.readImage("static/images/Vehicles/VolksWagenGolTrend.JPG"),200, CancelationPolicy.ZERO);
 
         autonuevo1.addModel(modelonuevo);
-        autonuevo2.addModel(modelonuevo);
-        autonuevo3.addModel(modelonuevo);
-        autonuevo4.addModel(modelonuevo);
+        autonuevo2.addModel(modelonuevo2);
+        autonuevo3.addModel(modelonuevo2);
+        autonuevo4.addModel(modelonuevo2);
         autonuevo5.addModel(modelonuevo2);
         autonuevo5.addModel(modelonuevo2);
         autonuevo6.addModel(modelonuevo2);
@@ -102,7 +101,7 @@ public class DBRunner implements CommandLineRunner {
 
 
         //Reservation repository
-        Reservation reservation1 = new Reservation("ABCDEF", LocalDate.of(2025, 6, 3), LocalDate.of(2025, 6, 25), 20000.0);
+        /*Reservation reservation1 = new Reservation("ABCDEF", LocalDate.of(2025, 6, 3), LocalDate.of(2025, 6, 25), 20000.0);
         reservation1.addClient(client1);
         reservation1.addModel(modelonuevo);
         reservation1.addBranch(branch1);
@@ -150,7 +149,7 @@ public class DBRunner implements CommandLineRunner {
         Reservation reservation10 = new Reservation("YUIOPL", LocalDate.of(2025, 9, 1), LocalDate.of(2025, 9, 5), 15500.0);
         reservation10.addClient(client1);
         reservation10.addModel(modelonuevo2);
-        reservation10.addBranch(branch1);
+        reservation10.addBranch(branch1);*/
 
 
         //appUsers
@@ -158,10 +157,10 @@ public class DBRunner implements CommandLineRunner {
         userRepository.save(client1);
         userRepository.save(new AppUser("Martin","Esquercia","11111111","","martincito@gmail.com", passwordEncoder.encode("aguantelaMERKAAAA"), UserRol.EMPLOYEE));
 
-        reservationRepository.saveAll(List.of(
+        /*reservationRepository.saveAll(List.of(
                 reservation1, reservation2, reservation3, reservation4, reservation5,
                 reservation6, reservation7, reservation8, reservation9, reservation10
-        ));
+        ));*/
 
     }
 }

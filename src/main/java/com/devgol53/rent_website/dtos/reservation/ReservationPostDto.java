@@ -14,15 +14,15 @@ import java.util.Date;
 public class ReservationPostDto {
     private LocalDate startDate;
     private LocalDate endDate;
-    private Branch branch;
-    private Model model;
+    private long branch;
+    private long model;
     private Double payment;
 
     public ReservationPostDto(Reservation reservation){
-        this.startDate = getStartDate();
-        this.endDate = getEndDate();
-        this.branch = getBranch();
-        this.model = getModel();
-        this.payment = getPayment();
+        this.startDate = reservation.getStartDate();
+        this.endDate = reservation.getEndDate();
+        this.branch = reservation.getBranch().getId();
+        this.model = reservation.getModel().getId();
+        this.payment = reservation.getPayment();
     }
 }

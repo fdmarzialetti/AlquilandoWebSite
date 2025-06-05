@@ -34,7 +34,7 @@ public class ReservationController {
     @GetMapping("/myReservations")
     public List<ReservationPostDto> getMyReservations(Authentication auth){
         AppUser client = appUserRepository.findByEmail(auth.getName()).get();
-        return client.getReservations().stream().map(r->new ReservationPostDto(r)).toList();
+        return client.getReservations().stream().map(ReservationPostDto::new).toList();
     }
 
     @PostMapping("/createReservation")
@@ -44,9 +44,9 @@ public class ReservationController {
             newCode = CodeGenerator.generarCodigoAlfanumerico();
         } while (reservationRepository.findByCode(newCode).isPresent());
 
-        Branch branchFind = branchRepository.findById(reservationPostDto.getBranch().getId())
+        Branch branchFind = branchRepository.findById(reservationPostDto.getBranch())
                 .orElseThrow(() -> new RuntimeException("Branch not found"));
-        Model modelFind = modelRepository.findById(reservationPostDto.getModel().getId())
+        Model modelFind = modelRepository.findById(reservationPostDto.getModel())
                 .orElseThrow(() -> new RuntimeException("Model not found"));
         AppUser client = appUserRepository.findByEmail(auth.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -55,9 +55,7 @@ public class ReservationController {
         newReservation.addBranch(branchFind);
         newReservation.addModel(modelFind);
         newReservation.addClient(client);
-
         reservationRepository.save(newReservation);
-
         return ResponseEntity.status(HttpStatus.CREATED).body("Reserva realizada con exito");
     }
 
