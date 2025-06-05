@@ -25,16 +25,21 @@
           Cuenta
         </button>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownCuenta">
-          <li><a class="dropdown-item" href="/login.html">Iniciar sesión</a></li>
-          <li><a class="dropdown-item" href="#">Registrarse</a></li>
+          <li v-if="!isAuthenticated"><a class="dropdown-item" href="/login.html">Iniciar sesión</a></li>
+          <li v-if="!isAuthenticated"><a class="dropdown-item" href="./pages/formClient.html">Registrarse</a></li>
+          <li v-if="isAuthenticated"><a class="dropdown-item" href="./pages/client.html">Mis reservas</a></li>
+          <li v-if="isAuthenticated"><a class="dropdown-item" href="#" @click="logout">Cerrar sesión</a></li>
         </ul>
       </div>
     </div>
   </nav>
 
   <!-- Banner -->
-  <div class="banner text-white fw-semibold fs-4">
-    Alquila tu auto de forma rápida y eficiente. ¡Tu viaje comienza aquí!
+  <div class="banner text-white fw-semibold fs-4 flex d-flex align-items-center gap-4 p-4">
+    <p class="p-0 m-0">Alquila tu auto de forma rápida y eficiente. ¡Tu viaje comienza aquí!</p>
+    <a href="index.html" class="btn btn btn-primary btn-lg m-0 p-1">
+    Buscar autos
+    </a>
   </div>
 
   <!-- Background & Form -->

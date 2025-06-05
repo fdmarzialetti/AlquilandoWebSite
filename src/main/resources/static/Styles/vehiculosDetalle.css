@@ -1,3 +1,11 @@
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+:root {
+  --color-principal: #223343;
+}
 /* ===== ESTILOS PARA DETALLE DE VEHÍCULO ===== */
 
 /* Elementos con posición fija para evitar movimientos */
@@ -124,34 +132,66 @@
 }
 
 /* Estilos para el navbar */
+
+/* Navbar */
 .navbar {
-  border-bottom: 1px solid #dee2e6;
+  background-image: url("../images/backgroundHeader.jpg");
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 0.5rem 1.5rem;
+  position: relative;
+  z-index: 10;
+  gap:0.5em;
 }
 
-.navbar h1 {
-  color: #2c3e50;
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0;
   margin: 0;
-  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.navbar-brand img {
+  width: 120px;
+  height: auto;
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-brand h1 {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #212529;
+}
+
+.boton-cuenta{
+  border: 1px solid var(--color-principal)!important;
+  color: var(--color-principal)!important;
+}
+
+.boton-cuenta:hover{
+  color: var(--color-principal)!important;
+  border: 1px solid var(--color-principal) !important;
+}
+
+
+/* Banner */
+.banner {
+  background-color: var(--color-principal);
+  color: white;
+  text-align: center;
+  padding: 1rem 0;
   font-weight: 600;
-}
-
-/* Botón personalizado */
-.btn-custom {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 6px;
-  transition: background-color 0.3s ease;
-}
-
-.btn-custom:hover {
-  background-color: #0056b3;
-  color: white;
-}
-
-.boton-cuenta {
-  font-size: 0.95rem;
+  font-size: 1.25rem;
+  user-select: none;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap:2em;
 }
 
 /* ===== RESPONSIVE DESIGN ===== */

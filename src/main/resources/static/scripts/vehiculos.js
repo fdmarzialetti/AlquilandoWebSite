@@ -40,7 +40,8 @@ createApp({
       fechaInicio: getParam('fechaInicio'),
       fechaFin: getParam('fechaFin'),
       branchId: getParam('sucursal'),
-      models: []
+      models: [],
+      isAuthenticated: false
     };
   },
   mounted() {
@@ -84,15 +85,25 @@ createApp({
     console.error("Error al obtener vehículos:", error);
   }
 },
-    async logout() {
-      console.log("Logout ejecutado");
-      axios.get('/logout')
-        .then(() => {
-          window.location.href = "/index.html";
-        })
-        .catch(error => {
-          console.error("Error al cerrar sesión:", error);
-        });
-    }
+     checkAuth() {
+            axios.get("/api/user/isAuthenticated")
+                .then(response => {
+                    this.isAuthenticated = response.data === true;
+                })
+                .catch(error => {
+                    console.error("Error al verificar autenticación:", error);
+                    this.isAuthenticated = false;
+                });
+        },
+        logout() {
+            axios.post("/logout") // Cambiá este endpoint si usás otro.
+                .then(() => {
+                    this.isAuthenticated = false;
+                    window.location.href = "/index.html"; // o donde quieras redirigir después del logout
+                })
+                .catch(error => {
+                    console.error("Error al cerrar sesión:", error);
+                });
+        }
   }
 }).mount('#app');
