@@ -1,0 +1,187 @@
+:root {
+  --color-principal: #223343;
+}
+
+body, html {
+  height: 100%;
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-size: cover;
+  background-color: rgba(255,255,255,0.9) !important;
+  font-size: 16px;
+}
+
+h1 {
+  color: var(--color-principal);
+}
+
+/* Navbar */
+.navbar {
+  background-color: white !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 0.5rem 1.5rem;
+  position: relative;
+  z-index: 10;
+  gap: 0.5em;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+}
+
+.navbar-brand img {
+  width: 120px;
+  height: auto;
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-brand h1 {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #212529;
+}
+
+/* Dropdown button */
+.dropdown-toggle {
+  background-color: var(--color-principal);
+  color: white;
+  border-radius: 0.5em;
+  padding: 0.5em 1em;
+  font-weight: bold;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.dropdown-toggle:hover {
+  background-color: #1b2833;
+}
+
+/* Banner */
+.banner {
+  background-color: var(--color-principal);
+  color: white;
+  text-align: center;
+  padding: 1rem 0;
+  font-weight: 600;
+  font-size: 1.25rem;
+  user-select: none;
+  z-index: 5;
+}
+
+/* Hero Section */
+.hero-section {
+  height: calc(100vh - 150px);
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.btn-custom {
+  background-color: var(--color-principal) !important;
+  color: white !important;
+  border: none !important;
+  font-weight: bold;
+  padding: 0.5em 1.2em;
+  border-radius: 0.5em;
+  transition: background-color 0.3s ease;
+}
+
+.btn-custom:hover {
+  background-color: #1b2833 !important;
+  color: white !important;
+}
+
+/* Inputs, selects y labels */
+form {
+  background-color: #f9f9f9ee;
+  border: 1px solid #ccc;
+  border-radius: 1em;
+  padding: 2em;
+  max-width: 600px;
+  margin: 2em auto;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+label {
+  font-weight: bold;
+  color: var(--color-principal);
+  margin-bottom: 0.5em;
+  display: block;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="file"],
+select {
+  width: 100%;
+  padding: 0.5em;
+  border-radius: 0.5em;
+  border: 1px solid #ced4da;
+  background-color: #ffffffee;
+  margin-bottom: 1em;
+  font-size: 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--color-principal);
+  box-shadow: 0 0 0 0.2rem rgba(34, 51, 67, 0.25);
+}
+
+/* Imagenes de vehículos */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.imagen-vehiculo {
+  border-radius: 2.5em;
+  padding: 0.5em;
+  width: 18em !important;
+  height: 12em !important;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Botón "Volver" */
+#myButton {
+  display: block;
+  margin: 1.5em auto 0 auto;
+  background-color: var(--color-principal);
+  color: white;
+  padding: 0.5em 1.5em;
+  border: none;
+  border-radius: 0.5em;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+#myButton:hover {
+  background-color: #1b2833;
+}
+
+.barra-de-navegacion {
+  list-style-type: none;
+  margin: 0 auto;
+  padding: 0;
+  display:flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 600px;
+  gap: 2em;
+  background-color: #1E2A38;
+
+}

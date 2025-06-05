@@ -26,17 +26,22 @@ public class VehicleController {
     @Autowired
     ModelRepository modelRepository;
     @PostMapping("/createVehicle")
-    public ResponseEntity<String> createVehicle(@RequestBody VehicleCreateDTO vehicleCreateDTO){
-        Model model = modelRepository.getById(vehicleCreateDTO.getModelId());
-        Branch branch = branchRepository.getById(vehicleCreateDTO.getBranchId());
-        if(model!=null && branch!=null){
+    public ResponseEntity<String> createVehicle(@RequestBody VehicleCreateDTO vehicleCreateDTO) {
+        if (vehicleRepository.existsByPatent(vehicleCreateDTO.getPatent())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Ya existe un vehículo con esa patente");
+        }
+
+        Model model = modelRepository.findById(vehicleCreateDTO.getModelId()).orElse(null);
+        Branch branch = branchRepository.findById(vehicleCreateDTO.getBranchId()).orElse(null);
+
+        if (model != null && branch != null) {
             Vehicle newVehicle = new Vehicle(vehicleCreateDTO);
             newVehicle.addModel(model);
             newVehicle.addBranch(branch);
             vehicleRepository.save(newVehicle);
-            modelRepository.save(model);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Vehiculo creado exitosamente");
+            return ResponseEntity.status(HttpStatus.CREATED).body("Vehículo creado exitosamente");
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encuentra el modelo");
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Modelo o sucursal no encontrada");
     }
 }
