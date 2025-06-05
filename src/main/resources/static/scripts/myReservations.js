@@ -10,9 +10,8 @@ createApp({
     },
     methods: {
         formatFecha(fechaStr) {
-            // Convierte a formato legible (ej: 2025-06-01 → 1/6/2025)
-            const date = new Date(fechaStr);
-            return date.toLocaleDateString('es-ES');
+            const [year, month, day] = fechaStr.split('-');
+            return `${parseInt(day)}/${parseInt(month)}/${year}`;
         },
         checkAuth() {
             axios.get("/api/user/isAuthenticated")
@@ -36,7 +35,7 @@ createApp({
         }
     },
     async mounted() {
-        
+
         try {
             const token = localStorage.getItem('token'); // Asegurate que se guarda después del login
 

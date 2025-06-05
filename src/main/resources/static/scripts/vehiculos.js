@@ -45,6 +45,7 @@ createApp({
     };
   },
   mounted() {
+    this.checkAuth();
     this.getBranchById(this.branchId);
     this.getAvailableModels();
   },
