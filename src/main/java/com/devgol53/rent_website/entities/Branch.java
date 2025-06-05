@@ -21,8 +21,12 @@ public class Branch {
     @OneToMany(mappedBy = "branch", cascade = CascadeType.PERSIST)
     private List<Reservation> reservations = new ArrayList<>();
 
-    @OneToMany(mappedBy = "branch", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "branch", cascade = CascadeType.ALL)
     private List<Vehicle> vehicles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "branch", cascade = CascadeType.ALL)
+    private List<AppUser> employees = new ArrayList<>();
+
 
     public Branch() {
     }

@@ -33,6 +33,9 @@
                     <td>{{ cliente.lastname }}</td>
                     <td>{{ cliente.dni }}</td>
                     <td>{{ cliente.email }}</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" @click="eliminarCliente(cliente.id)">Eliminar</button>
+                    </td>
                 </tr>
                 </tbody>
             </table>
