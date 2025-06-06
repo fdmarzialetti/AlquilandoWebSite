@@ -103,14 +103,26 @@ createApp({
         });
     },
     logout() {
-      axios.post("/logout") // Cambiá este endpoint si usás otro.
+    axios.post("/logout")
         .then(() => {
-          this.isAuthenticated = false;
-          window.location.href = "/index.html"; // o donde quieras redirigir después del logout
+            this.isAuthenticated = false;
+            Swal.fire({
+                icon: "success",
+                title: "Sesión cerrada",
+                text: "Has cerrado sesión correctamente. Hasta pronto!",
+                confirmButtonText: "Aceptar"
+            }).then(() => {
+                window.location.href = "/index.html"; // o la página que corresponda
+            });
         })
         .catch(error => {
-          console.error("Error al cerrar sesión:", error);
+            console.error("Error al cerrar sesión:", error);
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Hubo un problema al cerrar sesión. Intentalo de nuevo.",
+            });
         });
-    }
+}
   }
 }).mount('#app');
