@@ -10,10 +10,7 @@ import com.devgol53.rent_website.utils.CodeGenerator;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -58,7 +55,7 @@ public class AppUserController {
             admin.setVerificationCode(verificationCode);
             appUserRepository.save(admin);
             String stringCode = String.valueOf(verificationCode);
-            iEmailService.sendMail(new EmailDTO("verificationCode","fdmarzialetti@gmail.com","Codigo de verificacion: "+stringCode,stringCode));
+            iEmailService.sendMail(new EmailDTO("verificationCode","alquilandodev53@gmail.com","Codigo de verificacion: "+stringCode,stringCode));
             return true;
         }
         return false;
@@ -66,7 +63,14 @@ public class AppUserController {
 
     @PostMapping("/resetVerificationCode")
     public void resetVerificationCode(Authentication auth){
-        appUserRepository.findByEmail(auth.getName()).get().setVerificationCode(0);
+        AppUser admin = appUserRepository.findByEmail(auth.getName()).get();
+        admin.setVerificationCode(0);
+        appUserRepository.save(admin);
     }
 
+    @GetMapping("/codeVerification")
+    public boolean codeVerification(@RequestParam int verificationCode, @RequestParam String username){
+        AppUser findAdmin = appUserRepository.findByEmail(username).get();
+        return findAdmin.getVerificationCode() == verificationCode;
+    }
 }
