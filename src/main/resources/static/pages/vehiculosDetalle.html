@@ -27,7 +27,7 @@
       <div class="dropdown">
         <button class="btn btn-custom fw-bold dropdown-toggle boton-cuenta" type="button" id="dropdownCuenta"
           data-bs-toggle="dropdown" aria-expanded="false">
-          Cuenta
+          {{user.name}}
         </button>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownCuenta">
           <li v-if="!isAuthenticated"><a class="dropdown-item" href="../login.html">Iniciar sesión</a></li>

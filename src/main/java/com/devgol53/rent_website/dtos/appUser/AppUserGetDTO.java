@@ -23,4 +23,8 @@ public class AppUserGetDTO {
         this.password = appUser.getPassword();
         this.rol = appUser.getRol();
     }
+
+    public AppUserGetDTO(String cuenta){
+        this.name = cuenta;
+    }
 }
