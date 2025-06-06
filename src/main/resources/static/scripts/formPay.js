@@ -17,7 +17,7 @@ createApp({
                 code: "",
                 date: ""
             },
-            user:{name:"Cuenta"}
+            user: { name: "Cuenta" }
         };
     },
     mounted() {
@@ -34,42 +34,42 @@ createApp({
     },
     methods: {
         checkAuth() {
-      axios.get("/api/user/isAuthenticated")
-        .then(response => {
-          this.isAuthenticated = response.data === true;
-        })
-        .then(res => axios.get("/api/user/data")).then(
-          res => {
-            this.user = res.data;
-          }
-        )
-        .catch(error => {
-          console.error("Error al verificar autenticación:", error);
-          this.isAuthenticated = false;
-        });
-    },
+            axios.get("/api/user/isAuthenticated")
+                .then(response => {
+                    this.isAuthenticated = response.data === true;
+                })
+                .then(res => axios.get("/api/user/data")).then(
+                    res => {
+                        this.user = res.data;
+                    }
+                )
+                .catch(error => {
+                    console.error("Error al verificar autenticación:", error);
+                    this.isAuthenticated = false;
+                });
+        },
         logout() {
-    axios.post("/logout")
-        .then(() => {
-            this.isAuthenticated = false;
-            Swal.fire({
-                icon: "success",
-                title: "Sesión cerrada",
-                text: "Has cerrado sesión correctamente. Hasta pronto!",
-                confirmButtonText: "Aceptar"
-            }).then(() => {
-                window.location.href = "/index.html"; // o la página que corresponda
-            });
-        })
-        .catch(error => {
-            console.error("Error al cerrar sesión:", error);
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: "Hubo un problema al cerrar sesión. Intentalo de nuevo.",
-            });
-        });
-},
+            axios.post("/logout")
+                .then(() => {
+                    this.isAuthenticated = false;
+                    Swal.fire({
+                        icon: "success",
+                        title: "Sesión cerrada",
+                        text: "Has cerrado sesión correctamente. Hasta pronto!",
+                        confirmButtonText: "Aceptar"
+                    }).then(() => {
+                        window.location.href = "/index.html"; // o la página que corresponda
+                    });
+                })
+                .catch(error => {
+                    console.error("Error al cerrar sesión:", error);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "Hubo un problema al cerrar sesión. Intentalo de nuevo.",
+                    });
+                });
+        },
         async procesarPago() {
             const vencimientoRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
 
@@ -84,7 +84,7 @@ createApp({
             const mesActual = fechaActual.getMonth() + 1;
 
             if (anio < anioActual || (anio === anioActual && mes < mesActual)) {
-                
+
                 Swal.fire({
                     icon: "error",
                     text: "La tarjeta ingresada está vencida. Por favor, utilice una tarjeta válida con fecha vigente.",
@@ -94,6 +94,17 @@ createApp({
             }
 
             try {
+
+                Swal.fire({
+                    title: 'Procesando pago...',
+                    html: '<div class="spinner"></div>',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
                 const reserva = {
                     startDate: this.startDate,
                     endDate: this.endDate,
