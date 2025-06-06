@@ -9,7 +9,8 @@ createApp({
       finalPrice: "",
       branchId:"",
       modelId:"",
-      isAuthenticated: false
+      isAuthenticated: false,
+      user:{name:"Cuenta"}
     };
   },
   mounted() {
@@ -56,15 +57,20 @@ createApp({
   window.location.href = `formPay.html?${params.toString()}`;
 },
     checkAuth() {
-            axios.get("/api/user/isAuthenticated")
-                .then(response => {
-                    this.isAuthenticated = response.data === true;
-                })
-                .catch(error => {
-                    console.error("Error al verificar autenticación:", error);
-                    this.isAuthenticated = false;
-                });
-        },
+      axios.get("/api/user/isAuthenticated")
+        .then(response => {
+          this.isAuthenticated = response.data === true;
+        })
+        .then(res => axios.get("/api/user/data")).then(
+          res => {
+            this.user = res.data;
+          }
+        )
+        .catch(error => {
+          console.error("Error al verificar autenticación:", error);
+          this.isAuthenticated = false;
+        });
+    },
         logout() {
             axios.post("/logout") // Cambiá este endpoint si usás otro.
                 .then(() => {

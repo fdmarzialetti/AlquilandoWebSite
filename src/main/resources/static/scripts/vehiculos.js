@@ -41,7 +41,8 @@ createApp({
       fechaFin: getParam('fechaFin'),
       branchId: getParam('sucursal'),
       models: [],
-      isAuthenticated: false
+      isAuthenticated: false,
+      user: { name: "Cuenta" }
     };
   },
   mounted() {
@@ -60,51 +61,56 @@ createApp({
       }
     },
     async getAvailableModels() {
-  try {
-    const response = await axios.get(`/api/model/availableModels`, {
-      params: {
-        startDate: this.fechaInicio,
-        endDate: this.fechaFin,
-        branchId: this.branchId,
+      try {
+        const response = await axios.get(`/api/model/availableModels`, {
+          params: {
+            startDate: this.fechaInicio,
+            endDate: this.fechaFin,
+            branchId: this.branchId,
+          }
+        });
+
+        // Calcular cantidad de días (inclusive)
+        const start = new Date(this.fechaInicio);
+        const end = new Date(this.fechaFin);
+        const timeDiff = end.getTime() - start.getTime();
+        const days = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)) + 1;
+
+        // Agregar el precio final a cada modelo
+        this.models = response.data.map(model => ({
+          ...model,
+          finalPrice: model.price * days
+        }));
+
+        console.log(this.models);
+      } catch (error) {
+        console.error("Error al obtener vehículos:", error);
       }
-    });
-
-    // Calcular cantidad de días (inclusive)
-    const start = new Date(this.fechaInicio);
-    const end = new Date(this.fechaFin);
-    const timeDiff = end.getTime() - start.getTime();
-    const days = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)) + 1;
-
-    // Agregar el precio final a cada modelo
-    this.models = response.data.map(model => ({
-      ...model,
-      finalPrice: model.price * days
-    }));
-
-    console.log(this.models);
-  } catch (error) {
-    console.error("Error al obtener vehículos:", error);
-  }
-},
-     checkAuth() {
-            axios.get("/api/user/isAuthenticated")
-                .then(response => {
-                    this.isAuthenticated = response.data === true;
-                })
-                .catch(error => {
-                    console.error("Error al verificar autenticación:", error);
-                    this.isAuthenticated = false;
-                });
-        },
-        logout() {
-            axios.post("/logout") // Cambiá este endpoint si usás otro.
-                .then(() => {
-                    this.isAuthenticated = false;
-                    window.location.href = "/index.html"; // o donde quieras redirigir después del logout
-                })
-                .catch(error => {
-                    console.error("Error al cerrar sesión:", error);
-                });
-        }
+    },
+    checkAuth() {
+      axios.get("/api/user/isAuthenticated")
+        .then(response => {
+          this.isAuthenticated = response.data === true;
+        })
+        .then(res => axios.get("/api/user/data")).then(
+          res => {
+            this.user = res.data;
+          }
+        )
+        .catch(error => {
+          console.error("Error al verificar autenticación:", error);
+          this.isAuthenticated = false;
+        });
+    },
+    logout() {
+      axios.post("/logout") // Cambiá este endpoint si usás otro.
+        .then(() => {
+          this.isAuthenticated = false;
+          window.location.href = "/index.html"; // o donde quieras redirigir después del logout
+        })
+        .catch(error => {
+          console.error("Error al cerrar sesión:", error);
+        });
+    }
   }
 }).mount('#app');

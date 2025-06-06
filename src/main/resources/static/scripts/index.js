@@ -7,7 +7,8 @@ createApp({
             selectedBranchId: "",
             fechaInicio: "",
             fechaFin: "",
-            isAuthenticated: false
+            isAuthenticated: false,
+            user:{name:"Cuenta"},
         };
     },
     mounted() {
@@ -29,6 +30,11 @@ createApp({
                 .then(response => {
                     this.isAuthenticated = response.data === true;
                 })
+                .then(res=> axios.get("api/user/data")).then(
+                    res=>{
+                        this.user = res.data;
+                    }
+                )
                 .catch(error => {
                     console.error("Error al verificar autenticación:", error);
                     this.isAuthenticated = false;
