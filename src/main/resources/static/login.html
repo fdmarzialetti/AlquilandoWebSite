@@ -47,14 +47,14 @@
         <div class="login-title">
             <h2>Bienvenido a Alquilando</h2>
         </div>
-        <form method="post" action="/login">
+        <form @submit.prevent="login">
             <div class="mb-3">
                 <label for="username" class="form-label">Correo electrónico</label>
-                <input type="email" class="form-control" id="username" name="username" placeholder="maria@correo.com" required>
+                <input  v-model="username" type="email" class="form-control" id="username" name="username" placeholder="maria@correo.com" required>
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Contraseña</label>
-                <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required>
+                <input v-model="password" type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required>
             </div>
             <div class="d-grid mb-3">
                 <button type="submit" class="btn btn-login">Iniciar sesión</button>
