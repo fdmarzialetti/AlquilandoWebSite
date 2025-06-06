@@ -17,6 +17,8 @@ import java.util.List;
 @Component
 public class DBRunner implements CommandLineRunner {
     @Autowired
+    CardRepository cardRepository;
+    @Autowired
     ReservationRepository reservationRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -163,5 +165,6 @@ public class DBRunner implements CommandLineRunner {
                 reservation6, reservation7, reservation8, reservation9, reservation10
         ));*/
 
+        cardRepository.saveAll(Arrays.asList(new Card("1234123412341234"),new Card("4567456745674567"),new Card("1111111111111111")));// Tarjeta Optima, Tarjeta sin saldo, Tarjeta sin conexion.
     }
 }
