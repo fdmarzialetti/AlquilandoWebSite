@@ -15,4 +15,9 @@ public class CodeGenerator {
         }
         return sb.toString();
     }
+    // Código numérico de 6 dígitos
+    public static int generarCodigoNumerico() {
+        int codigo = 100000 + random.nextInt(900000); // Asegura que siempre sea de 6 cifras
+        return codigo;
+    }
 }

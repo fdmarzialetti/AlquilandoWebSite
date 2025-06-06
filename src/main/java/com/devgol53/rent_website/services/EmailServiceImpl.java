@@ -33,7 +33,7 @@ public class EmailServiceImpl implements IEmailService{
         context.setVariable("pickupDate", emailDTO.getPickupDate());
         context.setVariable("branch", emailDTO.getBranch());
         context.setVariable("vehicle", emailDTO.getVehicle());
-    String contentHTML = templateEngine.process("email", context);
+    String contentHTML = templateEngine.process(emailDTO.getTemplate(), context);
     helper.setText(contentHTML, true);
     javaMailSender.send(message);
     }catch(Exception e){
