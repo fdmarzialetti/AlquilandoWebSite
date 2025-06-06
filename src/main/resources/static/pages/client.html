@@ -10,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@3.4.21/dist/vue.global.prod.js"></script>
      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="../Styles/myReservations.css">
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
         body {
@@ -42,7 +43,7 @@
       <div class="dropdown">
         <button class="btn btn-custom fw-bold dropdown-toggle boton-cuenta" type="button" id="dropdownCuenta"
           data-bs-toggle="dropdown" aria-expanded="false">
-          Cuenta
+          {{user.name}}
         </button>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownCuenta">
           <li v-if="!isAuthenticated"><a class="dropdown-item" href="../login.html">Iniciar sesión</a></li>

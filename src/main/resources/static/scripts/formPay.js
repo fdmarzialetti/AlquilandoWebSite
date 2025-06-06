@@ -16,7 +16,8 @@ createApp({
                 number: "",
                 code: "",
                 date: ""
-            }
+            },
+            user: { name: "Cuenta" }
         };
     },
     mounted() {
@@ -37,19 +38,36 @@ createApp({
                 .then(response => {
                     this.isAuthenticated = response.data === true;
                 })
+                .then(res => axios.get("/api/user/data")).then(
+                    res => {
+                        this.user = res.data;
+                    }
+                )
                 .catch(error => {
                     console.error("Error al verificar autenticación:", error);
                     this.isAuthenticated = false;
                 });
         },
         logout() {
-            axios.post("/logout") // Cambiá este endpoint si usás otro.
+            axios.post("/logout")
                 .then(() => {
                     this.isAuthenticated = false;
-                    window.location.href = "/index.html"; // o donde quieras redirigir después del logout
+                    Swal.fire({
+                        icon: "success",
+                        title: "Sesión cerrada",
+                        text: "Has cerrado sesión correctamente. Hasta pronto!",
+                        confirmButtonText: "Aceptar"
+                    }).then(() => {
+                        window.location.href = "/index.html"; // o la página que corresponda
+                    });
                 })
                 .catch(error => {
                     console.error("Error al cerrar sesión:", error);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "Hubo un problema al cerrar sesión. Intentalo de nuevo.",
+                    });
                 });
         },
         async procesarPago() {
@@ -66,7 +84,7 @@ createApp({
             const mesActual = fechaActual.getMonth() + 1;
 
             if (anio < anioActual || (anio === anioActual && mes < mesActual)) {
-                
+
                 Swal.fire({
                     icon: "error",
                     text: "La tarjeta ingresada está vencida. Por favor, utilice una tarjeta válida con fecha vigente.",
@@ -76,6 +94,17 @@ createApp({
             }
 
             try {
+
+                Swal.fire({
+                    title: 'Procesando pago...',
+                    html: '<div class="spinner"></div>',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
                 const reserva = {
                     startDate: this.startDate,
                     endDate: this.endDate,
