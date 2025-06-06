@@ -43,41 +43,74 @@ createApp({
                     });
                 });
         }, login() {
-            const params = new URLSearchParams();
-            params.append("username", this.username);
-            params.append("password", this.password);
+    const params = new URLSearchParams();
+    params.append("username", this.username);
+    params.append("password", this.password);
 
-            axios.post("/login", params, { maxRedirects: 0 }) // Evita seguir redirecciones
-                .then((res) => {
-                    console.log(res)
-                    if (res.request.responseURL != "http://localhost:8080/login.html?error=true") {
-                        // En caso de que el backend responda con 200 (login exitoso real)
-                        Swal.fire({
-                            icon: "success",
-                            title: "Sesión iniciada correctamente.",
-                            text: "Le damos la bienvenida!",
-                            confirmButtonText: "Aceptar"
-                        }).then(() => {
-                            window.location.href = "/index.html";
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: "error",
-                            title: "Error",
-                            text: "Usuario o contraseña incorrectos."
-                        });
+    axios.post("/login", params, { maxRedirects: 0 })
+        .then(async (res) => {
+            if (!res.request.responseURL.includes("/login.html?error")) {
+
+                try {
+                    // 👉 Mostrar loader con SweetAlert
+                    Swal.fire({
+                        title: "Verificando acceso...",
+                        html: `<div class="spinner"></div>`,
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    const isAdminResponse = await axios.get("/api/user/isAdmin");
+                    const isAdmin = isAdminResponse.data === true;
+
+                    // 👉 Ocultar loader
+                    Swal.close();
+
+                    if (isAdmin) {
+                        await axios.post("/logout");
+                        window.location.href = `../pages/login2FA.html?username=${encodeURIComponent(this.username)}&password=${encodeURIComponent(this.password)}`;
+                        return;
                     }
 
-                })
-                .catch((err) => {
-                    // Si Spring responde con 302 hacia /login?error, esto se capta como error
-                    console.error("Error de login:", err);
+                    Swal.fire({
+                        icon: "success",
+                        title: "Sesión iniciada correctamente.",
+                        text: "Le damos la bienvenida!",
+                        confirmButtonText: "Aceptar"
+                    }).then(() => {
+                        window.location.href = "/index.html";
+                    });
+
+                } catch (err) {
+                    Swal.close();
+                    console.error("Error verificando rol del usuario", err);
                     Swal.fire({
                         icon: "error",
                         title: "Error",
-                        text: "Usuario o contraseña incorrectos."
+                        text: "Ocurrió un error al verificar el rol del usuario."
                     });
+                }
+
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Usuario o contraseña incorrectos."
                 });
-        }
+            }
+        })
+        .catch((err) => {
+            console.error("Error de login:", err);
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Usuario o contraseña incorrectos."
+            });
+        });
+}
     }
 }).mount('#app');
