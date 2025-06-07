@@ -21,17 +21,22 @@ public class BranchController {
 
     @PostMapping
     public ResponseEntity<?> createBranch(@RequestBody Branch branch) {
-        // Validación: evitar duplicados
-        if (branchRepository.existsByCityAndAddress(branch.getCity(), branch.getAddress())) {
+        String city = branch.getCity().trim();
+        String address = branch.getAddress().trim();
+
+        if (branchRepository.existsByCityIgnoreCaseAndAddressIgnoreCase(city, address)) {
             return ResponseEntity
                     .badRequest()
                     .body("Ya existe una sucursal con esa ciudad y dirección.");
         }
 
-        // Si no existe, se guarda
+        branch.setCity(city);      // guardar sin espacios extra
+        branch.setAddress(address);
+
         Branch saved = branchRepository.save(branch);
         return ResponseEntity.ok(saved);
     }
+
 
     @GetMapping()
     public List<BranchGetDTO> getAllBranches() {
