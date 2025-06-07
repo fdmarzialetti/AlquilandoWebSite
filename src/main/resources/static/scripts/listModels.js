@@ -8,7 +8,7 @@ createApp({
     },
     methods: {
         loadModels() {
-            axios.get('http://localhost:8080/api/model/listModels')
+            axios.get('/api/model/listModels')
                 .then(response => {
                     console.log(response)
                     this.models = response.data;
@@ -28,6 +28,14 @@ createApp({
                 .catch(error => {
                     console.error("Error al cerrar sesión:", error);
                 });
+        },
+        getCancelationText(policy) {
+            switch (policy) {
+                case 'ZERO': return '0%';
+                case 'TWENTY': return '20%';
+                case 'FULL': return '100%';
+                default: return '-';
+            }
         }
 
     },

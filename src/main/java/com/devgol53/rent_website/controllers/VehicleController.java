@@ -1,6 +1,6 @@
 package com.devgol53.rent_website.controllers;
 
-import com.devgol53.rent_website.dtos.car.CarGetDto;
+import com.devgol53.rent_website.dtos.vehicle.VehicleGetDTO;
 import com.devgol53.rent_website.dtos.vehicle.VehicleCreateDTO;
 import com.devgol53.rent_website.entities.Branch;
 import com.devgol53.rent_website.entities.Model;
@@ -11,20 +11,24 @@ import com.devgol53.rent_website.repositories.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/vehicle")
+@CrossOrigin(origins = "*")
 public class VehicleController {
+
     @Autowired
-    BranchRepository branchRepository;
+    private VehicleRepository vehicleRepository;
+
     @Autowired
-    VehicleRepository vehicleRepository;
+    private BranchRepository branchRepository;
+
     @Autowired
-    ModelRepository modelRepository;
+    private ModelRepository modelRepository;
+
     @PostMapping("/createVehicle")
     public ResponseEntity<String> createVehicle(@RequestBody VehicleCreateDTO vehicleCreateDTO) {
         if (vehicleRepository.existsByPatent(vehicleCreateDTO.getPatent())) {
@@ -43,5 +47,10 @@ public class VehicleController {
         }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Modelo o sucursal no encontrada");
+    }
+
+    @GetMapping("/listVehicles")
+    public List<VehicleGetDTO> getVehicles() {
+        return vehicleRepository.findAll().stream().map(VehicleGetDTO::new).toList();
     }
 }
