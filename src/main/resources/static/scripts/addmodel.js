@@ -43,7 +43,7 @@ createApp({
             draggable: true
           }).then(respuesta => {
 
-            window.location.href = "./admin.html";
+            window.location.href = "./listModels.html";
           });
         })
       } catch (error) {
