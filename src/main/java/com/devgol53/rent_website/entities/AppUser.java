@@ -25,6 +25,7 @@ public class AppUser {
     private String name,lastname,phone,password;
     @Enumerated(EnumType.STRING)
     private UserRol rol;
+    private int verificationCode;
 
     @ManyToOne
     @JoinColumn(name = "branch_id")

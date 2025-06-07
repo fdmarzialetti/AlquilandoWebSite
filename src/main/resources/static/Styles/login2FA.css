@@ -1,0 +1,187 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --color-principal: #223343;
+}
+
+
+.login-container {
+    max-width: 420px;
+    width: 100%;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+}
+
+.login-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.login-title h2 {
+    font-weight: 600;
+}
+
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, .25);
+}
+
+.btn-login {
+    background-color: #0d6efd;
+    color: #fff;
+    font-weight: 600;
+}
+
+.btn-login:hover {
+    background-color: #0b5ed7;
+}
+
+.text-small {
+    font-size: 0.9rem;
+}
+
+.social-icons i {
+    font-size: 1.3rem;
+    margin: 0 10px;
+    cursor: pointer;
+    color: #6c757d;
+}
+
+.social-icons i:hover {
+    color: #0d6efd;
+}
+
+.login-image {
+    display: block;
+    margin: 0 auto 20px auto;
+    max-width: 100%;
+    border-radius: 8px;
+}
+
+.container-2fa {
+    max-width: 500px;
+    margin: auto;
+    background-color: white;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+input[type="text"] {
+    font-size: 18px;
+    padding: 10px;
+    width: 200px;
+    margin-top: 10px;
+}
+
+button {
+    margin-top: 20px;
+    padding: 10px 25px;
+    font-size: 16px;
+    background-color: #0077cc;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #005fa3;
+}
+
+.banner {
+    background-color: #0077cc;
+    color: white;
+}
+
+.btn-custom {
+    background-color: #0077cc;
+    color: white;
+}
+
+.btn-custom:hover {
+    background-color: #005fa3;
+}
+
+
+body {
+    background: linear-gradient(to right, #1c1c1c, #434343);
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Navbar */
+.navbar {
+    background-image: url("../images/backgroundHeader.jpg");
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    padding: 0.5rem 1.5rem;
+    position: relative;
+    z-index: 10;
+    gap: 0.5em;
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0;
+    margin: 0;
+    line-height: 1;
+}
+
+.navbar-brand img {
+    width: 120px;
+    height: auto;
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-brand h1 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #212529;
+}
+
+.boton-cuenta {
+    border: 1px solid var(--color-principal) !important;
+    color: var(--color-principal) !important;
+}
+
+.boton-cuenta:hover {
+    color: var(--color-principal) !important;
+    border: 1px solid var(--color-principal) !important;
+}
+
+/* Banner */
+.banner {
+    background-color: var(--color-principal);
+    color: white;
+    text-align: center;
+    padding: 1rem 0;
+    font-weight: 600;
+    font-size: 1.25rem;
+    user-select: none;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2em;
+}

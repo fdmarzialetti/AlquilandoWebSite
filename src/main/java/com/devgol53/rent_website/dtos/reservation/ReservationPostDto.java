@@ -1,5 +1,6 @@
 package com.devgol53.rent_website.dtos.reservation;
 
+import com.devgol53.rent_website.dtos.card.CardDTO;
 import com.devgol53.rent_website.entities.Branch;
 import com.devgol53.rent_website.entities.Model;
 import com.devgol53.rent_website.entities.Reservation;
@@ -17,6 +18,7 @@ public class ReservationPostDto {
     private long branch;
     private long model;
     private Double payment;
+    private CardDTO card;
 
     public ReservationPostDto(Reservation reservation){
         this.startDate = reservation.getStartDate();

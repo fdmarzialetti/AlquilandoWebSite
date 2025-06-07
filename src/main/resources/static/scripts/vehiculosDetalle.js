@@ -9,7 +9,8 @@ createApp({
       finalPrice: "",
       branchId:"",
       modelId:"",
-      isAuthenticated: false
+      isAuthenticated: false,
+      user:{name:"Cuenta"}
     };
   },
   mounted() {
@@ -56,25 +57,42 @@ createApp({
   window.location.href = `formPay.html?${params.toString()}`;
 },
     checkAuth() {
-            axios.get("/api/user/isAuthenticated")
-                .then(response => {
-                    this.isAuthenticated = response.data === true;
-                })
-                .catch(error => {
-                    console.error("Error al verificar autenticación:", error);
-                    this.isAuthenticated = false;
-                });
-        },
-        logout() {
-            axios.post("/logout") // Cambiá este endpoint si usás otro.
-                .then(() => {
-                    this.isAuthenticated = false;
-                    window.location.href = "/index.html"; // o donde quieras redirigir después del logout
-                })
-                .catch(error => {
-                    console.error("Error al cerrar sesión:", error);
-                });
-        }
+      axios.get("/api/user/isAuthenticated")
+        .then(response => {
+          this.isAuthenticated = response.data === true;
+        })
+        .then(res => axios.get("/api/user/data")).then(
+          res => {
+            this.user = res.data;
+          }
+        )
+        .catch(error => {
+          console.error("Error al verificar autenticación:", error);
+          this.isAuthenticated = false;
+        });
+    },
+      logout() {
+    axios.post("/logout")
+        .then(() => {
+            this.isAuthenticated = false;
+            Swal.fire({
+                icon: "success",
+                title: "Sesión cerrada",
+                text: "Has cerrado sesión correctamente. Hasta pronto!",
+                confirmButtonText: "Aceptar"
+            }).then(() => {
+                window.location.href = "/index.html"; // o la página que corresponda
+            });
+        })
+        .catch(error => {
+            console.error("Error al cerrar sesión:", error);
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Hubo un problema al cerrar sesión. Intentalo de nuevo.",
+            });
+        });
+}
   }
 }).mount("#app");
 

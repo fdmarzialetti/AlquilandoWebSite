@@ -11,12 +11,13 @@ createApp({
             finalPrice: "",
             branchId: "",
             modelId: "",
-            pago: {
-                nombre: "",
-                numero: "",
-                codigo: "",
-                vencimiento: ""
-            }
+            card: {
+                name: "",
+                number: "",
+                code: "",
+                date: ""
+            },
+            user: { name: "Cuenta" }
         };
     },
     mounted() {
@@ -37,37 +38,97 @@ createApp({
                 .then(response => {
                     this.isAuthenticated = response.data === true;
                 })
+                .then(res => axios.get("/api/user/data")).then(
+                    res => {
+                        this.user = res.data;
+                    }
+                )
                 .catch(error => {
                     console.error("Error al verificar autenticación:", error);
                     this.isAuthenticated = false;
                 });
         },
         logout() {
-            axios.post("/logout") // Cambiá este endpoint si usás otro.
+            axios.post("/logout")
                 .then(() => {
                     this.isAuthenticated = false;
-                    window.location.href = "/index.html"; // o donde quieras redirigir después del logout
+                    Swal.fire({
+                        icon: "success",
+                        title: "Sesión cerrada",
+                        text: "Has cerrado sesión correctamente. Hasta pronto!",
+                        confirmButtonText: "Aceptar"
+                    }).then(() => {
+                        window.location.href = "/index.html"; // o la página que corresponda
+                    });
                 })
                 .catch(error => {
                     console.error("Error al cerrar sesión:", error);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "Hubo un problema al cerrar sesión. Intentalo de nuevo.",
+                    });
                 });
         },
         async procesarPago() {
+            const vencimientoRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+
+            if (!vencimientoRegex.test(this.card.date)) {
+                alert("Fecha de vencimiento inválida. Debe estar en formato MM/AA.");
+                return;
+            }
+
+            const [mes, anio] = this.card.date.split("/").map(Number);
+            const fechaActual = new Date();
+            const anioActual = fechaActual.getFullYear() % 100;
+            const mesActual = fechaActual.getMonth() + 1;
+
+            if (anio < anioActual || (anio === anioActual && mes < mesActual)) {
+
+                Swal.fire({
+                    icon: "error",
+                    text: "La tarjeta ingresada está vencida. Por favor, utilice una tarjeta válida con fecha vigente.",
+                    confirmButtonText: "Aceptar"
+                })
+                return;
+            }
+
             try {
+
+                Swal.fire({
+                    title: 'Procesando pago...',
+                    html: '<div class="spinner"></div>',
+                    allowOutsideClick: false,
+                    showConfirmButton: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
                 const reserva = {
                     startDate: this.startDate,
                     endDate: this.endDate,
                     branch: this.branchId,
                     model: this.modelId,
-                    payment: this.finalPrice
+                    payment: this.finalPrice,
+                    card: this.card
                 };
 
                 const response = await axios.post('/api/reservation/createReservation', reserva);
-                alert(response.data);
-                window.location.href = "../pages/client.html"; // Mensaje de éxito desde el backend
+
+                await Swal.fire({
+                    icon: "success",
+                    text: response.data,
+                    confirmButtonText: "OK"
+                });
+                window.location.href = "../pages/client.html";
+
             } catch (error) {
-                console.error("Error al crear reserva:", error);
-                alert("Hubo un error al crear la reserva.");
+                await Swal.fire({
+                    icon: "error",
+                    text: error.response.data,
+                    confirmButtonText: "Aceptar"
+                });
             }
         }
     }
