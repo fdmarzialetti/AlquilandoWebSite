@@ -35,7 +35,7 @@
             <a class="nav-link text-white" href="../pages/listBranches.html">Sucursales</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-white" href="#">Vehículos</a>
+            <a class="nav-link text-white" href="../pages/listVehicles.html">Vehículos</a>
           </li>
           <li class="nav-item">
             <a class="nav-link text-white" href="#">Empleados</a>
@@ -67,33 +67,7 @@
     <div id="app" class="container mt-5">
         <h2 class="mb-4">Sucursales</h2>
 
-<<<<<<< HEAD
-        <table class="table table-bordered">
-            <thead class="table-light">
-                <tr>
-                    <th>ID</th>
-                    <th>Ciudad</th>
-                    <th>Dirección</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="branch in branches" :key="branch.id">
-                    <td>{{ branch.id }}</td>
-                    <td>{{ branch.city }}</td>
-                    <td>{{ branch.address }}</td>
-                    <td>
-                        <button class="btn btn-danger btn-sm" @click="deleteBranch(branch.id)">
-                            Eliminar
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <!-- Script de Vue -->
-    <script src="../scripts/listBranches.js"></script>
-=======
+
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <!-- Navegación izquierda -->
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 barra-de-navegacion">
@@ -124,9 +98,8 @@
             </div>
         </div>
     </nav>
-<div id="app" class="container mt-5">
-    <h2 class="mb-4">Sucursales</h2>
 
+<div id="app" class="container mt-5">
     <table class="table table-bordered">
         <thead class="table-light">
         <tr>
@@ -152,7 +125,7 @@
 </div>
 <!-- Script de Vue -->
 <script src="../scripts/listBranches.js"></script>
->>>>>>> 875d699 (Cambios varios)
+
 
 
     <!-- Bootstrap JS (opcional, solo si necesitas funcionalidad JS como modales o tooltips) -->

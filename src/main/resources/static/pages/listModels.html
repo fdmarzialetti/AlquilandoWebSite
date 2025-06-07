@@ -51,15 +51,9 @@
             <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
               <li><a class="dropdown-item" href="../pages/formBranch.html">Crear Sucursal</a></li>
               <li><a class="dropdown-item" href="../pages/addModel.html">Crear Modelo</a></li>
-<<<<<<< HEAD
-              <li><a class="dropdown-item" href="../pages/addVehicle.html">Crear Vehiculo</a></li>
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-              <li><a class="dropdown-item" href="#">Otra acción</a></li>
-=======
+
               <li><a class="dropdown-item" href="../pages/addVehicle.html">Crear Vehículo</a></li>
->>>>>>> 875d699 (Cambios varios)
+
             </ul>
           </li>
         </ul>
@@ -92,20 +86,8 @@
           <td>{{ model.name }}</td>
           <td>{{ model.price }} ARS</td>
           <td>{{ model.capacity }} personas</td>
-<<<<<<< HEAD
-          <td>
-            <span>
-              {{
-              model.cancelationPolicy === 'TWENTY' ? '20%' :
-              model.cancelationPolicy === 'FULL' ? '100%' :
-              model.cancelationPolicy === 'ZERO' ? '0%' :
-              model.cancelationPolicy
-              }}
-            </span>
-          </td>
-=======
+
           <td>{{ getCancelationText(model.cancelationPolicy) }}</td>
->>>>>>> 875d699 (Cambios varios)
           <td>
             <button class="btn btn-danger btn-sm">Eliminar</button>
           </td>
