@@ -73,7 +73,19 @@
         <form @submit.prevent="createModel">
           <div class="mb-3">
             <label for="inputMarca">Marca</label>
-            <input type="text" id="inputMarca" v-model="marca" class="form-control" required />
+            <select id="inputMarca" v-model="marca" class="form-select" required>
+              <option value="" disabled selected>Seleccione una marca</option>
+              <option value="Toyota">Toyota</option>
+              <option value="Fiat">Fiat</option>
+              <option value="Peugeot">Peugeot</option>
+              <option value="Volkswagen">Volkswagen</option>
+              <option value="Renault">Renault</option>
+              <option value="Ford">Ford</option>
+              <option value="Chevrolet">Chevrolet</option>
+              <option value="Nissan">Nissan</option>
+              <option value="Citroën">Citroën</option>
+              <option value="Jeep">Jeep</option>
+            </select>
           </div>
 
           <div class="mb-3">
@@ -88,7 +100,7 @@
 
           <div class="mb-3">
             <label for="inputImagen">Imagen</label>
-            <input type="file" id="inputImagen" @change="handleFileUpload" class="form-control" required />
+            <input type="file" id="inputImagen" @change="handleFileUpload" class="form-control" accept="image/png, image/jpeg, image/jpg" required />
           </div>
 
           <div class="mb-3">

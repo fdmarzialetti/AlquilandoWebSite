@@ -37,13 +37,21 @@ public class ModelController {
 
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> createModel(@ModelAttribute CreateModelDTO modelDto) throws IOException {
-        if (!modelRepository.existsByBrandAndName(modelDto.getBrand(), modelDto.getName())) {
+        String brand = modelDto.getBrand().trim();
+        String name = modelDto.getName().trim();
+
+        if (!modelRepository.existsByBrandIgnoreCaseAndNameIgnoreCase(brand, name)) {
+            modelDto.setBrand(brand); // limpia los espacios
+            modelDto.setName(name);
+
             Model newModel = new Model(modelDto);
             modelRepository.save(newModel);
             return ResponseEntity.status(HttpStatus.CREATED).body("Modelo creado");
         }
+
         return ResponseEntity.status(HttpStatus.CONFLICT).body("Ya existe el modelo");
     }
+
 
     @GetMapping("/availableModels")
     public List<AvalaibleModelDTO> getAvailableModels(
