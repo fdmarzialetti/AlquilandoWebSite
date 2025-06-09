@@ -3,7 +3,6 @@ const hastaInput = document.getElementById('precio-hasta');
 const botonAplicar = document.getElementById('aplicar-precio');
 
 function checkInputs() {
-  // Habilita el botón si alguno de los dos tiene valor no vacío
   if (desdeInput.value.trim() !== "" || hastaInput.value.trim() !== "") {
     botonAplicar.disabled = false;
   } else {
@@ -11,23 +10,17 @@ function checkInputs() {
   }
 }
 
-// Escuchar cambios en ambos inputs
 desdeInput.addEventListener('input', checkInputs);
 hastaInput.addEventListener('input', checkInputs);
 
-// Función para obtener parámetros de URL
 function getParam(name) {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get(name);
 }
 
-// Obtener valores de la URL
 const fechaInicio = getParam('fechaInicio');
 const fechaFin = getParam('fechaFin');
 const sucursal = getParam('sucursal');
-
-const contenedorFiltros = document.getElementById('filtros-fecha-sucursal');
-
 
 const { createApp } = Vue;
 
@@ -41,16 +34,130 @@ createApp({
       fechaFin: getParam('fechaFin'),
       branchId: getParam('sucursal'),
       models: [],
+      vehiculosConFiltroPrecio: [],
       isAuthenticated: false,
-      user: { name: "Cuenta" }
+      user: { name: "Cuenta" },
+      marcas: [],
+      modelos: [],
+      capacidades: [],
+      filtroMarca: null,
+      filtroModelo: null,
+      filtroCapacidad: null,
+      precioDesde: null,
+      precioHasta: null,
+      filtroSeleccionado: "Todos los disponibles",
+      ordenSeleccionado: "precio-asc"
     };
   },
   mounted() {
     this.checkAuth();
     this.getBranchById(this.branchId);
     this.getAvailableModels();
+    this.ordenarVehiculos(this.ordenSeleccionado);
   },
+  watch: {
+  ordenSeleccionado(nuevoOrden) {
+    this.ordenarVehiculos(nuevoOrden);
+  }
+},
   methods: {
+    ordenarVehiculos(criterio) {
+ 
+  this.vehiculosConFiltroPrecio.sort((a, b) => {
+    switch (criterio) {
+      case "precio-asc":
+        return a.finalPrice - b.finalPrice;
+      case "precio-desc":
+        return b.finalPrice - a.finalPrice;
+      case "marca-asc":
+        return a.brand.localeCompare(b.brand);
+      case "marca-desc":
+        return b.brand.localeCompare(a.brand);
+      case "modelo-asc":
+        return a.name.localeCompare(b.name);
+      case "modelo-desc":
+        return b.name.localeCompare(a.name);
+      case "capacidad-asc":
+    
+        return a.capacity - b.capacity;
+      case "capacidad-desc":
+  
+        return b.capacity - a.capacity;
+      default:
+        return 0;
+    }
+  });
+},
+    resetearFiltros() {
+      this.filtroMarca = null;
+      this.filtroModelo = null;
+      this.filtroCapacidad = null;
+      this.precioDesde = null;
+      this.precioHasta = null;
+      this.vehiculosConFiltroPrecio = this.models;
+      this.filtroSeleccionado = "Todos los disponibles";
+    },
+    seleccionarMarca(valor) {
+      // Reseteo todos los filtros menos el de marca
+      this.filtroModelo = null;
+      this.filtroCapacidad = null;
+      this.precioDesde = null;
+      this.precioHasta = null;
+
+      this.filtroMarca = valor || null;
+      this.filtroSeleccionado = "Marca " + valor + " disponibles";
+
+      // Aplico filtro solo por marca sobre la lista completa
+      this.vehiculosConFiltroPrecio = this.models.filter(v => v.brand === valor);
+    },
+    seleccionarModelo(valor) {
+      this.filtroMarca = null;
+      this.filtroCapacidad = null;
+      this.precioDesde = null;
+      this.precioHasta = null;
+
+      this.filtroModelo = valor || null;
+      this.filtroSeleccionado = "Modelo " + valor + " disponibles";
+
+      this.vehiculosConFiltroPrecio = this.models.filter(v => v.name === valor);
+    },
+    seleccionarCapacidad(valor) {
+      this.filtroMarca = null;
+      this.filtroModelo = null;
+      this.precioDesde = null;
+      this.precioHasta = null;
+
+      this.filtroCapacidad = valor ? Number(valor) : null;
+      this.filtroSeleccionado = "Capacidad " + valor + " disponibles";
+
+      this.vehiculosConFiltroPrecio = this.models.filter(v => v.capacity === this.filtroCapacidad);
+    },
+ aplicarFiltroPrecio() {
+  this.filtroMarca = null;
+  this.filtroModelo = null;
+  this.filtroCapacidad = null;
+
+  // Verificar también si los campos están vacíos
+  const desde = (this.precioDesde !== null && this.precioDesde !== "") ? Number(this.precioDesde) : null;
+  const hasta = (this.precioHasta !== null && this.precioHasta !== "") ? Number(this.precioHasta) : null;
+
+  this.vehiculosConFiltroPrecio = this.models.filter(v => {
+    const coincideDesde = desde === null || v.finalPrice >= desde;
+    const coincideHasta = hasta === null || v.finalPrice <= hasta;
+    return coincideDesde && coincideHasta;
+  });
+
+  // Construcción clara del string de filtro
+  if (desde !== null && hasta !== null) {
+    this.filtroSeleccionado = `Precio entre $${desde} y $${hasta} disponibles`;
+  } else if (desde !== null) {
+    this.filtroSeleccionado = `Precio desde $${desde} disponibles`;
+  } else if (hasta !== null) {
+    this.filtroSeleccionado = `Precio hasta $${hasta} disponibles`;
+  } else {
+    this.filtroSeleccionado = `Todos los precios disponibles`;
+  }
+},
     async getBranchById(id) {
       try {
         const response = await axios.get(`/api/branches/${id}`);
@@ -70,19 +177,20 @@ createApp({
           }
         });
 
-        // Calcular cantidad de días (inclusive)
         const start = new Date(this.fechaInicio);
         const end = new Date(this.fechaFin);
         const timeDiff = end.getTime() - start.getTime();
         const days = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)) + 1;
 
-        // Agregar el precio final a cada modelo
         this.models = response.data.map(model => ({
           ...model,
           finalPrice: model.price * days
         }));
 
-        console.log(this.models);
+        this.vehiculosConFiltroPrecio = this.models;
+        this.marcas = this.marcasUnicas();
+        this.capacidades = this.capacidadesUnicas();
+        this.modelos = this.modelosUnicos();
       } catch (error) {
         console.error("Error al obtener vehículos:", error);
       }
@@ -92,37 +200,86 @@ createApp({
         .then(response => {
           this.isAuthenticated = response.data === true;
         })
-        .then(res => axios.get("/api/user/data")).then(
-          res => {
-            this.user = res.data;
-          }
-        )
+        .then(() => axios.get("/api/user/data"))
+        .then(res => {
+          this.user = res.data;
+        })
         .catch(error => {
           console.error("Error al verificar autenticación:", error);
           this.isAuthenticated = false;
         });
     },
     logout() {
-    axios.post("/logout")
+      axios.post("/logout")
         .then(() => {
-            this.isAuthenticated = false;
-            Swal.fire({
-                icon: "success",
-                title: "Sesión cerrada",
-                text: "Has cerrado sesión correctamente. Hasta pronto!",
-                confirmButtonText: "Aceptar"
-            }).then(() => {
-                window.location.href = "/index.html"; // o la página que corresponda
-            });
+          this.isAuthenticated = false;
+          Swal.fire({
+            icon: "success",
+            title: "Sesión cerrada",
+            text: "Has cerrado sesión correctamente. Hasta pronto!",
+            confirmButtonText: "Aceptar"
+          }).then(() => {
+            window.location.href = "/index.html";
+          });
         })
         .catch(error => {
-            console.error("Error al cerrar sesión:", error);
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: "Hubo un problema al cerrar sesión. Intentalo de nuevo.",
-            });
+          console.error("Error al cerrar sesión:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Hubo un problema al cerrar sesión. Intentalo de nuevo.",
+          });
         });
-}
+    },
+    marcasUnicas() {
+      const counts = {};
+      this.models.forEach(modelo => {
+        const marca = modelo.brand;
+        counts[marca] = (counts[marca] || 0) + 1;
+      });
+      return Object.entries(counts)
+        .map(([valor, cantidad]) => ({ valor, cantidad }))
+        .sort((a, b) => a.valor.localeCompare(b.valor));
+    },
+    modelosUnicos() {
+      const counts = {};
+      this.models.forEach(modelo => {
+        const name = modelo.name;
+        counts[name] = (counts[name] || 0) + 1;
+      });
+      return Object.entries(counts)
+        .map(([valor, cantidad]) => ({ valor, cantidad }))
+        .sort((a, b) => a.valor.localeCompare(b.valor));
+    },
+    capacidadesUnicas() {
+      const counts = {};
+      this.models.forEach(modelo => {
+        const cap = modelo.capacity;
+        counts[cap] = (counts[cap] || 0) + 1;
+      });
+      return Object.entries(counts)
+        .map(([valor, cantidad]) => ({ valor: Number(valor), cantidad }))
+        .sort((a, b) => a.valor - b.valor);
+    }
+  },
+  computed: {
+    vehiculosFiltrados() {
+      // Devuelve el arreglo ya filtrado con un solo filtro activo, sin combinaciones
+      return this.vehiculosConFiltroPrecio;
+    },
+     fechaInicioFormateada() {
+    if (!this.fechaInicio) return null;
+    const date = new Date(this.fechaInicio);
+    return `${String(date.getDate()).padStart(2, '0')}/${
+      String(date.getMonth() + 1).padStart(2, '0')
+    }/${date.getFullYear()}`;
+  },
+  fechaFinFormateada() {
+    if (!this.fechaFin) return null;
+    const date = new Date(this.fechaFin);
+    return `${String(date.getDate()).padStart(2, '0')}/${
+      String(date.getMonth() + 1).padStart(2, '0')
+    }/${date.getFullYear()}`;
+  }
   }
 }).mount('#app');
