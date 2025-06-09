@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/branches")
-@CrossOrigin(origins = "*") // Permitir llamadas desde el frontend
+@CrossOrigin(origins = "*")
 public class BranchController {
 
     @Autowired
@@ -30,23 +30,40 @@ public class BranchController {
                     .body("Ya existe una sucursal con esa ciudad y dirección.");
         }
 
-        branch.setCity(city);      // guardar sin espacios extra
+        branch.setCity(city);
         branch.setAddress(address);
+        branch.setState(true); // Asegura que se cree con estado TRUE
 
         Branch saved = branchRepository.save(branch);
         return ResponseEntity.ok(saved);
     }
 
-
-    @GetMapping()
+    // 🔁 Solo lista las sucursales activas (state == true)
+    @GetMapping
     public List<BranchGetDTO> getAllBranches() {
-        return branchRepository.findAll().stream().map(BranchGetDTO::new).toList();
+        return branchRepository.findByStateTrue().stream().map(BranchGetDTO::new).toList();
     }
 
+    // ❌ Cambia el estado a false en lugar de eliminar
     @DeleteMapping("/{id}")
-    public void deleteBranch(@PathVariable Long id) {
-        branchRepository.deleteById(id);
+    public ResponseEntity<?> deactivateBranch(@PathVariable Long id) {
+        Branch branch = branchRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sucursal no encontrada"));
+
+        // Verifica si tiene vehículos o empleados asociados
+        if (!branch.getEmployees().isEmpty() || !branch.getVehicles().isEmpty()) {
+            return ResponseEntity.badRequest()
+                    .body("No se puede desactivar la sucursal porque tiene empleados o vehículos asociados.");
+        }
+
+        // Desactiva la sucursal
+        branch.setState(false);
+        branchRepository.save(branch);
+
+        return ResponseEntity.noContent().build();
     }
+
+
 
     @GetMapping("/{id}")
     public BranchGetDTO getBranchById(@PathVariable Long id) {
@@ -54,7 +71,4 @@ public class BranchController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sucursal no encontrada"));
         return new BranchGetDTO(branch);
     }
-
-
-
 }

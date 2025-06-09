@@ -17,6 +17,8 @@ public class Branch {
     private long id;
     private String address;
     private String city;
+    private boolean state = true; // Campo de estado inicializado en true
+
 
     @OneToMany(mappedBy = "branch", cascade = CascadeType.PERSIST)
     private List<Reservation> reservations = new ArrayList<>();
