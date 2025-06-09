@@ -46,14 +46,48 @@ createApp({
       precioDesde: null,
       precioHasta: null,
       filtroSeleccionado: "Todos los disponibles",
+      ordenSeleccionado: "precio-asc"
     };
   },
   mounted() {
     this.checkAuth();
     this.getBranchById(this.branchId);
     this.getAvailableModels();
+    this.ordenarVehiculos(this.ordenSeleccionado);
   },
+  watch: {
+  ordenSeleccionado(nuevoOrden) {
+    this.ordenarVehiculos(nuevoOrden);
+  }
+},
   methods: {
+    ordenarVehiculos(criterio) {
+ 
+  this.vehiculosConFiltroPrecio.sort((a, b) => {
+    switch (criterio) {
+      case "precio-asc":
+        return a.finalPrice - b.finalPrice;
+      case "precio-desc":
+        return b.finalPrice - a.finalPrice;
+      case "marca-asc":
+        return a.brand.localeCompare(b.brand);
+      case "marca-desc":
+        return b.brand.localeCompare(a.brand);
+      case "modelo-asc":
+        return a.name.localeCompare(b.name);
+      case "modelo-desc":
+        return b.name.localeCompare(a.name);
+      case "capacidad-asc":
+    
+        return a.capacity - b.capacity;
+      case "capacidad-desc":
+  
+        return b.capacity - a.capacity;
+      default:
+        return 0;
+    }
+  });
+},
     resetearFiltros() {
       this.filtroMarca = null;
       this.filtroModelo = null;
