@@ -18,6 +18,16 @@ createApp({
     },
     methods: {
         async registrarCliente() {
+            // Validación JS de contraseña
+            if (this.cliente.password.length < 6) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Contraseña inválida',
+                    text: 'La contraseña debe contener al menos 6 caracteres.'
+                });
+                return;
+            }
+
             try {
                 const response = await fetch('http://localhost:8080/api/clients', {
                     method: 'POST',
@@ -28,10 +38,9 @@ createApp({
                 });
 
                 if (response.ok) {
-                    const data = await response.json();
+                    await response.json();
                     this.resetForm();
 
-                    // SweetAlert de éxito y redirección
                     Swal.fire({
                         icon: 'success',
                         title: 'Registro exitoso',
@@ -42,12 +51,9 @@ createApp({
                     });
 
                 } else {
-                    // Leer texto de error del backend
                     const errorText = await response.text();
-
                     let mensajeError = 'Error en el registro.';
 
-                    // Personalizar mensaje según el contenido
                     if (errorText.includes('email')) {
                         mensajeError = 'El email ya está registrado.';
                     } else if (errorText.includes('dni')) {
@@ -109,9 +115,12 @@ createApp({
                     Swal.fire({
                         icon: "error",
                         title: "Error",
-                        text: "Hubo un problema al cerrar sesión. Intentalo de nuevo.",
+                        text: "Hubo un problema al cerrar sesión. Inténtalo de nuevo.",
                     });
                 });
-        },
+        }
+    },
+    mounted() {
+        this.checkAuth();
     }
 }).mount('#app');
