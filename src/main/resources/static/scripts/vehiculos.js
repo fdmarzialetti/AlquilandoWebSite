@@ -266,6 +266,20 @@ createApp({
     vehiculosFiltrados() {
       // Devuelve el arreglo ya filtrado con un solo filtro activo, sin combinaciones
       return this.vehiculosConFiltroPrecio;
-    }
+    },
+     fechaInicioFormateada() {
+    if (!this.fechaInicio) return null;
+    const date = new Date(this.fechaInicio);
+    return `${String(date.getDate()).padStart(2, '0')}/${
+      String(date.getMonth() + 1).padStart(2, '0')
+    }/${date.getFullYear()}`;
+  },
+  fechaFinFormateada() {
+    if (!this.fechaFin) return null;
+    const date = new Date(this.fechaFin);
+    return `${String(date.getDate()).padStart(2, '0')}/${
+      String(date.getMonth() + 1).padStart(2, '0')
+    }/${date.getFullYear()}`;
+  }
   }
 }).mount('#app');
