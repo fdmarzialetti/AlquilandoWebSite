@@ -10,7 +10,7 @@ createApp({
                 email: '',
                 password: '',
                 rol: 'CLIENT',
-                phone:''
+                phone: ''
             },
             mensaje: '',
             isAuthenticated: false
@@ -29,14 +29,45 @@ createApp({
 
                 if (response.ok) {
                     const data = await response.json();
-                    this.mensaje = `Cliente registrado correctamente (ID: ${data.id})`;
                     this.resetForm();
+
+                    // SweetAlert de éxito y redirección
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Registro exitoso',
+                        text: '¡Tu cuenta ha sido creada exitosamente!',
+                        confirmButtonText: 'Ir al Login'
+                    }).then(() => {
+                        window.location.href = 'http://localhost:8080/login.html';
+                    });
+
                 } else {
-                    const errorText = await response.text();  // ← leemos el mensaje de error del backend
-                        this.mensaje = 'Error: ' + errorText;
+                    // Leer texto de error del backend
+                    const errorText = await response.text();
+
+                    let mensajeError = 'Error en el registro.';
+
+                    // Personalizar mensaje según el contenido
+                    if (errorText.includes('email')) {
+                        mensajeError = 'El email ya está registrado.';
+                    } else if (errorText.includes('dni')) {
+                        mensajeError = 'El DNI ya está registrado.';
+                    } else {
+                        mensajeError = errorText;
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'No se pudo registrar',
+                        text: mensajeError
+                    });
                 }
             } catch (error) {
-                this.mensaje = 'Error de red: ' + error.message;
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error de red',
+                    text: 'No se pudo conectar al servidor. Intenta más tarde.'
+                });
             }
         },
         resetForm() {
@@ -46,7 +77,8 @@ createApp({
                 dni: '',
                 email: '',
                 password: '',
-                rol: 'CLIENT'
+                rol: 'CLIENT',
+                phone: ''
             };
         },
         checkAuth() {
@@ -60,26 +92,26 @@ createApp({
                 });
         },
         logout() {
-    axios.post("/logout")
-        .then(() => {
-            this.isAuthenticated = false;
-            Swal.fire({
-                icon: "success",
-                title: "Sesión cerrada",
-                text: "Has cerrado sesión correctamente. Hasta pronto!",
-                confirmButtonText: "Aceptar"
-            }).then(() => {
-                window.location.href = "/index.html"; // o la página que corresponda
-            });
-        })
-        .catch(error => {
-            console.error("Error al cerrar sesión:", error);
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: "Hubo un problema al cerrar sesión. Intentalo de nuevo.",
-            });
-        });
-},
+            axios.post("/logout")
+                .then(() => {
+                    this.isAuthenticated = false;
+                    Swal.fire({
+                        icon: "success",
+                        title: "Sesión cerrada",
+                        text: "Has cerrado sesión correctamente. Hasta pronto!",
+                        confirmButtonText: "Aceptar"
+                    }).then(() => {
+                        window.location.href = "/index.html";
+                    });
+                })
+                .catch(error => {
+                    console.error("Error al cerrar sesión:", error);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "Hubo un problema al cerrar sesión. Intentalo de nuevo.",
+                    });
+                });
+        },
     }
 }).mount('#app');

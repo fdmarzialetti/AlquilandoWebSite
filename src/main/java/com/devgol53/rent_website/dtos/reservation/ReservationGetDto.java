@@ -19,6 +19,8 @@ public class ReservationGetDto {
     private Double payment;
     private long branchId;
     private long modelId;
+    private String branchName;
+    private String modelName;
 
     public ReservationGetDto(Reservation reservation){
         this.id = reservation.getId();
@@ -28,5 +30,7 @@ public class ReservationGetDto {
         this.payment = reservation.getPayment();
         this.branchId = reservation.getBranch().getId();
         this.modelId = reservation.getModel().getId();
+        this.branchName = reservation.getBranch().getCity(); // o .getAddress() si prefieres
+        this.modelName = reservation.getModel().getName();
     }
 }

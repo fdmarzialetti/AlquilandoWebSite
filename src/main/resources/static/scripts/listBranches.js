@@ -17,17 +17,31 @@
                         console.error("Error al cargar sucursales:", error);
                     });
             },
-            deleteBranch(id) {
-                if (confirm("¿Estás seguro de eliminar esta sucursal?")) {
-                    axios.delete(`http://localhost:8080/api/branches/${id}`)
-                        .then(() => {
-                            this.branches = this.branches.filter(b => b.id !== id);
-                        })
-                        .catch(error => {
-                            console.error("Error al eliminar:", error);
-                        });
-                }
-            }
+           deleteBranch(id) {
+               if (confirm("¿Estás seguro de eliminar esta sucursal?")) {
+                   axios.delete(`http://localhost:8080/api/branches/${id}`)
+                       .then(() => {
+                           this.loadBranches(); // Recarga las sucursales filtradas
+                       })
+                       .catch(error => {
+                           if (error.response && error.response.status === 400) {
+                               Swal.fire({
+                                   icon: "warning",
+                                   title: "No se puede eliminar",
+                                   text: error.response.data || "La sucursal no se puede eliminar porque tiene datos asociados."
+                               });
+                           } else {
+                               console.error("Error al eliminar:", error);
+                               Swal.fire({
+                                   icon: "error",
+                                   title: "Error",
+                                   text: "Ocurrió un error al intentar eliminar la sucursal.",
+                               });
+                           }
+                       });
+               }
+           }
+
             ,
 
         logout() {

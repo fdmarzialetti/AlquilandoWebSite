@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <title>Lista de Sucursales</title>
@@ -8,102 +7,53 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="../Styles/listBranches.css">
-     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-
 <body id="app">
-    
-    <!-- Navbar -->
-  <div class="d-flex justify-content-between">
+
+<!-- Navbar -->
+<div class="d-flex justify-content-between">
     <h1>Admin Page</h1>
     <button class="btn btn-outline-dark m-2" @click="logout">Cerrar Sesion</button>
-  </div>
+</div>
 
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="font-family: sans-serif;">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="font-family: sans-serif;">
     <div class="container-fluid">
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0 barra-de-navegacion">
-          <li class="nav-item">
-            <a class="nav-link text-white" href="../pages/listModels.html">Modelos</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-white" href="../pages/listBranches.html">Sucursales</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-white" href="../pages/listVehicles.html">Vehículos</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-white" href="#">Empleados</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
-              data-bs-toggle="dropdown" aria-expanded="false">
-              Acciones
-            </a>
-            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="../pages/formBranch.html">Crear Sucursal</a></li>
-              <li><a class="dropdown-item" href="../pages/addModel.html">Crear Modelo</a></li>
-              <li><a class="dropdown-item" href="../pages/addVehicle.html">Crear Vehiculo</a></li>
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-              <li><a class="dropdown-item" href="#">Otra acción</a></li>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 barra-de-navegacion">
+                <li class="nav-item"><a class="nav-link text-white" href="../pages/listModels.html">Modelos</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="../pages/listBranches.html">Sucursales</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="../pages/listVehicles.html">Vehículos</a></li>
+                <li class="nav-item"><a class="nav-link text-white" href="#">Empleados</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                        Acciones
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="../pages/formBranch.html">Crear Sucursal</a></li>
+                        <li><a class="dropdown-item" href="../pages/addModel.html">Crear Modelo</a></li>
+                        <li><a class="dropdown-item" href="../pages/addVehicle.html">Crear Vehículo</a></li>
+                    </ul>
+                </li>
             </ul>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Banner debajo de la barra -->
-  <div class="banner bg-secondary text-white fw-semibold fs-4 p-3">
-    Panel de administrador
-  </div>
-    <div id="app" class="container mt-5">
-        <h2 class="mb-4">Sucursales</h2>
-
-
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <!-- Navegación izquierda -->
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0 barra-de-navegacion">
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="../pages/listModels.html">Modelos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="../pages/listBranches.html">Sucursales</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="../pages/listVehicles.html">Vehículos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-white" href="#">Empleados</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
-                           data-bs-toggle="dropdown" aria-expanded="false">
-                            Acciones
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="../pages/formBranch.html">Crear Sucursal</a></li>
-                            <li><a class="dropdown-item" href="../pages/addModel.html">Crear Modelo</a></li>
-                            <li><a class="dropdown-item" href="../pages/addVehicle.html">Crear Vehículo</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
         </div>
-    </nav>
+    </div>
+</nav>
 
-<div id="app" class="container mt-5">
+<!-- Banner -->
+<div class="banner bg-secondary text-white fw-semibold fs-4 p-3">
+    Panel de administrador
+</div>
+
+<!-- Tabla de sucursales -->
+<div class="container mt-5">
+    <h2 class="mb-4">Sucursales</h2>
     <table class="table table-bordered">
         <thead class="table-light">
         <tr>
-            <th>ID</th>
             <th>Ciudad</th>
             <th>Dirección</th>
             <th>Acciones</th>
@@ -111,7 +61,6 @@
         </thead>
         <tbody>
         <tr v-for="branch in branches" :key="branch.id">
-            <td>{{ branch.id }}</td>
             <td>{{ branch.city }}</td>
             <td>{{ branch.address }}</td>
             <td>
@@ -123,19 +72,14 @@
         </tbody>
     </table>
 </div>
+
 <!-- Script de Vue -->
 <script src="../scripts/listBranches.js"></script>
 
-
-
-    <!-- Bootstrap JS (opcional, solo si necesitas funcionalidad JS como modales o tooltips) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Bootstrap JS (incluye Popper para dropdowns, tooltips, etc.) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-RvGg7Bk8r1eF3Yh9PnFKZb2GFaKbU4kzwmU4IuzGxFptu5IhQ0yoaKaK5S67xI+C"
         crossorigin="anonymous"></script>
-
 </body>
-
 </html>
