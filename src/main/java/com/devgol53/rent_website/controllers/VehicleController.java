@@ -31,7 +31,11 @@ public class VehicleController {
 
     @PostMapping("/createVehicle")
     public ResponseEntity<String> createVehicle(@RequestBody VehicleCreateDTO vehicleCreateDTO) {
-        if (vehicleRepository.existsByPatent(vehicleCreateDTO.getPatent())) {
+
+        // Normalizo la patente antes de verificar existencia
+        String normalizedPatent = vehicleCreateDTO.getPatent().replaceAll("\\s+", "").toUpperCase();
+
+        if (vehicleRepository.existsByPatent(normalizedPatent)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Ya existe un vehículo con esa patente");
         }
 
@@ -51,6 +55,15 @@ public class VehicleController {
 
     @GetMapping("/listVehicles")
     public List<VehicleGetDTO> getVehicles() {
-        return vehicleRepository.findAll().stream().map(VehicleGetDTO::new).toList();
+        return vehicleRepository.findAll().stream().filter(Vehicle::isActive).map(VehicleGetDTO::new).toList();
+    }
+
+    @PutMapping("/{id}/deleteVehicle")
+    public ResponseEntity<String> deleteVehicle(@PathVariable Long id) {
+        return vehicleRepository.findById(id).map(vehicle -> {
+            vehicle.setActive(false);
+            vehicleRepository.save(vehicle);
+            return ResponseEntity.ok("Vehiculo desactivado");
+        }).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vehiculo no encontrado"));
     }
 }
