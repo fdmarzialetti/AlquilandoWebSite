@@ -32,6 +32,7 @@ public class Model {
     private int capacity;
     @Enumerated(EnumType.STRING)
     private CancelationPolicy cancelationPolicy;
+    private boolean status;
 
     @OneToMany (mappedBy = "model", cascade = CascadeType.PERSIST)
     private List<Reservation> reservations = new ArrayList<>();
@@ -46,6 +47,7 @@ public class Model {
         this.image = image;
         this.capacity = capacity;
         this.cancelationPolicy = cancelationPolicy;
+        this.status = true;
     }
 
     public Model(CreateModelDTO modelDto) throws IOException {
@@ -55,6 +57,7 @@ public class Model {
         this.image = modelDto.getImage().getBytes();
         this.capacity = modelDto.getCapacity();
         this.cancelationPolicy = modelDto.getCancelationPolicy();
+        this.status =true;
     }
 
     public void addVehicle(Vehicle vehicle){
