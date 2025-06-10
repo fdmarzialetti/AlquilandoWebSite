@@ -16,6 +16,31 @@ createApp({
           console.error("Error al cargar vehículos:", error);
         });
     },
+
+    deleteVehicle(id) {
+                Swal.fire({
+                    title: '¿Está seguro que desea eliminar el vehículo?',
+                    text: 'Esta acción no se puede deshacer.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Eliminar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        axios.put(`/api/vehicle/${id}/deleteVehicle`)
+                            .then(() => {
+                                // Remueve el vehiculo de la lista local
+                                this.vehicles = this.vehicles.filter(vehicle => vehicle.id !== id);
+                                Swal.fire('Eliminado', 'El vehiculo ha sido eliminado correctamente.', 'success');
+                            })
+                            .catch(error => {
+                                console.error("Error al eliminar el vehiculo:", error);
+                                Swal.fire('Error', 'No se pudo eliminar el vehiculo.', 'error');
+                            });
+                    }
+                });
+            },
+
    logout() {
     axios.post("/logout")
         .then(() => {

@@ -21,6 +21,8 @@ public class Vehicle {
     private String patent;
     private String status;
     private int yearV;
+    private boolean active;
+
 
     @OneToMany (mappedBy = "vehicle", cascade = CascadeType.PERSIST)
     private List<Reservation> reservations = new ArrayList<>();
@@ -35,15 +37,17 @@ public class Vehicle {
     public Vehicle(){};
 
     public Vehicle(String patent, String status, int year) {
-        this.patent = patent;
+        this.patent = patent.replaceAll("\\s+", "").toUpperCase();
         this.status = status;
         this.yearV = year;
+        this.active = true;
     }
 
     public Vehicle(VehicleCreateDTO vehicleCreateDTO){
-        this.patent = vehicleCreateDTO.getPatent();
+        this.patent = vehicleCreateDTO.getPatent().replaceAll("\\s+", "").toUpperCase();
         this.yearV = vehicleCreateDTO.getYearV();
         this.status = "Disponible";
+        this.active = true;
     }
 
     public void addModel(Model model){
