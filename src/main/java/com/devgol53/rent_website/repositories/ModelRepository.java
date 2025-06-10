@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface ModelRepository extends JpaRepository<Model,Long> {
-    Boolean existsByBrandAndName(String brand, String name);
+    Boolean existsByBrandIgnoreCaseAndNameIgnoreCase(String brand, String name);
 
     Optional<Model> findByBrandAndName(String brand, String name);
 }

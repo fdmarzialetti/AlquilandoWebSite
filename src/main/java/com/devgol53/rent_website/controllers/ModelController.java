@@ -35,15 +35,31 @@ public class ModelController {
         return modelRepository.findAll().stream().map(GetModelDTO::new).toList();
     }
 
+    @GetMapping("/listActiveModels")
+    public List<GetModelDTO> getActiveModels(){
+        return modelRepository.findAll().stream()
+                .filter(Model::isStatus)
+                .map(GetModelDTO::new)
+                .toList();
+    }
+
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> createModel(@ModelAttribute CreateModelDTO modelDto) throws IOException {
-        if (!modelRepository.existsByBrandAndName(modelDto.getBrand(), modelDto.getName())) {
+        String brand = modelDto.getBrand().trim();
+        String name = modelDto.getName().trim();
+
+        if (!modelRepository.existsByBrandIgnoreCaseAndNameIgnoreCase(brand, name)) {
+            modelDto.setBrand(brand); // limpia los espacios
+            modelDto.setName(name);
+
             Model newModel = new Model(modelDto);
             modelRepository.save(newModel);
             return ResponseEntity.status(HttpStatus.CREATED).body("Modelo creado");
         }
+
         return ResponseEntity.status(HttpStatus.CONFLICT).body("Ya existe el modelo");
     }
+
 
     @GetMapping("/availableModels")
     public List<AvalaibleModelDTO> getAvailableModels(
@@ -89,6 +105,15 @@ public class ModelController {
         return modelRepository.findByBrandAndName(brand, name)
                 .map(m->ResponseEntity.status(HttpStatus.OK).body(new GetModelDTO(m)))
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/{id}/deactivate")
+    public ResponseEntity<String> deactivateModel(@PathVariable Long id) {
+        return modelRepository.findById(id).map(model -> {
+            model.setStatus(false);
+            modelRepository.save(model);
+            return ResponseEntity.ok("Modelo desactivado");
+        }).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body("Modelo no encontrado"));
     }
 
 }
