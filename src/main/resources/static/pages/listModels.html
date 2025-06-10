@@ -74,34 +74,38 @@
   </div>
 
   <!-- Tabla de modelos -->
-  <div class="container mt-5">
-    <h2 class="mb-4">Modelos de Autos</h2>
+<div class="container mt-5">
+  <h2 class="mb-4">Modelos de Autos</h2>
 
-    <table class="table table-bordered">
-      <thead class="table-light">
-        <tr>
-          <th>Marca</th>
-          <th>Nombre</th>
-          <th>Precio</th>
-          <th>Capacidad</th>
-          <th>Política de Cancelación</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="model in models" :key="model.id">
-          <td>{{ model.brand }}</td>
-          <td>{{ model.name }}</td>
-          <td>{{ model.price }} ARS</td>
-          <td>{{ model.capacity }} personas</td>
-          <td>{{ getCancelationText(model.cancelationPolicy) }}</td>
-          <td>
-            <button class="btn btn-danger btn-sm" @click="deactivateModel(model.id)">Dar de baja </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div v-if="models.length === 0" class="alert alert-info text-center">
+    Aún no se ha cargado ningún modelo.
   </div>
+
+  <table v-else class="table table-bordered">
+    <thead class="table-light">
+      <tr>
+        <th>Marca</th>
+        <th>Nombre</th>
+        <th>Precio</th>
+        <th>Capacidad</th>
+        <th>Política de Cancelación</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="model in models" :key="model.id">
+        <td>{{ model.brand }}</td>
+        <td>{{ model.name }}</td>
+        <td>{{ model.price }} ARS</td>
+        <td>{{ model.capacity }} personas</td>
+        <td>{{ getCancelationText(model.cancelationPolicy) }}</td>
+        <td>
+          <button class="btn btn-danger btn-sm" @click="deactivateModel(model.id)">Dar de baja</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
   <!-- Bootstrap 5.3.6 JS con hash correcto -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
