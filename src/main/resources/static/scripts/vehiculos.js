@@ -56,38 +56,41 @@ createApp({
     this.ordenarVehiculos(this.ordenSeleccionado);
   },
   watch: {
-  ordenSeleccionado(nuevoOrden) {
-    this.ordenarVehiculos(nuevoOrden);
-  }
-},
-  methods: {
-    ordenarVehiculos(criterio) {
- 
-  this.vehiculosConFiltroPrecio.sort((a, b) => {
-    switch (criterio) {
-      case "precio-asc":
-        return a.finalPrice - b.finalPrice;
-      case "precio-desc":
-        return b.finalPrice - a.finalPrice;
-      case "marca-asc":
-        return a.brand.localeCompare(b.brand);
-      case "marca-desc":
-        return b.brand.localeCompare(a.brand);
-      case "modelo-asc":
-        return a.name.localeCompare(b.name);
-      case "modelo-desc":
-        return b.name.localeCompare(a.name);
-      case "capacidad-asc":
-    
-        return a.capacity - b.capacity;
-      case "capacidad-desc":
-  
-        return b.capacity - a.capacity;
-      default:
-        return 0;
+    ordenSeleccionado(nuevoOrden) {
+      this.ordenarVehiculos(nuevoOrden);
     }
-  });
-},
+  },
+  methods: {
+    formatPriceArg(value) {
+      return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(value);
+    },
+    ordenarVehiculos(criterio) {
+
+      this.vehiculosConFiltroPrecio.sort((a, b) => {
+        switch (criterio) {
+          case "precio-asc":
+            return a.finalPrice - b.finalPrice;
+          case "precio-desc":
+            return b.finalPrice - a.finalPrice;
+          case "marca-asc":
+            return a.brand.localeCompare(b.brand);
+          case "marca-desc":
+            return b.brand.localeCompare(a.brand);
+          case "modelo-asc":
+            return a.name.localeCompare(b.name);
+          case "modelo-desc":
+            return b.name.localeCompare(a.name);
+          case "capacidad-asc":
+
+            return a.capacity - b.capacity;
+          case "capacidad-desc":
+
+            return b.capacity - a.capacity;
+          default:
+            return 0;
+        }
+      });
+    },
     resetearFiltros() {
       this.filtroMarca = null;
       this.filtroModelo = null;
@@ -132,32 +135,32 @@ createApp({
 
       this.vehiculosConFiltroPrecio = this.models.filter(v => v.capacity === this.filtroCapacidad);
     },
- aplicarFiltroPrecio() {
-  this.filtroMarca = null;
-  this.filtroModelo = null;
-  this.filtroCapacidad = null;
+    aplicarFiltroPrecio() {
+      this.filtroMarca = null;
+      this.filtroModelo = null;
+      this.filtroCapacidad = null;
 
-  // Verificar también si los campos están vacíos
-  const desde = (this.precioDesde !== null && this.precioDesde !== "") ? Number(this.precioDesde) : null;
-  const hasta = (this.precioHasta !== null && this.precioHasta !== "") ? Number(this.precioHasta) : null;
+      // Verificar también si los campos están vacíos
+      const desde = (this.precioDesde !== null && this.precioDesde !== "") ? Number(this.precioDesde) : null;
+      const hasta = (this.precioHasta !== null && this.precioHasta !== "") ? Number(this.precioHasta) : null;
 
-  this.vehiculosConFiltroPrecio = this.models.filter(v => {
-    const coincideDesde = desde === null || v.finalPrice >= desde;
-    const coincideHasta = hasta === null || v.finalPrice <= hasta;
-    return coincideDesde && coincideHasta;
-  });
+      this.vehiculosConFiltroPrecio = this.models.filter(v => {
+        const coincideDesde = desde === null || v.finalPrice >= desde;
+        const coincideHasta = hasta === null || v.finalPrice <= hasta;
+        return coincideDesde && coincideHasta;
+      });
 
-  // Construcción clara del string de filtro
-  if (desde !== null && hasta !== null) {
-    this.filtroSeleccionado = `Precio entre $${desde} y $${hasta} disponibles`;
-  } else if (desde !== null) {
-    this.filtroSeleccionado = `Precio desde $${desde} disponibles`;
-  } else if (hasta !== null) {
-    this.filtroSeleccionado = `Precio hasta $${hasta} disponibles`;
-  } else {
-    this.filtroSeleccionado = `Todos los precios disponibles`;
-  }
-},
+      // Construcción clara del string de filtro
+      if (desde !== null && hasta !== null) {
+        this.filtroSeleccionado = `Precio entre ${this.formatPriceArg(desde)} y ${this.formatPriceArg(hasta)} disponibles`;
+      } else if (desde !== null) {
+        this.filtroSeleccionado = `Precio desde ${this.formatPriceArg(desde)} disponibles`;
+      } else if (hasta !== null) {
+        this.filtroSeleccionado = `Precio hasta ${this.formatPriceArg(hasta)} disponibles`;
+      } else {
+        this.filtroSeleccionado = `Todos los precios disponibles`;
+      }
+    },
     async getBranchById(id) {
       try {
         const response = await axios.get(`/api/branches/${id}`);
@@ -267,19 +270,17 @@ createApp({
       // Devuelve el arreglo ya filtrado con un solo filtro activo, sin combinaciones
       return this.vehiculosConFiltroPrecio;
     },
-     fechaInicioFormateada() {
-    if (!this.fechaInicio) return null;
-    const date = new Date(this.fechaInicio);
-    return `${String(date.getDate()).padStart(2, '0')}/${
-      String(date.getMonth() + 1).padStart(2, '0')
-    }/${date.getFullYear()}`;
-  },
-  fechaFinFormateada() {
-    if (!this.fechaFin) return null;
-    const date = new Date(this.fechaFin);
-    return `${String(date.getDate()).padStart(2, '0')}/${
-      String(date.getMonth() + 1).padStart(2, '0')
-    }/${date.getFullYear()}`;
-  }
+    fechaInicioFormateada() {
+      if (!this.fechaInicio) return null;
+      const date = new Date(this.fechaInicio);
+      return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')
+        }/${date.getFullYear()}`;
+    },
+    fechaFinFormateada() {
+      if (!this.fechaFin) return null;
+      const date = new Date(this.fechaFin);
+      return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')
+        }/${date.getFullYear()}`;
+    }
   }
 }).mount('#app');

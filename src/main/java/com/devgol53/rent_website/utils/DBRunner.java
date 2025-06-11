@@ -52,39 +52,65 @@ public class DBRunner implements CommandLineRunner {
         Vehicle autonuevo8 = new Vehicle("jkl963", "disponible", 2021);
         Vehicle autonuevo9 = new Vehicle("zxc741", "disponible", 2014);
         Vehicle autonuevo10 = new Vehicle("vbn258", "disponible", 2016);
+        // Models
+        Model model1 = new Model("Renault", "12", 20000.0,
+                ImageReader.readImage("static/images/Vehicles/Renault12.JPG"), 5, CancelationPolicy.FULL);
 
-        Model modelonuevo = new Model("Renault","12",100.0,ImageReader.readImage("static/images/Vehicles/Renault12.JPG"),5, CancelationPolicy.FULL);
-        Model modelonuevo2 = new Model("Peugeot","206",1000.0,ImageReader.readImage("static/images/Vehicles/Peugeot206.JPG"),300, CancelationPolicy.TWENTY);
-        Model modelonuevo3 = new Model("VolksWagen","Gol Trend",2000.0,ImageReader.readImage("static/images/Vehicles/VolksWagenGolTrend.JPG"),200, CancelationPolicy.ZERO);
+        Model model2 = new Model("Peugeot", "206", 25000.0,
+                ImageReader.readImage("static/images/Vehicles/Peugeot206.JPG"), 5, CancelationPolicy.TWENTY);
 
-        autonuevo1.addModel(modelonuevo);
-        autonuevo2.addModel(modelonuevo2);
-        autonuevo3.addModel(modelonuevo2);
-        autonuevo4.addModel(modelonuevo2);
-        autonuevo5.addModel(modelonuevo2);
-        autonuevo5.addModel(modelonuevo2);
-        autonuevo6.addModel(modelonuevo2);
-        autonuevo7.addModel(modelonuevo3);
-        autonuevo8.addModel(modelonuevo3);
-        autonuevo9.addModel(modelonuevo3);
-        autonuevo10.addModel(modelonuevo3);
+        Model model3 = new Model("VolksWagen", "Gol Trend", 28000.0,
+                ImageReader.readImage("static/images/Vehicles/VolksWagenGolTrend.JPG"), 4, CancelationPolicy.ZERO);
+
+        Model model4 = new Model("Toyota", "Corolla", 45000.0,
+                ImageReader.readImage("static/images/Vehicles/ToyotaCorolla.JPG"), 5, CancelationPolicy.FULL);
+
+        Model model5 = new Model("Chevrolet", "Spin", 48000.0,
+                ImageReader.readImage("static/images/Vehicles/ChevroletSpin.JPG"), 6, CancelationPolicy.TWENTY);
+
+        Model model6 = new Model("Ford", "EcoSport", 50000.0,
+                ImageReader.readImage("static/images/Vehicles/FordEcoSport.JPG"), 5, CancelationPolicy.ZERO);
+
+        Model model7 = new Model("Nissan", "Versa", 42000.0,
+                ImageReader.readImage("static/images/Vehicles/NissanVersa.JPG"), 5, CancelationPolicy.FULL);
+
+        Model model8 = new Model("Fiat", "Cronos", 35000.0,
+                ImageReader.readImage("static/images/Vehicles/FiatCronos.JPG"), 5, CancelationPolicy.TWENTY);
+
+        Model model9 = new Model("VolksWagen", "T-Cross", 52000.0,
+                ImageReader.readImage("static/images/Vehicles/VolksWagenTCross.JPG"), 5, CancelationPolicy.ZERO);
+
+        Model model10 = new Model("Fiat", "Argo", 34000.0,
+                ImageReader.readImage("static/images/Vehicles/FiatArgo.JPG"), 5, CancelationPolicy.FULL);
+
+        autonuevo1.addModel(model1);
+        autonuevo2.addModel(model2);
+        autonuevo3.addModel(model3);
+        autonuevo4.addModel(model4);
+        autonuevo5.addModel(model5);
+        autonuevo6.addModel(model6);
+        autonuevo7.addModel(model7);
+        autonuevo8.addModel(model8);
+        autonuevo9.addModel(model9);
+        autonuevo10.addModel(model10);
 
         autonuevo1.addBranch(branch1);
-        autonuevo2.addBranch(branch2);
-        autonuevo3.addBranch(branch3);
+        autonuevo2.addBranch(branch1);
+        autonuevo3.addBranch(branch1);
         autonuevo4.addBranch(branch1);
-        autonuevo5.addBranch(branch2);
-        autonuevo5.addBranch(branch3);
+        autonuevo5.addBranch(branch1);
         autonuevo6.addBranch(branch1);
-        autonuevo7.addBranch(branch2);
-        autonuevo8.addBranch(branch3);
+        autonuevo7.addBranch(branch1);
+        autonuevo8.addBranch(branch1);
         autonuevo9.addBranch(branch1);
-        autonuevo10.addBranch(branch2);
+        autonuevo10.addBranch(branch1);
 
         // Guardarlos en el repositorio
 
 
-        modelRepository.saveAll(Arrays.asList(modelonuevo,modelonuevo2,modelonuevo3));
+        modelRepository.saveAll(Arrays.asList(
+                model1,model2,model3,model4,model5,model6,model7,model8
+        ));
 
         branchRepository.saveAll(Arrays.asList(branch1,branch2,branch3));
         //vehicle repository
@@ -101,61 +127,9 @@ public class DBRunner implements CommandLineRunner {
 
         AppUser client1 = new AppUser("Fernando","Marzialetti","35060094","","fdmarzialetti@gmail.com", passwordEncoder.encode("123456"), UserRol.CLIENT);
 
-
-        //Reservation repository
-        /*Reservation reservation1 = new Reservation("ABCDEF", LocalDate.of(2025, 6, 3), LocalDate.of(2025, 6, 25), 20000.0);
-        reservation1.addClient(client1);
-        reservation1.addModel(modelonuevo);
-        reservation1.addBranch(branch1);
-
-        Reservation reservation2 = new Reservation("ZXCVBN", LocalDate.of(2025, 7, 1), LocalDate.of(2025, 7, 6), 15000.0);
-        reservation2.addClient(client1);
-        reservation2.addModel(modelonuevo2);
-        reservation2.addBranch(branch2);
-
-        Reservation reservation3 = new Reservation("QWERTY", LocalDate.of(2025, 6, 10), LocalDate.of(2025, 6, 14), 18000.0);
-        reservation3.addClient(client1);
-        reservation3.addModel(modelonuevo3);
-        reservation3.addBranch(branch3);
-
-        Reservation reservation4 = new Reservation("LMNOPQ", LocalDate.of(2025, 6, 15), LocalDate.of(2025, 6, 19), 13000.0);
-        reservation4.addClient(client1);
-        reservation4.addModel(modelonuevo);
-        reservation4.addBranch(branch1);
-
-        Reservation reservation5 = new Reservation("GHJKLM", LocalDate.of(2025, 7, 10), LocalDate.of(2025, 7, 14), 17000.0);
-        reservation5.addClient(client1);
-        reservation5.addModel(modelonuevo2);
-        reservation5.addBranch(branch2);
-
-        Reservation reservation6 = new Reservation("ASDFGH", LocalDate.of(2025, 7, 20), LocalDate.of(2025, 7, 24), 16000.0);
-        reservation6.addClient(client1);
-        reservation6.addModel(modelonuevo3);
-        reservation6.addBranch(branch3);
-
-        Reservation reservation7 = new Reservation("POIUYT", LocalDate.of(2025, 8, 1), LocalDate.of(2025, 8, 5), 14000.0);
-        reservation7.addClient(client1);
-        reservation7.addModel(modelonuevo);
-        reservation7.addBranch(branch1);
-
-        Reservation reservation8 = new Reservation("MNBVCX", LocalDate.of(2025, 8, 10), LocalDate.of(2025, 8, 15), 19000.0);
-        reservation8.addClient(client1);
-        reservation8.addModel(modelonuevo2);
-        reservation8.addBranch(branch2);
-
-        Reservation reservation9 = new Reservation("TREWQA", LocalDate.of(2025, 8, 20), LocalDate.of(2025, 8, 25), 21000.0);
-        reservation9.addClient(client1);
-        reservation9.addModel(modelonuevo3);
-        reservation9.addBranch(branch3);
-
-        Reservation reservation10 = new Reservation("YUIOPL", LocalDate.of(2025, 9, 1), LocalDate.of(2025, 9, 5), 15500.0);
-        reservation10.addClient(client1);
-        reservation10.addModel(modelonuevo2);
-        reservation10.addBranch(branch1);*/
-
         Reservation reservation1 = new Reservation("ABCDEF", LocalDate.of(2025, 6, 3), LocalDate.of(2025, 6, 25), 20000.0);
         reservation1.addClient(client1);
-        reservation1.addModel(modelonuevo);
+        reservation1.addModel(model1);
         reservation1.addBranch(branch1);
         reservation1.setVehicle(autonuevo1);
 
