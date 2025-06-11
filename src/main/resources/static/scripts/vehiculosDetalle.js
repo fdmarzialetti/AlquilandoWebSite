@@ -7,10 +7,10 @@ createApp({
       startDate: "",
       endDate: "",
       finalPrice: "",
-      branchId:"",
-      modelId:"",
+      branchId: "",
+      modelId: "",
       isAuthenticated: false,
-      user:{name:"Cuenta"}
+      user: { name: "Cuenta" }
     };
   },
   mounted() {
@@ -37,62 +37,87 @@ createApp({
     },
 
     confirmarReserva() {
-  if (!this.isAuthenticated) {
-    // Redirige al login con return para evitar que siga el flujo
-    window.location.href = "/login.html";
-    return;
-  }
+      if (!this.isAuthenticated) {
+        window.location.href = "/login.html";
+        return;
+      }
 
-  // Si está autenticado, continúa con la redirección al pago
-  const params = new URLSearchParams({
-    brand: this.vehicle.brand,
-    name: this.vehicle.name,
-    startDate: this.startDate,
-    endDate: this.endDate,
-    price: this.finalPrice,
-    modelId:this.modelId,
-    branchId:this.branchId
-  });
+      const params = new URLSearchParams({
+        brand: this.vehicle.brand,
+        name: this.vehicle.name,
+        startDate: this.startDate,
+        endDate: this.endDate,
+        price: this.finalPrice,
+        modelId: this.modelId,
+        branchId: this.branchId
+      });
 
-  window.location.href = `formPay.html?${params.toString()}`;
-},
+      window.location.href = `formPay.html?${params.toString()}`;
+    },
+
     checkAuth() {
       axios.get("/api/user/isAuthenticated")
         .then(response => {
           this.isAuthenticated = response.data === true;
+          return axios.get("/api/user/data");
         })
-        .then(res => axios.get("/api/user/data")).then(
-          res => {
-            this.user = res.data;
-          }
-        )
+        .then(res => {
+          this.user = res.data;
+        })
         .catch(error => {
           console.error("Error al verificar autenticación:", error);
           this.isAuthenticated = false;
         });
     },
-      logout() {
-    axios.post("/logout")
+
+    logout() {
+      axios.post("/logout")
         .then(() => {
-            this.isAuthenticated = false;
-            Swal.fire({
-                icon: "success",
-                title: "Sesión cerrada",
-                text: "Has cerrado sesión correctamente. Hasta pronto!",
-                confirmButtonText: "Aceptar"
-            }).then(() => {
-                window.location.href = "/index.html"; // o la página que corresponda
-            });
+          this.isAuthenticated = false;
+          Swal.fire({
+            icon: "success",
+            title: "Sesión cerrada",
+            text: "Has cerrado sesión correctamente. ¡Hasta pronto!",
+            confirmButtonText: "Aceptar"
+          }).then(() => {
+            window.location.href = "/index.html";
+          });
         })
         .catch(error => {
-            console.error("Error al cerrar sesión:", error);
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: "Hubo un problema al cerrar sesión. Intentalo de nuevo.",
-            });
+          console.error("Error al cerrar sesión:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Hubo un problema al cerrar sesión. Inténtalo de nuevo.",
+          });
         });
-}
+    },
+
+    redirigirAVehiculos() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const branchId = urlParams.get('branchId');
+      const startDate = urlParams.get('startDate');
+      const endDate = urlParams.get('endDate');
+
+      let url = 'vehiculos.html?';
+      const params = [];
+
+      if (branchId) {
+        params.push(`sucursal=${encodeURIComponent(branchId)}`);
+      }
+      if (startDate) {
+        params.push(`fechaInicio=${encodeURIComponent(startDate)}`);
+      }
+      if (endDate) {
+        params.push(`fechaFin=${encodeURIComponent(endDate)}`);
+      }
+
+      return url + params.join('&');
+    },
+    formatPriceArg(value) {
+      return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(value);
+    }
   }
 }).mount("#app");
+
 

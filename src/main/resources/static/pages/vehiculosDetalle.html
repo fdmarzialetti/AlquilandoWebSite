@@ -50,7 +50,12 @@
 
     <!-- Contenido principal -->
     <main class="container py-5" v-if="vehicle">
-      <h2 class="fw-bold vehicle-title text-center text-md-start mb-4">{{ vehicle.brand }} {{ vehicle.name }}</h2>
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold vehicle-title mb-2 mb-md-0">{{ vehicle.brand }} {{ vehicle.name }}</h2>
+        <a :href="redirigirAVehiculos()" class="btn btn-outline-primary">
+          <i class="bi bi-search me-2"></i>Volver
+        </a>
+      </div>
       <div class="row">
         <!-- Columna de la imagen -->
         <div class="col-md-6">
@@ -82,11 +87,11 @@
               </li>
               <li class="list-group-item d-flex justify-content-between">
                 <strong>Precio por día:</strong>
-                <span class="text-success fw-bold">${{ vehicle.price }}</span>
+                <span class="text-success fw-bold">{{ formatPriceArg(vehicle.price) }}</span>
               </li>
               <li class="list-group-item d-flex justify-content-between">
                 <strong>Precio final:</strong>
-                <span class="text-success fw-bold">${{ finalPrice }}</span>
+                <span class="text-success fw-bold">{{ formatPriceArg(finalPrice) }}</span>
               </li>
               <li class="list-group-item d-flex justify-content-between">
                 <strong>Capacidad:</strong>
