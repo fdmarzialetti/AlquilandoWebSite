@@ -46,14 +46,13 @@ createApp({
       precioDesde: null,
       precioHasta: null,
       filtroSeleccionado: "Todos los disponibles",
-      ordenSeleccionado: "precio-asc"
+      ordenSeleccionado: "marca-asc"
     };
   },
   mounted() {
     this.checkAuth();
     this.getBranchById(this.branchId);
     this.getAvailableModels();
-    this.ordenarVehiculos(this.ordenSeleccionado);
   },
   watch: {
     ordenSeleccionado(nuevoOrden) {
@@ -194,6 +193,7 @@ createApp({
         this.marcas = this.marcasUnicas();
         this.capacidades = this.capacidadesUnicas();
         this.modelos = this.modelosUnicos();
+        this.ordenarVehiculos(this.ordenSeleccionado);
       } catch (error) {
         console.error("Error al obtener vehículos:", error);
       }
