@@ -117,12 +117,12 @@ public class ModelController {
         return modelRepository.findById(id).map(model -> {
             if (model.hasActiveVehicles()) {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
-                        .body("No se puede desactivar el modelo porque tiene vehículos activos asociados.");
+                        .body("No se puede eliminar el modelo porque tiene vehículos activos asociados.");
             }
 
             model.setStatus(false);
             modelRepository.save(model);
-            return ResponseEntity.ok("Modelo desactivado");
+            return ResponseEntity.ok("Modelo eliminado");
         }).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body("Modelo no encontrado"));
     }
 
