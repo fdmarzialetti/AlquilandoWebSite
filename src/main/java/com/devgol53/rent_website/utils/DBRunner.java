@@ -140,7 +140,6 @@ public class DBRunner implements CommandLineRunner {
         userRepository.save(client1);
         userRepository.save(new AppUser("Martin","Esquercia","11111111","","martincito@gmail.com", passwordEncoder.encode("123456"), UserRol.EMPLOYEE));
         userRepository.save(new AppUser("Agustina","Sar","000020001","","agus99cabj12@gmail.com", passwordEncoder.encode("123456"), UserRol.CLIENT));
-        userRepository.save(new AppUser("Martin","Sar","000020002","","martinesquercia99@gmail.com", passwordEncoder.encode("123456"), UserRol.CLIENT));
         userRepository.save(new AppUser("Emiliano","Sar","000020003","","emilianoross649@gmail.com", passwordEncoder.encode("123456"), UserRol.CLIENT));
 
         reservationRepository.save(reservation1);
