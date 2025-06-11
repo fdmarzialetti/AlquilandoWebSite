@@ -117,7 +117,7 @@ public class ModelController {
         return modelRepository.findById(id).map(model -> {
             if (model.hasActiveVehicles()) {
                 return ResponseEntity.status(HttpStatus.CONFLICT)
-                        .body("No se puede eliminar el modelo porque tiene vehículos activos asociados.");
+                        .body("No se puede eliminar el modelo porque tiene vehículos asociados.");
             }
 
             model.setStatus(false);

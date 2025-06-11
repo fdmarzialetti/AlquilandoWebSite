@@ -44,5 +44,8 @@ public class Branch {
     public void addReservation(Reservation reservation){
         this.reservations.add(reservation);
     }
+    public boolean hasActiveVehicles() {
+        return vehicles.stream().anyMatch(Vehicle::isActive);
+    }
 
 }
