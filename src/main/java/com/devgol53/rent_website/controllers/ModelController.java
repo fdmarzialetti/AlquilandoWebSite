@@ -110,6 +110,11 @@ public class ModelController {
     @PutMapping("/{id}/deactivate")
     public ResponseEntity<String> deactivateModel(@PathVariable Long id) {
         return modelRepository.findById(id).map(model -> {
+            if (model.hasActiveVehicles()) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body("No se puede desactivar el modelo porque tiene vehículos activos asociados.");
+            }
+
             model.setStatus(false);
             modelRepository.save(model);
             return ResponseEntity.ok("Modelo desactivado");

@@ -38,7 +38,14 @@ createApp({
                         })
                         .catch(error => {
                             console.error("Error al desactivar el modelo:", error);
-                            Swal.fire('Error', 'No se pudo desactivar el modelo.', 'error');
+                            let msg = "No se pudo desactivar el modelo, porque tiene vehiculos asociados";
+
+                            if (error.response && error.response.status === 409) {
+                                // Mensaje devuelto por el backend si hay vehículos asociados
+                                msg = error.response.data;
+                            }
+
+                            Swal.fire('Error', msg, 'error');
                         });
                 }
             });
