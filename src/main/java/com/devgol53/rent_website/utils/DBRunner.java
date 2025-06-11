@@ -151,6 +151,6 @@ public class DBRunner implements CommandLineRunner {
 
 
 
-        cardRepository.saveAll(Arrays.asList(new Card("1234123412341234"),new Card("4567456745674567"),new Card("1111111111111111")));// Tarjeta Optima, Tarjeta sin saldo, Tarjeta sin conexion.
+        cardRepository.saveAll(Arrays.asList(new Card("1234123412341234","123","FERNANDO MARZIALETTI"),new Card("4567456745674567","456","AGUSTIN SARGIOTTI")));// Tarjeta Optima, Tarjeta sin saldo, Tarjeta sin conexion.
     }
 }

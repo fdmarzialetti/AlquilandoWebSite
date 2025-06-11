@@ -111,7 +111,9 @@ createApp({
                     branch: this.branchId,
                     model: this.modelId,
                     payment: this.finalPrice,
-                    card: this.card
+                    titular: this.card.name,
+                    cardNumber: this.card.number,
+                    cardCode: this.card.code,
                 };
 
                 const response = await axios.post('/api/reservation/createReservation', reserva);
