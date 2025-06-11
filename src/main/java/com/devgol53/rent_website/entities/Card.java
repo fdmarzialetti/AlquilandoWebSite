@@ -16,8 +16,12 @@ public class Card {
     @Setter(AccessLevel.NONE)
     private long id;
     private String number;
+    private String titular;
+    private String code;
 
-    public Card(String number) {
+    public Card(String number, String code, String titular) {
         this.number = number;
+        this.titular = titular;
+        this.code = code;
     }
 }

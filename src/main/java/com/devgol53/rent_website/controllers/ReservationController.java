@@ -43,7 +43,7 @@ public class ReservationController {
         @PostMapping("/createReservation")
         public ResponseEntity<String> createReservation(@RequestBody ReservationPostDto reservationPostDto, Authentication auth) throws MessagingException {
 
-            Optional<Card> findCard = cardRepository.findByNumber(reservationPostDto.getCard().getNumber());
+            Optional<Card> findCard = cardRepository.findByNumber(reservationPostDto.getCardNumber());
             if (!findCard.isPresent()){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("La tarjeta ingresada no es válida. Por favor, verifique los datos e intente nuevamente.");
             }
@@ -54,7 +54,11 @@ public class ReservationController {
             }
 
             if(findCard.isPresent()){
-                if(findCard.get().getNumber().equals("1234123412341234")){
+                Card card = findCard.get();
+                if(card.getNumber().equals(reservationPostDto.getCardNumber())
+                    && card.getTitular().equals(reservationPostDto.getTitular().toUpperCase())
+                    && card.getCode().equals(reservationPostDto.getCardCode())
+                ){
                     String newCode;
                     do {
                         newCode = CodeGenerator.generarCodigoAlfanumerico();
@@ -80,10 +84,10 @@ public class ReservationController {
                     iEmailService.sendMail(new EmailDTO("email",client.getEmail(),"✅ Confirmación de tu reserva "+newCode+" – Alquilando ", newCode,branchFind.getAddress()+", "+branchFind.getCity(),formattedDate,modelFind.getBrand()+" "+modelFind.getName()));
 
                     return ResponseEntity.status(HttpStatus.CREATED).body("Reserva realizada con éxito! Recibirá el codigo de reserva en su correo electrónico.");
-
                 }
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).body("La tarjeta ingresada no es válida. Por favor, verifique los datos e intente nuevamente.");
             }
-            return null;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("La tarjeta ingresada no es válida. Por favor, verifique los datos e intente nuevamente.");
         }
 
     @DeleteMapping("/{reservationCode}")

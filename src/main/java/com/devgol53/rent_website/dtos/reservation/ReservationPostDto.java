@@ -18,7 +18,9 @@ public class ReservationPostDto {
     private long branch;
     private long model;
     private Double payment;
-    private CardDTO card;
+    private String titular;
+    private String cardNumber;
+    private String cardCode;
 
     public ReservationPostDto(Reservation reservation){
         this.startDate = reservation.getStartDate();

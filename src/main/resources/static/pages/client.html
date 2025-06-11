@@ -82,7 +82,7 @@
                     <th>Pago</th>
                     <th>Sucursal</th>
                     <th>Modelo</th>
-                    <th>opciones</th>
+                    <th class="text-center align-middle">Estado</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -94,7 +94,7 @@
                     <td>${{ reserva.payment.toFixed(2) }}</td>
                     <td>{{ reserva.branchName }}</td>
                     <td>{{ reserva.modelName }}</td>
-                    <td><button class="btn btn-danger btn-sm" @click="deleteReservation(reserva.code)">x</button></td>
+                    <td class="text-center align-middle"><button class="btn btn-danger btn-sm" @click="deleteReservation(reserva.code)">x</button></td>
                 </tr>
                 </tbody>
             </table>
