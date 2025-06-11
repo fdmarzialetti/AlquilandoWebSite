@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -36,9 +37,11 @@ public class ModelController {
     }
 
     @GetMapping("/listActiveModels")
-    public List<GetModelDTO> getActiveModels(){
+    public List<GetModelDTO> getActiveModels() {
         return modelRepository.findAll().stream()
                 .filter(Model::isStatus)
+                .sorted(Comparator.comparing(Model::getBrand)
+                        .thenComparing(Model::getName))
                 .map(GetModelDTO::new)
                 .toList();
     }
@@ -59,7 +62,6 @@ public class ModelController {
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body("Ya existe el modelo");
     }
-
 
     @GetMapping("/availableModels")
     public List<AvalaibleModelDTO> getAvailableModels(
@@ -91,7 +93,10 @@ public class ModelController {
                     // Solo devolvemos el modelo si tiene más vehículos que reservas superpuestas
                     return overlappingReservations < totalVehicles;
                 })
-                .map(entry -> new AvalaibleModelDTO(entry.getKey()))
+                .map(Map.Entry::getKey)
+                .sorted(Comparator.comparing(Model::getBrand)
+                        .thenComparing(Model::getName))
+                .map(AvalaibleModelDTO::new)
                 .toList();
 
         return availableModels;
