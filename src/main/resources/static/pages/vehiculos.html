@@ -165,7 +165,7 @@
                     <h5 class="card-title mb-0">{{ model.name }}</h5>
                   </div>
                   <span class="fs-6 fw-semibold text-secondary mb-0">capacidad: {{ model.capacity }}</span>
-                  <span class="fs-5 fw-semibold text-success mb-0">${{ model.finalPrice }}</span>
+                  <span class="fs-5 fw-semibold text-success mb-0">{{ formatPriceArg(model.finalPrice) }}</span>
                 </div>
                 <a :href="`vehiculosDetalle.html?modelId=${encodeURIComponent(model.id)}&branchId=${branchId}&brand=${encodeURIComponent(model.brand)}&name=${encodeURIComponent(model.name)}&startDate=${encodeURIComponent(fechaInicio)}&endDate=${encodeURIComponent(fechaFin)}&price=${encodeURIComponent(model.finalPrice)}`"
                   class="btn btn-outline-primary boton-ver-mas">
