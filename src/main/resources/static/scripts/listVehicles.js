@@ -34,9 +34,9 @@ createApp({
                                 Swal.fire('Eliminado', 'El vehiculo ha sido eliminado correctamente.', 'success');
                             })
                             .catch(error => {
-                                console.error("Error al eliminar el vehiculo:", error);
-                                Swal.fire('Error', 'No se pudo eliminar el vehiculo.', 'error');
-                            });
+                            console.error("Error al desactivar el modelo:", error);
+                            Swal.fire('Error al eliminar el vehiculo',error.response.data , 'error');
+                        });
                     }
                 });
             },

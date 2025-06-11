@@ -31,6 +31,6 @@ public class ReservationGetDto {
         this.branchId = reservation.getBranch().getId();
         this.modelId = reservation.getModel().getId();
         this.branchName = reservation.getBranch().getCity(); // o .getAddress() si prefieres
-        this.modelName = reservation.getModel().getName();
+        this.modelName = reservation.getModel().getBrand() +" - "+reservation.getModel().getName();
     }
 }

@@ -63,8 +63,11 @@
 <!-- Tabla de vehiculos -->
 <div id="app" class="container mt-5">
   <h2 class="mb-4">Lista de Vehiculos</h2>
+  <div v-if="vehicles.length === 0" class="alert alert-info text-center">
+    Aún no se ha cargado ningún vehiculo.
+  </div>
 
-  <table class="table table-bordered">
+  <table v-else class="table table-bordered">
     <thead class="table-light">
     <tr>
       <th>Patente</th>

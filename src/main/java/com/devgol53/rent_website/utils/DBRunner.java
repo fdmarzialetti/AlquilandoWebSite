@@ -153,6 +153,13 @@ public class DBRunner implements CommandLineRunner {
         reservation10.addModel(modelonuevo2);
         reservation10.addBranch(branch1);*/
 
+        Reservation reservation1 = new Reservation("ABCDEF", LocalDate.of(2025, 6, 3), LocalDate.of(2025, 6, 25), 20000.0);
+        reservation1.addClient(client1);
+        reservation1.addModel(modelonuevo);
+        reservation1.addBranch(branch1);
+        reservation1.setVehicle(autonuevo1);
+
+
 
         //appUsers
         userRepository.save(new AppUser("Maria","Ceccato","00000000","","mariaceccato@gmail.com", passwordEncoder.encode("123456"), UserRol.ADMIN));
@@ -161,10 +168,14 @@ public class DBRunner implements CommandLineRunner {
         userRepository.save(new AppUser("Agustina","Sar","000020001","","agus99cabj12@gmail.com", passwordEncoder.encode("123456"), UserRol.CLIENT));
         userRepository.save(new AppUser("Martin","Sar","000020002","","martinesquercia99@gmail.com", passwordEncoder.encode("123456"), UserRol.CLIENT));
         userRepository.save(new AppUser("Emiliano","Sar","000020003","","emilianoross649@gmail.com", passwordEncoder.encode("123456"), UserRol.CLIENT));
+
+        reservationRepository.save(reservation1);
         /*reservationRepository.saveAll(List.of(
                 reservation1, reservation2, reservation3, reservation4, reservation5,
                 reservation6, reservation7, reservation8, reservation9, reservation10
         ));*/
+
+
 
         cardRepository.saveAll(Arrays.asList(new Card("1234123412341234"),new Card("4567456745674567"),new Card("1111111111111111")));// Tarjeta Optima, Tarjeta sin saldo, Tarjeta sin conexion.
     }

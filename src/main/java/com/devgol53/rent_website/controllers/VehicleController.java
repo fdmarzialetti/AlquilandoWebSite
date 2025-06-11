@@ -61,9 +61,14 @@ public class VehicleController {
     @PutMapping("/{id}/deleteVehicle")
     public ResponseEntity<String> deleteVehicle(@PathVariable Long id) {
         return vehicleRepository.findById(id).map(vehicle -> {
+            if (vehicle.hasOngoingReservationToday()) {
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body("No se puede eliminar el vehículo porque tiene una reserva en curso.");
+            }
+
             vehicle.setActive(false);
             vehicleRepository.save(vehicle);
-            return ResponseEntity.ok("Vehiculo desactivado");
-        }).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vehiculo no encontrado"));
+            return ResponseEntity.ok("Vehículo desactivado");
+        }).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vehículo no encontrado"));
     }
 }

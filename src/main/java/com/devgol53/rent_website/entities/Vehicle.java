@@ -74,4 +74,15 @@ public class Vehicle {
         return false;
     }
 
+    public boolean hasOngoingReservationToday() {
+        LocalDate today = LocalDate.now();
+        for (Reservation reservation : reservations) {
+            if (!reservation.getStartDate().isAfter(today) && !reservation.getEndDate().isBefore(today)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 }
