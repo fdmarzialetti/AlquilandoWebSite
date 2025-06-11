@@ -23,7 +23,7 @@ createApp({
         deactivateModel(id) {
             Swal.fire({
                 title: '¿Estás seguro?',
-                text: 'Esta acción desactivará el modelo.',
+                text: 'Esta acción eliminará el modelo.',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Sí, eliminar',
@@ -34,11 +34,11 @@ createApp({
                         .then(() => {
                             // Remueve el modelo de la lista local
                             this.models = this.models.filter(model => model.id !== id);
-                            Swal.fire('Desactivado', 'El modelo ha sido desactivado.', 'success');
+                            Swal.fire('Eliminado', 'El modelo ha sido eliminado.', 'success');
                         })
                         .catch(error => {
-                            console.error("Error al desactivar el modelo:", error);
-                            let msg = "No se pudo desactivar el modelo, porque tiene vehiculos asociados";
+                            console.error("Error al eliminar el modelo:", error);
+                            let msg = "No se pudo eliminar el modelo, porque tiene vehiculos asociados";
 
                             if (error.response && error.response.status === 409) {
                                 // Mensaje devuelto por el backend si hay vehículos asociados
