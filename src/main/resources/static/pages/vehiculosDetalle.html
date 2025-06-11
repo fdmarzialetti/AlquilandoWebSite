@@ -66,11 +66,19 @@
             <ul class="list-group list-group-flush">
               <li class="list-group-item d-flex justify-content-between">
                 <strong>Reserva desde:</strong>
-                <span class="text-primary">{{ startDate }}</span>
+                <span class="text-primary">
+                {{
+                  new Date(startDate).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })
+                }}
+                </span>
               </li>
               <li class="list-group-item d-flex justify-content-between">
                 <strong>Hasta:</strong>
-                <span class="text-primary">{{ endDate }}</span>
+                <span class="text-primary">
+                  {{
+                    new Date(endDate).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })
+                  }}
+                </span>
               </li>
               <li class="list-group-item d-flex justify-content-between">
                 <strong>Precio por día:</strong>
