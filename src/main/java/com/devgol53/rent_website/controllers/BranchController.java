@@ -51,7 +51,7 @@ public class BranchController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sucursal no encontrada"));
 
         // Verifica si tiene vehículos o empleados asociados
-        if (!branch.getEmployees().isEmpty() || !branch.getVehicles().isEmpty()) {
+        if (!branch.getEmployees().isEmpty() || branch.hasActiveVehicles()) {
             return ResponseEntity.badRequest()
                     .body("No se puede desactivar la sucursal porque tiene empleados o vehículos asociados.");
         }
