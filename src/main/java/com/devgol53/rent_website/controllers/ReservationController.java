@@ -1,6 +1,7 @@
 package com.devgol53.rent_website.controllers;
 
 import com.devgol53.rent_website.dtos.email.EmailDTO;
+import com.devgol53.rent_website.dtos.reservation.ReservationGetDto;
 import com.devgol53.rent_website.dtos.reservation.ReservationPostDto;
 import com.devgol53.rent_website.entities.*;
 import com.devgol53.rent_website.repositories.*;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -113,6 +115,22 @@ public class ReservationController {
         // Eliminar la reserva
         reservationRepository.delete(reservation);
         return ResponseEntity.status(HttpStatus.OK).body("Reserva eliminada correctamente.");
+    }
+
+    @PostMapping("/validar-codigo")
+    public ResponseEntity<?> validarCodigoReserva(@RequestBody ReservationGetDto dto) {
+        Optional<Reservation> optionalReservation = reservationRepository.findByCode(dto.getCode());
+
+        if (optionalReservation.isEmpty()) {
+            return ResponseEntity.ok().body(Map.of("valido", false));
+        }
+
+        Reservation reserva = optionalReservation.get();
+
+        // Verificar si la fecha de inicio es hoy
+        boolean esHoy = reserva.getStartDate().equals(dto.getStartDate());
+
+        return ResponseEntity.ok().body(Map.of("valido", esHoy));
     }
 }
 
