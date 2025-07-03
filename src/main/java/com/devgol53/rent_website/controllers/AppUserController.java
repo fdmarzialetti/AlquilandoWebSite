@@ -61,6 +61,15 @@ public class AppUserController {
         return false;
     }
 
+
+    @GetMapping("/isEmployee")
+    public Boolean isEmployee(Authentication auth) throws MessagingException {
+        Boolean isEmployee = auth.getAuthorities().stream()
+                .anyMatch(authority -> authority.getAuthority().equals("ROLE_EMPLOYEE"));
+
+        return isEmployee;
+    }
+
     @PostMapping("/resetVerificationCode")
     public void resetVerificationCode(Authentication auth){
         AppUser admin = appUserRepository.findByEmail(auth.getName()).get();
