@@ -67,6 +67,9 @@ createApp({
                     const isAdminResponse = await axios.get("/api/user/isAdmin");
                     const isAdmin = isAdminResponse.data === true;
 
+                    const isEmployeeResponse = await axios.get("/api/user/isEmployee");
+                    const isEmployee = isEmployeeResponse.data === true;
+
                     // 👉 Ocultar loader
                     Swal.close();
 
@@ -74,6 +77,11 @@ createApp({
                         await axios.post("/logout");
                         window.location.href = `../pages/login2FA.html?username=${encodeURIComponent(this.username)}&password=${encodeURIComponent(this.password)}`;
                         return;
+                    }
+
+                    if (isEmployee) {
+                            window.location.href = "/pages/employee.html";
+                            return;
                     }
 
                     Swal.fire({
