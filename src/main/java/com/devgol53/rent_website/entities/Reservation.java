@@ -38,6 +38,8 @@ public class Reservation {
     @ManyToOne
     private AppUser client;
 
+    private Boolean cancelled = false;
+
     // private Valoration valoration;
 
     public Reservation(String code,LocalDate startDate, LocalDate endDate, Double payment) {

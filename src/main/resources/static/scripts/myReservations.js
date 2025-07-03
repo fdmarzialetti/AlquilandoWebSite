@@ -6,10 +6,54 @@ createApp({
             reservas: [],
             isAuthenticated: false,
             user: { name: "Cuenta" }
-
         };
     },
     methods: {
+        valorarReserva(reservaId) {
+            window.location.href = `/pages/valorarReserva.html?id=${reservaId}`;
+        },
+
+        parseFechaLocal(fechaStr) {
+            const [year, month, day] = fechaStr.split("-");
+            return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+        },
+
+        esReservaEnCurso(startDate, endDate) {
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+
+            const inicio = this.parseFechaLocal(startDate);
+            inicio.setHours(0, 0, 0, 0);
+
+            const fin = this.parseFechaLocal(endDate);
+            fin.setHours(0, 0, 0, 0);
+
+            return hoy >= inicio && hoy <= fin;
+        },
+
+        reservaFinalizada(endDate) {
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+
+            const fin = this.parseFechaLocal(endDate);
+            fin.setHours(0, 0, 0, 0);
+
+            return fin < hoy;
+        },
+
+        puedeCancelar(startDate) {
+            const hoy = new Date();
+            hoy.setHours(0, 0, 0, 0);
+
+            const fechaInicio = this.parseFechaLocal(startDate);
+            fechaInicio.setHours(0, 0, 0, 0);
+
+            const limiteCancelacion = new Date(fechaInicio);
+            limiteCancelacion.setDate(fechaInicio.getDate() - 1);
+            console.log("puede cancelar: " + (hoy < limiteCancelacion))
+            return hoy < limiteCancelacion;
+        },
+
         async getReservations() {
             try {
                 const token = localStorage.getItem('token');
@@ -23,61 +67,78 @@ createApp({
 
                 this.reservas = await response.json();
                 this.checkAuth();
+                console.log(this.reservas);
             } catch (error) {
                 console.error("Error de red:", error);
             }
         },
-        deleteReservation(reservationCode) {
+
+       deleteReservation(reservationCode) {
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: "Esta acción cancelará la reserva.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Continuar',
+        cancelButtonText: 'Atrás'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Mostrar loading mientras se cancela la reserva y se envía el mail
             Swal.fire({
-                title: '¿Estás seguro?',
-                text: "Esta acción eliminará la reserva.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    axios.delete("/api/reservation/" + reservationCode)
-                        .then(response => {
-                            Swal.fire(
-                                'Eliminada',
-                                response.data,
-                                'success'
-                            );
-                            this.getReservations();
-                        })
-                        .catch(error => {
-                            const message = error.response ? error.response.data : "Ocurrió un error al intentar eliminar la reserva.";
-                            Swal.fire(
-                                'Error',
-                                message,
-                                'error'
-                            );
-                        });
+                title: 'Procesando...',
+                text: 'Cancelando la reserva...',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
                 }
             });
-        },
+
+            axios.delete("/api/reservation/" + reservationCode)
+                .then(response => {
+                    Swal.close(); // Cierra el loading
+                    Swal.fire({
+                        title: 'Reserva cancelada',
+                        html: `
+                            <p>${response.data}</p>
+                        `,
+                        icon: 'success'
+                    });
+                    this.getReservations();
+                })
+                .catch(error => {
+                    Swal.close(); // Cierra el loading si hay error
+                    const message = error.response ? error.response.data : "Ocurrió un error al intentar eliminar la reserva.";
+                    Swal.fire(
+                        'Error',
+                        message,
+                        'error'
+                    );
+                });
+        }
+    });
+},
         formatFecha(fechaStr) {
             const [year, month, day] = fechaStr.split('-');
             return `${parseInt(day)}/${parseInt(month)}/${year}`;
         },
+
         checkAuth() {
             axios.get("/api/user/isAuthenticated")
                 .then(response => {
                     this.isAuthenticated = response.data === true;
                 })
-                .then(res => axios.get("/api/user/data")).then(
-                    res => {
-                        this.user = res.data;
-                    }
-                )
+                .then(() => axios.get("/api/user/data"))
+                .then(res => {
+                    this.user = res.data;
+                })
                 .catch(error => {
                     console.error("Error al verificar autenticación:", error);
                     this.isAuthenticated = false;
                 });
         },
+
         logout() {
             axios.post("/logout")
                 .then(() => {
@@ -88,7 +149,7 @@ createApp({
                         text: "Has cerrado sesión correctamente. Hasta pronto!",
                         confirmButtonText: "Aceptar"
                     }).then(() => {
-                        window.location.href = "/index.html"; // o la página que corresponda
+                        window.location.href = "/index.html";
                     });
                 })
                 .catch(error => {
@@ -102,6 +163,6 @@ createApp({
         }
     },
     async mounted() {
-        this.getReservations()
+        this.getReservations();
     },
 }).mount('#app');

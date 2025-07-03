@@ -81,8 +81,9 @@ public class ModelController {
                     Model model = entry.getKey();
                     long totalVehicles = entry.getValue();
 
-                    // Filtramos las reservas de este modelo que se solapan con el rango dado
+                    // Filtramos las reservas activas (no canceladas) que se solapan con el rango dado
                     long overlappingReservations = model.getReservations().stream()
+                            .filter(res -> !res.getCancelled()) // 👈 Excluye canceladas
                             .filter(res -> {
                                 LocalDate resStart = res.getStartDate();
                                 LocalDate resEnd = res.getEndDate();
@@ -90,7 +91,7 @@ public class ModelController {
                             })
                             .count();
 
-                    // Solo devolvemos el modelo si tiene más vehículos que reservas superpuestas
+                    // Solo devolvemos el modelo si tiene más vehículos que reservas superpuestas activas
                     return overlappingReservations < totalVehicles;
                 })
                 .map(Map.Entry::getKey)

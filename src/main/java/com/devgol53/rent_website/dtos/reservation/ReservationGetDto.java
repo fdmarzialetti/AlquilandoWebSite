@@ -21,6 +21,7 @@ public class ReservationGetDto {
     private long modelId;
     private String branchName;
     private String modelName;
+    private Boolean isCancelled;
 
     public ReservationGetDto(Reservation reservation){
         this.id = reservation.getId();
@@ -32,5 +33,6 @@ public class ReservationGetDto {
         this.modelId = reservation.getModel().getId();
         this.branchName = reservation.getBranch().getCity(); // o .getAddress() si prefieres
         this.modelName = reservation.getModel().getBrand() +" - "+reservation.getModel().getName();
+        this.isCancelled = reservation.getCancelled();
     }
 }
