@@ -83,7 +83,7 @@ public class DBRunner implements CommandLineRunner {
         Model model10 = new Model("Fiat", "Argo", 34000.0,
                 ImageReader.readImage("static/images/Vehicles/FiatArgo.JPG"), 5, CancelationPolicy.FULL);
 
-        autonuevo1.addModel(model2);
+        autonuevo1.addModel(model1);
         autonuevo2.addModel(model2);
         autonuevo3.addModel(model3);
         autonuevo4.addModel(model4);

@@ -10,7 +10,8 @@ createApp({
       branchId: "",
       modelId: "",
       isAuthenticated: false,
-      user: { name: "Cuenta" }
+      user: { name: "Cuenta" },
+      score:0,
     };
   },
   mounted() {
@@ -22,6 +23,7 @@ createApp({
     this.finalPrice = params.get("price");
     this.branchId = params.get("branchId");
     this.modelId = params.get("modelId");
+    this.score = params.get("score")
     this.getVehicleDetail(brand, name);
     this.checkAuth();
   },

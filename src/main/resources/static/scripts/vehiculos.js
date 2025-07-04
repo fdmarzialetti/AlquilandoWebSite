@@ -68,6 +68,7 @@ createApp({
       this.vehiculosConFiltroPrecio.sort((a, b) => {
         switch (criterio) {
           case "precio-asc":
+            console.log(this.models)
             return a.finalPrice - b.finalPrice;
           case "precio-desc":
             return b.finalPrice - a.finalPrice;
@@ -194,6 +195,7 @@ createApp({
         this.capacidades = this.capacidadesUnicas();
         this.modelos = this.modelosUnicos();
         this.ordenarVehiculos(this.ordenSeleccionado);
+        console.log(this.models)
       } catch (error) {
         console.error("Error al obtener vehículos:", error);
       }
