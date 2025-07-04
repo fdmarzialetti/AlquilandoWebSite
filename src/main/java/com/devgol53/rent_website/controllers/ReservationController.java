@@ -4,6 +4,7 @@ import com.devgol53.rent_website.dtos.email.EmailDTO;
 import com.devgol53.rent_website.dtos.reservation.ReservationConfirmWhitdrawDto;
 import com.devgol53.rent_website.dtos.reservation.ReservationGetDto;
 import com.devgol53.rent_website.dtos.reservation.ReservationPostDto;
+import com.devgol53.rent_website.dtos.valoration.ValorationDTO;
 import com.devgol53.rent_website.entities.*;
 import com.devgol53.rent_website.repositories.*;
 import com.devgol53.rent_website.services.IEmailService;
@@ -42,9 +43,9 @@ public class ReservationController {
 
 
         @GetMapping("/myReservations")
-        public List<ReservationPostDto> getMyReservations(Authentication auth){
+        public List<ReservationGetDto> getMyReservations(Authentication auth){
             AppUser client = appUserRepository.findByEmail(auth.getName()).get();
-            return client.getReservations().stream().map(ReservationPostDto::new).toList();
+            return client.getReservations().stream().map(ReservationGetDto::new).toList();
         }
 
         @PostMapping("/createReservation")
@@ -165,6 +166,17 @@ public class ReservationController {
         }
         return ResponseEntity.ok().body("../pages/reassign.html");
     }
+    @PostMapping("/addValoration/{reservationId}")
+    public ResponseEntity<?> addValoration(@PathVariable long reservationId, @RequestBody ValorationDTO valorationDTO){
+            Optional<Reservation> reservationOptional = reservationRepository.findById(reservationId);
+            if(!reservationOptional.isPresent()){
+                return ResponseEntity.badRequest().body("No se encuentra la reserva");
+            }
+            reservationOptional.get().addValoration(new Valoration(valorationDTO));
+            reservationRepository.save(reservationOptional.get());
+            return ResponseEntity.ok().body("¡Gracias por compartir tu experiencia!");
+    }
+
 }
 
 

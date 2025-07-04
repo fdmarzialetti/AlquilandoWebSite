@@ -1,9 +1,7 @@
 package com.devgol53.rent_website.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.devgol53.rent_website.dtos.valoration.ValorationDTO;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,4 +17,17 @@ public class Valoration {
     private long id;
     private int score;
     private String comment;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "reservation_id", nullable = false)
+    private Reservation reservation;
+
+    public Valoration(ValorationDTO valorationDTO) {
+        this.score= valorationDTO.getScore();
+        this.comment = valorationDTO.getComment();
+    }
+
+    public void addReservation(Reservation reservation){
+        this.reservation = reservation;
+    }
 }

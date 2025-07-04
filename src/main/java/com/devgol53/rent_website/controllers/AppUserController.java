@@ -31,6 +31,7 @@ public class AppUserController {
                         .toList())
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
+
     @GetMapping("/isAuthenticated")
     public Boolean clientIsAuth(Authentication auth){
         return auth.isAuthenticated();
