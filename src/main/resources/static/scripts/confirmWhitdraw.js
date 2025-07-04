@@ -6,41 +6,54 @@ document.addEventListener("DOMContentLoaded", () => {
     const codigo = inputCodigo.value.trim();
 
     if (codigo.length !== 6) {
-      alert("El código debe tener 6 caracteres.");
+      Swal.fire({
+        icon: "warning",
+        title: "Código inválido",
+        text: "El código debe tener 6 caracteres.",
+      });
       return;
     }
 
-    // Obtener la fecha actual en formato YYYY-MM-DD
     const hoy = new Date().toISOString().split("T")[0];
 
-    // Llamada a la API para validar
-    fetch("/api/reservas/validar-codigo", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        codigo: codigo,
-        fecha: hoy
-      }),
+    axios.post("/api/reservation/validar-codigo", {
+      code: codigo,
+      startDate: hoy,
     })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("No se pudo verificar el código");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        if (data.valido) {
-          alert("Código correcto. Puede retirar el vehículo.");
-          // Acá podrías redirigir si querés: window.location.href = '/retirar.html'
-        } else {
-          alert("Código inválido o no corresponde al día de hoy.");
-        }
-      })
-      .catch((error) => {
-        console.error("Error en la verificación:", error);
-        alert("Ocurrió un error al verificar el código.");
+    .then((response) => {
+      const data = response.data;
+      console.log(data)
+      if (data && data === "../pages/reassign.html") {
+        const params = new URLSearchParams({
+          startDate: hoy,
+          branchId: data.branchId,
+          fechaFin: data.fechaFin,
+        });
+
+        window.location.href = `${data}?${params.toString()}`;
+      } else if (data && data === "../pages/additional.html") {
+        const params = new URLSearchParams({
+          code: codigo,
+        });
+
+        window.location.href = `${data}?${params.toString()}`;
+      } else {
+        Swal.fire({
+          icon: "success",
+          title: "Código válido",
+          text: "Código válido, pero no se indicó una redirección válida.",
+        });
+      }
+    })
+    .catch((error) => {
+      console.error("Error en la verificación:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "El código que intentas ingresar no corresponde a una reserva válida.",
       });
+    });
   });
 });
+
+

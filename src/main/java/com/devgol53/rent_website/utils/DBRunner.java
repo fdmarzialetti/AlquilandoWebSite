@@ -83,7 +83,7 @@ public class DBRunner implements CommandLineRunner {
         Model model10 = new Model("Fiat", "Argo", 34000.0,
                 ImageReader.readImage("static/images/Vehicles/FiatArgo.JPG"), 5, CancelationPolicy.FULL);
 
-        autonuevo1.addModel(model1);
+        autonuevo1.addModel(model2);
         autonuevo2.addModel(model2);
         autonuevo3.addModel(model3);
         autonuevo4.addModel(model4);
@@ -133,12 +133,23 @@ public class DBRunner implements CommandLineRunner {
         reservation1.addBranch(branch1);
         reservation1.setVehicle(autonuevo1);
 
+        Reservation reservation2 = new Reservation("AAAAAA", LocalDate.now(), LocalDate.of(2025, 7, 25), 20000.0);
+        reservation2.addClient(client1);
+        reservation2.addModel(model1);
+        reservation2.addBranch(branch1);
+        
+
+
 
 
         //appUsers
         userRepository.save(new AppUser("Maria","Ceccato","00000000","","mariaceccato@gmail.com", passwordEncoder.encode("123456"), UserRol.ADMIN));
         userRepository.save(client1);
-        userRepository.save(new AppUser("Martin","Esquercia","11111111","","martincito@gmail.com", passwordEncoder.encode("123456"), UserRol.EMPLOYEE));
+        AppUser empleadoM = new AppUser("Martin","Esquercia","11111111","","martincito@gmail.com", passwordEncoder.encode("123456"), UserRol.EMPLOYEE);
+        empleadoM.setBranch(branch1);
+        userRepository.save(empleadoM);
+
+
         userRepository.save(new AppUser("Agustina","Sar","000020001","","agus99cabj12@gmail.com", passwordEncoder.encode("123456"), UserRol.CLIENT));
         userRepository.save(new AppUser("Emiliano","Sar","000020003","","emilianoross649@gmail.com", passwordEncoder.encode("123456"), UserRol.CLIENT));
 
