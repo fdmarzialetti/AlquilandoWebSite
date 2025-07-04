@@ -43,7 +43,10 @@ public class Reservation {
     private List<AdditionalDetail> additionalDetails = new java.util.ArrayList<>();
 
 
-    // private Valoration valoration;
+    private Boolean cancelled = false;
+
+    @OneToOne(mappedBy = "reservation", cascade = CascadeType.ALL)
+    private Valoration valoration;
 
     public Reservation(String code,LocalDate startDate, LocalDate endDate, Double payment) {
         this.code = code;
@@ -79,4 +82,8 @@ public class Reservation {
         additionalDetail.addReservation(this);
     }
 
+    public void addValoration(Valoration valoration){
+        this.valoration = valoration;
+        valoration.addReservation(this);
+    }
 }
