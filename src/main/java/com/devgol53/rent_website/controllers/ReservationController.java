@@ -1,6 +1,8 @@
 package com.devgol53.rent_website.controllers;
 
 import com.devgol53.rent_website.dtos.email.EmailDTO;
+import com.devgol53.rent_website.dtos.reservation.ReservationConfirmWhitdrawDto;
+import com.devgol53.rent_website.dtos.reservation.ReservationGetDto;
 import com.devgol53.rent_website.dtos.reservation.ReservationPostDto;
 import com.devgol53.rent_website.entities.*;
 import com.devgol53.rent_website.repositories.*;
@@ -17,6 +19,7 @@ import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -34,6 +37,9 @@ public class ReservationController {
         private BranchRepository branchRepository;
         @Autowired
         private ModelRepository modelRepository;
+        @Autowired
+        private VehicleRepository vehicleRepository;
+
 
         @GetMapping("/myReservations")
         public List<ReservationPostDto> getMyReservations(Authentication auth){
@@ -134,6 +140,30 @@ public class ReservationController {
         String mensaje = currencyFormatter.format(refundAmount);
         iEmailService.sendMail(new EmailDTO("refund",client.getEmail(),"Cancelación de su reserva "+reservationCode+" en Alquilando",mensaje));
         return ResponseEntity.status(HttpStatus.OK).body("¡Listo! Tu reserva fue cancelada. Revisá tu correo para ver si te corresponde un reembolso.");
+    }
+
+    @PostMapping("/validar-codigo")
+    public ResponseEntity<?> validarCodigoReserva(@RequestBody ReservationConfirmWhitdrawDto dto,Authentication auth) {
+        Optional<Reservation> optionalReservation = reservationRepository.findByCode(dto.getCode());
+
+        AppUser empleado = appUserRepository.findByEmail(auth.getName()).get();
+
+
+        if (optionalReservation.isEmpty() || !empleado.getBranch().equals(optionalReservation.get().getBranch())) {
+            return ResponseEntity.badRequest().body("No coincide con un codigo valido,una reserva para hoy o no corresponde a la sucursal");
+        }
+
+
+
+        Reservation reserva = optionalReservation.get();
+        // Verificar si la fecha de inicio es hoy
+        boolean esHoy = reserva.getStartDate().equals(dto.getStartDate());
+
+        Boolean hayVehiculoDisp = vehicleRepository.findAll().stream().filter(v->v.getBranch().equals(empleado.getBranch())).anyMatch(v->v.getModel().equals(optionalReservation.get().getModel()));
+        if(hayVehiculoDisp){
+            return ResponseEntity.ok().body("../pages/additional.html");
+        }
+        return ResponseEntity.ok().body("../pages/reassign.html");
     }
 }
 
