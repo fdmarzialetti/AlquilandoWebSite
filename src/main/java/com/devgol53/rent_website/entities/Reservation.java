@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -37,6 +38,10 @@ public class Reservation {
 
     @ManyToOne
     private AppUser client;
+
+    @OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AdditionalDetail> additionalDetails = new java.util.ArrayList<>();
+
 
     // private Valoration valoration;
 
@@ -67,6 +72,11 @@ public class Reservation {
     public void addClient(AppUser client){
         this.client=client;
         client.addReservation(this);
+    }
+
+    public void addAdditionalDetail(AdditionalDetail additionalDetail){
+        this.additionalDetails.add(additionalDetail);
+        additionalDetail.addReservation(this);
     }
 
 }
