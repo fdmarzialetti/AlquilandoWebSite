@@ -8,16 +8,16 @@ createApp({
             user: { name: "Cuenta" },
             reservaId: null,
             nuevaValoracion: {
-                puntaje: 0,
-                comentario: ''
+                score: 0,
+                comment: ''
             }
         };
     },
     methods: {
         abrirModalValoracion(reservaId) {
             this.nuevaValoracion.reservaId = reservaId;
-            this.nuevaValoracion.puntaje = 0;
-            this.nuevaValoracion.comentario = '';
+            this.nuevaValoracion.score = 0;
+            this.nuevaValoracion.comment = '';
 
             // Mostrar modal manualmente
             const modalElement = document.getElementById('valorarModal');
@@ -26,16 +26,8 @@ createApp({
         },
 
         enviarValoracion() {
-            Swal.fire({
-                title: 'Enviando...',
-                text: 'Registrando tu valoración, por favor espera.',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
-
-            axios.post('/api/reservation/addValoration/' + this.nuevaValoracion.reservaId, this.nuevaValoracion)
+            console.log(this.nuevaValoracion);
+            axios.post('/api/reservation/addValoration/' + this.nuevaValoracion.reservaId, {"score":this.nuevaValoracion.score,"comment":this.nuevaValoracion.comment})
                 .then(response => {
                     Swal.close(); // Cerrar loader
 

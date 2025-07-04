@@ -93,13 +93,13 @@
                     <!-- Estrellas con espaciado -->
                     <div class="text-center fs-3 mb-2">
                         <i v-for="n in 5" :key="n" class="bi mx-1" :title="n + ' estrella' + (n > 1 ? 's' : '')"
-                            :class="n <= nuevaValoracion.puntaje ? 'bi-star-fill text-warning' : 'bi-star text-secondary'"
-                            style="cursor: pointer" @click="nuevaValoracion.puntaje = n"></i>
+                            :class="n <= nuevaValoracion.score ? 'bi-star-fill text-warning' : 'bi-star text-secondary'"
+                            style="cursor: pointer" @click="nuevaValoracion.score = n"></i>
                     </div>
                     <!-- Botón quitar estrellas -->
                     <div class="text-center mb-3">
                         <button type="button" class="btn btn-outline-secondary btn-sm"
-                            @click="nuevaValoracion.puntaje = 0">
+                            @click="nuevaValoracion.score = 0">
                             Quitar estrellas
                         </button>
                     </div>

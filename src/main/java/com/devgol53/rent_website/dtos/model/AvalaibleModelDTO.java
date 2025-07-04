@@ -14,8 +14,9 @@ public class AvalaibleModelDTO {
     private byte[] image;
     private int capacity;
     private CancelationPolicy cancelationPolicy;
+    private int score;
 
-    public AvalaibleModelDTO(Model model){
+    public AvalaibleModelDTO(Model model,int score){
         this.id = model.getId();
         this.brand = model.getBrand();
         this.name = model.getName();
@@ -23,5 +24,6 @@ public class AvalaibleModelDTO {
         this.image = model.getImage();
         this.capacity = model.getCapacity();
         this.cancelationPolicy = model.getCancelationPolicy();
+        this.score = score;
     }
 }
