@@ -58,7 +58,7 @@ createApp({
       }).format(value);
     },
     volver() {
-      window.location.href = "listaAdditionals.html"; // Ruta relativa desde /pages/
+      window.location.href = `additional.html?code=${this.codigoReserva}`; // Ruta relativa desde /pages/
     }
   },
   mounted() {
