@@ -19,7 +19,6 @@ public class AdditionalDetail {
     private Additional adicional;
     @ManyToOne
     private Reservation reserva;
-    private int quantity;
     private Double price;
 
     public void addReservation(Reservation reservation){

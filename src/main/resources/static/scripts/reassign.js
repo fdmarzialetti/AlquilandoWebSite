@@ -14,6 +14,8 @@ createApp({
       fechaInicio: getParam("startDate"),
       fechaFin: getParam("fechaFin"),
       branchId: getParam("branchId"),
+      precioMinimo: Number(getParam("precioMinimo")),
+      codigoReserva: getParam("codigoReserva"),
       models: [],
       vehiculosConFiltro: [],
       marcas: [],
@@ -23,11 +25,13 @@ createApp({
       filtroModelo: null,
       filtroCapacidad: null,
       filtroSeleccionado: "Todos los disponibles",
-      ordenSeleccionado: "marca-asc"
+      ordenSeleccionado: "marca-asc",
+      precioDesde: null,
+      precioHasta: null,
     };
   },
   mounted() {
-    if (!this.fechaInicio || !this.fechaFin || !this.branchId) {
+    if (!this.fechaInicio || !this.fechaFin || !this.branchId || !this.precioMinimo || !this.codigoReserva) {
       Swal.fire({
         icon: "error",
         title: "Error",
@@ -54,24 +58,15 @@ createApp({
     ordenarVehiculos(criterio) {
       this.vehiculosConFiltro.sort((a, b) => {
         switch (criterio) {
-          case "precio-asc":
-            return a.finalPrice - b.finalPrice;
-          case "precio-desc":
-            return b.finalPrice - a.finalPrice;
-          case "marca-asc":
-            return a.brand.localeCompare(b.brand);
-          case "marca-desc":
-            return b.brand.localeCompare(a.brand);
-          case "modelo-asc":
-            return a.name.localeCompare(b.name);
-          case "modelo-desc":
-            return b.name.localeCompare(a.name);
-          case "capacidad-asc":
-            return a.capacity - b.capacity;
-          case "capacidad-desc":
-            return b.capacity - a.capacity;
-          default:
-            return 0;
+          case "precio-asc": return a.finalPrice - b.finalPrice;
+          case "precio-desc": return b.finalPrice - a.finalPrice;
+          case "marca-asc": return a.brand.localeCompare(b.brand);
+          case "marca-desc": return b.brand.localeCompare(a.brand);
+          case "modelo-asc": return a.name.localeCompare(b.name);
+          case "modelo-desc": return b.name.localeCompare(a.name);
+          case "capacidad-asc": return a.capacity - b.capacity;
+          case "capacidad-desc": return b.capacity - a.capacity;
+          default: return 0;
         }
       });
     },
@@ -103,6 +98,13 @@ createApp({
       this.filtroSeleccionado = `Capacidad ${valor} disponibles`;
       this.vehiculosConFiltro = this.models.filter((v) => v.capacity === this.filtroCapacidad);
     },
+    aplicarFiltroPrecio() {
+      this.vehiculosConFiltro = this.models.filter((v) => {
+        return (!this.precioDesde || v.finalPrice >= this.precioDesde) &&
+               (!this.precioHasta || v.finalPrice <= this.precioHasta);
+      });
+      this.filtroSeleccionado = "Por precio personalizado";
+    },
     async getBranchById(id) {
       try {
         const response = await axios.get(`/api/branches/${id}`);
@@ -131,6 +133,7 @@ createApp({
           finalPrice: model.price * days,
         }));
 
+        this.models = this.models.filter((model) => model.finalPrice > this.precioMinimo);
         this.vehiculosConFiltro = this.models;
         this.marcas = this.marcasUnicas();
         this.capacidades = this.capacidadesUnicas();
@@ -170,6 +173,32 @@ createApp({
         .map(([valor, cantidad]) => ({ valor: Number(valor), cantidad }))
         .sort((a, b) => a.valor - b.valor);
     },
+    async asignarVehiculo(model) {
+      try {
+        const response = await axios.post('/api/reservation/asignar-vehiculo', null, {
+          params: {
+            codigoReserva: this.codigoReserva,
+            modelId: model.id
+          }
+        });
+
+        await Swal.fire({
+          icon: 'success',
+          title: 'Vehículo asignado con éxito',
+          text: 'Ahora podés agregar adicionales a la reserva.',
+          showConfirmButton: true
+        });
+
+        window.location.href = `additional.html?code=${this.codigoReserva}`;
+      } catch (error) {
+        console.error("Error al asignar vehículo:", error);
+        Swal.fire({
+          icon: 'error',
+          title: 'No se pudo asignar el vehículo',
+          text: error.response?.data || 'Ocurrió un error inesperado.',
+        });
+      }
+    }
   },
   computed: {
     vehiculosFiltrados() {
@@ -187,3 +216,4 @@ createApp({
     },
   },
 }).mount("#app");
+

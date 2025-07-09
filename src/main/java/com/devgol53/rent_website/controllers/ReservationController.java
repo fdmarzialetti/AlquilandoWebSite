@@ -1,9 +1,12 @@
 package com.devgol53.rent_website.controllers;
 
+import com.devgol53.rent_website.dtos.additional.AdditionalDetailCreateDto;
+import com.devgol53.rent_website.dtos.additional.AdditionalDetailDto;
 import com.devgol53.rent_website.dtos.email.EmailDTO;
 import com.devgol53.rent_website.dtos.reservation.ReservationConfirmWhitdrawDto;
 import com.devgol53.rent_website.dtos.reservation.ReservationGetDto;
 import com.devgol53.rent_website.dtos.reservation.ReservationPostDto;
+import com.devgol53.rent_website.dtos.reservation.ReservationSummaryDto;
 import com.devgol53.rent_website.entities.*;
 import com.devgol53.rent_website.repositories.*;
 import com.devgol53.rent_website.services.IEmailService;
@@ -15,11 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/reservation")
@@ -38,6 +39,8 @@ public class ReservationController {
         private ModelRepository modelRepository;
         @Autowired
         private VehicleRepository vehicleRepository;
+        @Autowired
+        private AdditionalRepository additionalRepository;
 
 
         @GetMapping("/myReservations")
@@ -122,28 +125,182 @@ public class ReservationController {
     }
 
     @PostMapping("/validar-codigo")
-    public ResponseEntity<?> validarCodigoReserva(@RequestBody ReservationConfirmWhitdrawDto dto,Authentication auth) {
+    public ResponseEntity<?> validarCodigoReserva(@RequestBody ReservationConfirmWhitdrawDto dto, Authentication auth) {
         Optional<Reservation> optionalReservation = reservationRepository.findByCode(dto.getCode());
 
-        AppUser empleado = appUserRepository.findByEmail(auth.getName()).get();
+        AppUser empleado = appUserRepository.findByEmail(auth.getName())
+                .orElseThrow(() -> new RuntimeException("Empleado no encontrado."));
 
-
-        if (optionalReservation.isEmpty() || !empleado.getBranch().equals(optionalReservation.get().getBranch())) {
-            return ResponseEntity.badRequest().body("No coincide con un codigo valido,una reserva para hoy o no corresponde a la sucursal");
+        if (optionalReservation.isEmpty()) {
+            return ResponseEntity.badRequest().body("Código de reserva inválido.");
         }
-
-
 
         Reservation reserva = optionalReservation.get();
-        // Verificar si la fecha de inicio es hoy
-        boolean esHoy = reserva.getStartDate().equals(dto.getStartDate());
 
-        Boolean hayVehiculoDisp = vehicleRepository.findAll().stream().filter(v->v.getBranch().equals(empleado.getBranch())).anyMatch(v->v.getModel().equals(optionalReservation.get().getModel()));
-        if(hayVehiculoDisp){
-            return ResponseEntity.ok().body("../pages/additional.html");
+        // Validar sucursal
+        if (!empleado.getBranch().equals(reserva.getBranch())) {
+            return ResponseEntity.badRequest().body("La reserva no corresponde a la sucursal del empleado.");
         }
-        return ResponseEntity.ok().body("../pages/reassign.html");
+
+        // Validar que la reserva sea para hoy
+        LocalDate hoy = LocalDate.now();
+        if (!reserva.getStartDate().isEqual(hoy)) {
+            return ResponseEntity.badRequest().body("La reserva no es para el día de hoy.");
+        }
+        System.out.println("empleado rama disponibles"+ empleado.getBranch());
+        // Buscar vehículo disponible en la sucursal, del mismo modelo, que no tenga reserva activa hoy
+        Optional<Vehicle> vehiculoDisponible = vehicleRepository.findAll().stream()
+                .filter(v -> v.isActive())
+                .filter(v -> v.getBranch().equals(empleado.getBranch()))
+                .filter(v -> v.getModel().equals(reserva.getModel()))
+                .filter(v -> !v.hasOngoingReservationToday())
+                .findFirst();
+        System.out.println("vehiculos disponibles"+ vehiculoDisponible);
+        if (vehiculoDisponible.isPresent()) {
+            // Asignar el vehículo a la reserva
+            reserva.setVehicle(vehiculoDisponible.get());
+            reservationRepository.save(reserva);
+
+            return ResponseEntity.ok("../pages/additional.html");
+        }
+
+        // No hay vehículo disponible: redirigir a reassign
+        Map<String, Object> response = new HashMap<>();
+        response.put("redirect", "../pages/reassign.html");
+        response.put("branchId", reserva.getBranch().getId());
+        response.put("fechaFin", reserva.getEndDate().toString());
+        response.put("precioMinimo", reserva.getModel().getPrice());
+        response.put("codigoReserva", reserva.getCode());
+        return ResponseEntity.ok(response);
     }
+
+
+    @GetMapping("/{code}/additionals")
+    public ResponseEntity<?> getAdditionalsByReservationCode(@PathVariable String code, Authentication auth) {
+        Optional<Reservation> optionalReservation = reservationRepository.findByCode(code);
+        System.out.println("Código recibido: " + code);
+        if (optionalReservation.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reserva no encontrada.");
+        }
+
+        Reservation reservation = optionalReservation.get();
+
+        AppUser usuario = appUserRepository.findByEmail(auth.getName())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado."));
+
+        boolean esCliente = reservation.getClient().getId() == usuario.getId();
+        boolean esEmpleadoSucursal = usuario.getBranch() != null &&
+                usuario.getBranch().equals(reservation.getBranch());
+
+        if (!esCliente && !esEmpleadoSucursal) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No tiene permiso para ver estos datos.");
+        }
+
+        List<AdditionalDetailDto> adicionales = reservation.getAdditionalDetails().stream()
+                .filter(d -> d.getAdicional() != null)
+                .map(detalle -> new AdditionalDetailDto(
+                        detalle.getId(),
+                        detalle.getAdicional().getName(),
+                        detalle.getPrice()
+                ))
+                .toList();
+
+        return ResponseEntity.ok(adicionales);
+    }
+
+    @PostMapping("/add-additional")
+    public ResponseEntity<?> addAdditionalToReservation(@RequestBody AdditionalDetailCreateDto dto, Authentication auth) {
+        Optional<Reservation> optionalReservation = reservationRepository.findByCode(dto.getReservationCode());
+        Optional<Additional> optionalAdditional = additionalRepository.findById(dto.getAdditionalId());
+
+        if (optionalReservation.isEmpty() || optionalAdditional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reserva o adicional no encontrado.");
+        }
+
+        Reservation reservation = optionalReservation.get();
+
+        AppUser usuario = appUserRepository.findByEmail(auth.getName())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado."));
+
+        boolean esCliente = reservation.getClient().getId() == usuario.getId();
+        boolean esEmpleadoSucursal = usuario.getBranch() != null &&
+                usuario.getBranch().equals(reservation.getBranch());
+
+        if (!esCliente && !esEmpleadoSucursal) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No tiene permiso para modificar esta reserva.");
+        }
+
+        AdditionalDetail detalle = new AdditionalDetail();
+        detalle.setAdicional(optionalAdditional.get());
+        detalle.setPrice(optionalAdditional.get().getPrice());
+        reservation.addAdditionalDetail(detalle);
+
+        reservationRepository.save(reservation);
+
+        return ResponseEntity.ok("Adicional agregado con éxito.");
+    }
+
+    @PostMapping("/asignar-vehiculo")
+    public ResponseEntity<?> asignarVehiculoAReserva(@RequestParam String codigoReserva, @RequestParam Long modelId, Authentication auth) {
+        Optional<Reservation> optionalReserva = reservationRepository.findByCode(codigoReserva);
+        if (optionalReserva.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reserva no encontrada.");
+        }
+
+        Reservation reserva = optionalReserva.get();
+
+        AppUser empleado = appUserRepository.findByEmail(auth.getName())
+                .orElseThrow(() -> new RuntimeException("Empleado no encontrado."));
+
+        if (!empleado.getBranch().equals(reserva.getBranch())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Sucursal inválida.");
+        }
+
+        // Buscar vehículo activo del modelo solicitado y sucursal actual
+        Optional<Vehicle> vehiculo = vehicleRepository.findAll().stream()
+                .filter(v -> v.isActive())
+                .filter(v -> v.getModel().getId() == modelId)
+                .filter(v -> v.getBranch().equals(reserva.getBranch()))
+                .filter(v -> !v.hasOngoingReservationToday()) // si tenés lógica de reserva activa
+                .findFirst();
+
+        if (vehiculo.isPresent()) {
+            reserva.setVehicle(vehiculo.get());
+            reservationRepository.save(reserva);
+            return ResponseEntity.ok("Vehículo asignado correctamente.");
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No hay vehículos disponibles para este modelo en la sucursal.");
+    }
+
+    @GetMapping("/{code}")
+    public ResponseEntity<?> getReservation(@PathVariable String code, Authentication auth) {
+        Optional<Reservation> optionalReservation = reservationRepository.findByCode(code);
+        if (optionalReservation.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reserva no encontrada.");
+        }
+
+        Reservation reserva = optionalReservation.get();
+        AppUser usuario = appUserRepository.findByEmail(auth.getName()).orElseThrow();
+
+        boolean esCliente = reserva.getClient().getId() == usuario.getId();
+
+        boolean esEmpleado = usuario.getBranch() != null && usuario.getBranch().equals(reserva.getBranch());
+
+        if (!esCliente && !esEmpleado) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No tiene permiso para ver esta reserva.");
+        }
+
+        ReservationSummaryDto dto = new ReservationSummaryDto(reserva);
+        return ResponseEntity.ok(dto);
+    }
+
+
+
+
+
+
+
 }
 
 
