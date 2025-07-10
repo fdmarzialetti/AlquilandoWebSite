@@ -30,5 +30,6 @@ public class EmailDTO {
         this.mensaje = mensaje;
         this.template = template;
     }
+
 }
 

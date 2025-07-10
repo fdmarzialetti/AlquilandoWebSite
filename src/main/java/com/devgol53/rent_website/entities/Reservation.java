@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -38,7 +39,14 @@ public class Reservation {
     @ManyToOne
     private AppUser client;
 
-    // private Valoration valoration;
+    @OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AdditionalDetail> additionalDetails = new java.util.ArrayList<>();
+
+
+    private Boolean cancelled = false;
+
+    @OneToOne(mappedBy = "reservation", cascade = CascadeType.ALL)
+    private Valoration valoration;
 
     public Reservation(String code,LocalDate startDate, LocalDate endDate, Double payment) {
         this.code = code;
@@ -69,4 +77,13 @@ public class Reservation {
         client.addReservation(this);
     }
 
+    public void addAdditionalDetail(AdditionalDetail additionalDetail){
+        this.additionalDetails.add(additionalDetail);
+        additionalDetail.addReservation(this);
+    }
+
+    public void addValoration(Valoration valoration){
+        this.valoration = valoration;
+        valoration.addReservation(this);
+    }
 }

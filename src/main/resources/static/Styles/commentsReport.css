@@ -1,0 +1,26 @@
+.imagen-modelo {
+    width: 6em;
+    height: 4em;
+    object-fit:cover;
+    border-radius: 0.5em;
+}
+
+*{
+padding:0;
+margin:0;
+box-sizing: border-box;
+}
+
+.barra-de-navegacion {
+  list-style-type: none;
+  margin: 0 auto;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 400px;
+  gap: 2em;
+
+}

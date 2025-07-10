@@ -3,6 +3,7 @@ package com.devgol53.rent_website.controllers;
 import com.devgol53.rent_website.dtos.model.AvalaibleModelDTO;
 import com.devgol53.rent_website.dtos.model.CreateModelDTO;
 import com.devgol53.rent_website.dtos.model.GetModelDTO;
+import com.devgol53.rent_website.dtos.model.ModelCommentsDTO;
 import com.devgol53.rent_website.entities.Branch;
 import com.devgol53.rent_website.entities.Model;
 import com.devgol53.rent_website.entities.Vehicle;
@@ -17,9 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -34,6 +33,11 @@ public class ModelController {
     @GetMapping("/listModels")
     public List<GetModelDTO> getModels(){
         return modelRepository.findAll().stream().map(GetModelDTO::new).toList();
+    }
+
+    @GetMapping("/allModelsComments")
+    public List<ModelCommentsDTO> getAllModelsComments(){
+        return modelRepository.findAll().stream().map(m->new ModelCommentsDTO(m)).toList();
     }
 
     @GetMapping("/listActiveModels")
@@ -63,6 +67,55 @@ public class ModelController {
         return ResponseEntity.status(HttpStatus.CONFLICT).body("Ya existe el modelo");
     }
 
+    @PutMapping(value = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> updateModel(
+            @PathVariable Long id,
+            @ModelAttribute CreateModelDTO modelDto) throws IOException {
+
+        Optional<Model> optionalModel = modelRepository.findById(id);
+        if (optionalModel.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Modelo no encontrado.");
+        }
+
+        String brand = modelDto.getBrand().trim();
+        String name = modelDto.getName().trim();
+
+        boolean alreadyExists = modelRepository
+                .existsByBrandIgnoreCaseAndNameIgnoreCaseAndIdNot(brand, name, id);
+        if (alreadyExists) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("Ya existe otro modelo con esa marca y nombre.");
+        }
+
+        Model model = optionalModel.get();
+        model.setBrand(brand);
+        model.setName(name);
+        model.setPrice(modelDto.getPrice());
+        model.setCapacity(modelDto.getCapacity());
+        model.setCancelationPolicy(modelDto.getCancelationPolicy());
+
+        // Solo actualizar si se subió una imagen nueva
+        if (modelDto.getImage() != null && !modelDto.getImage().isEmpty()) {
+            model.setImage(modelDto.getImage().getBytes());
+        }
+
+        modelRepository.save(model);
+        return ResponseEntity.ok("Modelo actualizado con éxito.");
+    }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<GetModelDTO> getModelById(@PathVariable Long id) {
+        Optional<Model> optionalModel = modelRepository.findById(id);
+        if (optionalModel.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Model model = optionalModel.get();
+        GetModelDTO dto = new GetModelDTO(model);
+        return ResponseEntity.ok(dto);
+    }
+
     @GetMapping("/availableModels")
     public List<AvalaibleModelDTO> getAvailableModels(
             @RequestParam LocalDate startDate,
@@ -73,35 +126,41 @@ public class ModelController {
                 .orElseThrow(() -> new RuntimeException("Branch not found"));
 
         // Agrupamos vehículos por modelo
-        Map<Model, Long> modelToVehicleCount = branch.getVehicles().stream()
-                .collect(Collectors.groupingBy(Vehicle::getModel, Collectors.counting()));
+        Map<Model, List<Vehicle>> modelToVehicles = branch.getVehicles().stream()
+                .collect(Collectors.groupingBy(Vehicle::getModel));
 
-        List<AvalaibleModelDTO> availableModels = modelToVehicleCount.entrySet().stream()
+        return modelToVehicles.entrySet().stream()
                 .filter(entry -> {
-                    Model model = entry.getKey();
-                    long totalVehicles = entry.getValue();
+                    List<Vehicle> vehicles = entry.getValue();
 
-                    // Filtramos las reservas de este modelo que se solapan con el rango dado
-                    long overlappingReservations = model.getReservations().stream()
-                            .filter(res -> {
-                                LocalDate resStart = res.getStartDate();
-                                LocalDate resEnd = res.getEndDate();
-                                return !resEnd.isBefore(startDate) && !resStart.isAfter(endDate);
-                            })
+                    // Contar vehículos SIN reservas superpuestas
+                    long disponibles = vehicles.stream()
+                            .filter(vehicle -> !vehicle.hasOverlappingReservation(startDate, endDate))
                             .count();
 
-                    // Solo devolvemos el modelo si tiene más vehículos que reservas superpuestas
-                    return overlappingReservations < totalVehicles;
+                    return disponibles > 0;
                 })
-                .map(Map.Entry::getKey)
-                .sorted(Comparator.comparing(Model::getBrand)
-                        .thenComparing(Model::getName))
-                .map(AvalaibleModelDTO::new)
+                .map(entry -> {
+                    Model model = entry.getKey();
+
+                    // Obtener valoraciones con score válido
+                    List<Integer> scores = model.getReservations().stream()
+                            .map(r->r.getValoration())
+                            .filter(Objects::nonNull)
+                            .map(v->v.getScore())
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toList());
+
+                    int scorePromedio = 0;
+                    if (!scores.isEmpty()) {
+                        double promedio = scores.stream().mapToInt(Integer::intValue).average().orElse(0);
+                        scorePromedio = (int) Math.ceil(promedio);
+                    }
+
+                    return new AvalaibleModelDTO(model,scorePromedio);
+                })
                 .toList();
-
-        return availableModels;
     }
-
     @GetMapping("/detalle")
     public ResponseEntity<GetModelDTO> getModelByBrandAndName(
             @RequestParam String brand,
