@@ -3,6 +3,7 @@ package com.devgol53.rent_website.controllers;
 import com.devgol53.rent_website.dtos.model.AvalaibleModelDTO;
 import com.devgol53.rent_website.dtos.model.CreateModelDTO;
 import com.devgol53.rent_website.dtos.model.GetModelDTO;
+import com.devgol53.rent_website.dtos.model.ModelCommentsDTO;
 import com.devgol53.rent_website.entities.Branch;
 import com.devgol53.rent_website.entities.Model;
 import com.devgol53.rent_website.entities.Vehicle;
@@ -32,6 +33,11 @@ public class ModelController {
     @GetMapping("/listModels")
     public List<GetModelDTO> getModels(){
         return modelRepository.findAll().stream().map(GetModelDTO::new).toList();
+    }
+
+    @GetMapping("/allModelsComments")
+    public List<ModelCommentsDTO> getAllModelsComments(){
+        return modelRepository.findAll().stream().map(m->new ModelCommentsDTO(m)).toList();
     }
 
     @GetMapping("/listActiveModels")

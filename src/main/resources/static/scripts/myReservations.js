@@ -231,7 +231,6 @@ createApp({
         esFechaAnteriorAHoy(fechaStr) {
             const [anio, mes, dia] = fechaStr.split("-").map(Number); // mes = 1 a 12
             const hoy = new Date();
-
             const fecha = new Date(anio, mes - 1, dia); // mes en 0 a 11
             return fecha < new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
         }
