@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
   Swal.fire({
     icon: "error",
     title: "Error",
-    text: "El código que intentas ingresar no corresponde a una reserva válida.",
+    text: error.response.data,
   });
   });
   });
