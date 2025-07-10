@@ -54,7 +54,7 @@
 <div class="container my-5">
     <div class="card shadow border-0">
         <div class="card-body">
-            <h2 class="mb-4">Crear Nueva Sucursal</h2>
+            <h2 class="mb-4">{{ isEdit ? 'Editar Sucursal' : 'Crear Nueva Sucursal' }}</h2>
             <form @submit.prevent="submitForm">
                 <div class="mb-3">
                     <label for="city" class="form-label">Ciudad:</label>
@@ -83,7 +83,9 @@
                 </div>
 
                 <div class="text-center">
-                    <button type="submit" class="btn btn-custom">Dar de alta</button>
+                    <button type="submit" class="btn btn-custom">
+                        {{ isEdit ? 'Actualizar' : 'Dar de alta' }}
+                    </button>
                 </div>
             </form>
 

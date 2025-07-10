@@ -67,7 +67,8 @@
         <tr v-for="branch in branches" :key="branch.id">
             <td>{{ branch.city }}</td>
             <td>{{ branch.address }}</td>
-            <td>
+            <td class="d-flex gap-2">
+                <a class="btn btn-primary btn-sm" :href="`../pages/formBranch.html?id=${branch.id}`">Editar</a>
                 <button class="btn btn-danger btn-sm" @click="confirmDelete(branch.id)">
                     Eliminar
                 </button>
