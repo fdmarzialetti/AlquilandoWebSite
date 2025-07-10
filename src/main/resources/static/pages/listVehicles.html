@@ -39,6 +39,9 @@
         <li class="nav-item">
           <a class="nav-link text-white" href="#">Empleados</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="../pages/listAdditionals.html">Adicionales</a>
+        </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
              data-bs-toggle="dropdown" aria-expanded="false">
@@ -48,6 +51,7 @@
             <li><a class="dropdown-item" href="../pages/formBranch.html">Crear Sucursal</a></li>
             <li><a class="dropdown-item" href="../pages/addModel.html">Crear Modelo</a></li>
             <li><a class="dropdown-item" href="../pages/addVehicle.html">Crear Vehículo</a></li>
+            <li><a class="dropdown-item" href="../pages/formAdditional.html">Crear Adicional</a></li>
             <li><a class="dropdown-item" href="../pages/commentsReport.html">Comentarios y Valoraciones</a></li>
           </ul>
         </li>
@@ -84,8 +88,7 @@
       <td>{{ vehicle.yearV }}</td>
       <td>{{ vehicle.model }}</td>
       <td>{{ vehicle.branch }}</td>
-      <td class="d-flex gap-2">
-        <a class="btn btn-primary btn-sm" :href="`../pages/addVehicle.html?id=${vehicle.id}`">Editar</a>
+      <td>
         <button class="btn btn-danger btn-sm" @click="deleteVehicle(vehicle.id)">Eliminar</button>
       </td>
     </tr>
