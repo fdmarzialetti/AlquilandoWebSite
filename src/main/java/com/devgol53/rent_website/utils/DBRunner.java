@@ -42,16 +42,16 @@ public class DBRunner implements CommandLineRunner {
         Branch branch3= new Branch("La Plata","18 e 16 y 17");
 
         // Crear varios vehículos
-        Vehicle autonuevo1 = new Vehicle("abd323", "disponible", 2012);
-        Vehicle autonuevo2 = new Vehicle("xyz789", "disponible", 2018);
-        Vehicle autonuevo3 = new Vehicle("qwe456", "ocupado", 2015);
-        Vehicle autonuevo4 = new Vehicle("rty987", "disponible", 2020);
-        Vehicle autonuevo5 = new Vehicle("uio654", "mantenimiento", 2017);
-        Vehicle autonuevo6 = new Vehicle("asd321", "disponible", 2019);
-        Vehicle autonuevo7 = new Vehicle("fgh852", "ocupado", 2013);
-        Vehicle autonuevo8 = new Vehicle("jkl963", "disponible", 2021);
-        Vehicle autonuevo9 = new Vehicle("zxc741", "disponible", 2014);
-        Vehicle autonuevo10 = new Vehicle("vbn258", "disponible", 2016);
+        Vehicle autonuevo1 = new Vehicle("abd323", false, 2012);
+        Vehicle autonuevo2 = new Vehicle("xyz789", false, 2018);
+        Vehicle autonuevo3 = new Vehicle("qwe456", true, 2015);
+        Vehicle autonuevo4 = new Vehicle("rty987", false, 2020);
+        Vehicle autonuevo5 = new Vehicle("uio654", true, 2017);
+        Vehicle autonuevo6 = new Vehicle("asd321", false, 2019);
+        Vehicle autonuevo7 = new Vehicle("fgh852", true, 2013);
+        Vehicle autonuevo8 = new Vehicle("jkl963", false, 2021);
+        Vehicle autonuevo9 = new Vehicle("zxc741", false, 2014);
+        Vehicle autonuevo10 = new Vehicle("vbn258", false, 2016);
         // Models
         Model model1 = new Model("Renault", "12", 20000.0,
                 ImageReader.readImage("static/images/Vehicles/Renault12.JPG"), 5, CancelationPolicy.FULL);

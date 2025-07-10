@@ -293,7 +293,7 @@ public class ReservationController {
         }
 
         // Buscar vehículo activo del modelo solicitado y sucursal actual
-        Optional<Vehicle> vehiculo = vehicleRepository.findAll().stream()
+        Optional<Vehicle> vehiculo = vehicleRepository.findAll().stream().filter(v->v.getMaintence()==false)
                 .filter(v -> v.isActive())
                 .filter(v -> v.getModel().getId() == modelId)
                 .filter(v -> v.getBranch().equals(reserva.getBranch()))

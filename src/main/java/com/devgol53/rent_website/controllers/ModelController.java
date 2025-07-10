@@ -126,7 +126,7 @@ public class ModelController {
                 .orElseThrow(() -> new RuntimeException("Branch not found"));
 
         // Agrupamos vehículos por modelo
-        Map<Model, List<Vehicle>> modelToVehicles = branch.getVehicles().stream()
+        Map<Model, List<Vehicle>> modelToVehicles = branch.getVehicles().stream().filter(v->v.getMaintence()==false)
                 .collect(Collectors.groupingBy(Vehicle::getModel));
 
         return modelToVehicles.entrySet().stream()
