@@ -22,6 +22,12 @@ public class Valoration {
     @JoinColumn(name = "reservation_id", nullable = false)
     private Reservation reservation;
 
+
+    public Valoration(int score, String comment) {
+        this.score = score;
+        this.comment = comment;
+    }
+
     public Valoration(ValorationDTO valorationDTO) {
         this.score= valorationDTO.getScore();
         this.comment = valorationDTO.getComment();
