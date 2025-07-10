@@ -83,7 +83,8 @@
       <td>{{ vehicle.yearV }}</td>
       <td>{{ vehicle.model }}</td>
       <td>{{ vehicle.branch }}</td>
-      <td>
+      <td class="d-flex gap-2">
+        <a class="btn btn-primary btn-sm" :href="`../pages/addVehicle.html?id=${vehicle.id}`">Editar</a>
         <button class="btn btn-danger btn-sm" @click="deleteVehicle(vehicle.id)">Eliminar</button>
       </td>
     </tr>

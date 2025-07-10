@@ -100,8 +100,14 @@
         <td>{{ model.capacity }} personas</td>
         <td>{{ getCancelationText(model.cancelationPolicy) }}</td>
         <td>
+
+        </td>
+        <td class="d-flex gap-2">
+          <a class="btn btn-primary btn-sm" :href="`../pages/addModel.html?id=${model.id}`">Editar</a>
           <button class="btn btn-danger btn-sm" @click="deactivateModel(model.id)">Dar de baja</button>
         </td>
+
+
       </tr>
     </tbody>
   </table>
