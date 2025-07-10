@@ -144,12 +144,11 @@
                     <h5 class="card-title mb-0">{{ model.name }}</h5>
                   </div>
                   <span class="fs-6 fw-semibold text-secondary mb-0">capacidad: {{ model.capacity }}</span>
-                  <span class="fs-5 fw-semibold text-success mb-0">{{ formatPriceArg(model.finalPrice) }}</span>
                 </div>
-                <a 
-                  class="btn btn-outline-primary boton-ver-mas">
-                  Seleccionar
-                </a>
+                <button class="btn btn-outline-primary boton-ver-mas"
+                  @click="asignarVehiculo(model)">
+                Seleccionar
+                </button>
               </div>
             </div>
           </div>
