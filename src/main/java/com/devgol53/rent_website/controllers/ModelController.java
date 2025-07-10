@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -73,35 +74,41 @@ public class ModelController {
                 .orElseThrow(() -> new RuntimeException("Branch not found"));
 
         // Agrupamos vehículos por modelo
-        Map<Model, Long> modelToVehicleCount = branch.getVehicles().stream()
-                .collect(Collectors.groupingBy(Vehicle::getModel, Collectors.counting()));
+        Map<Model, List<Vehicle>> modelToVehicles = branch.getVehicles().stream()
+                .collect(Collectors.groupingBy(Vehicle::getModel));
 
-        List<AvalaibleModelDTO> availableModels = modelToVehicleCount.entrySet().stream()
+        return modelToVehicles.entrySet().stream()
                 .filter(entry -> {
-                    Model model = entry.getKey();
-                    long totalVehicles = entry.getValue();
+                    List<Vehicle> vehicles = entry.getValue();
 
-                    // Filtramos las reservas de este modelo que se solapan con el rango dado
-                    long overlappingReservations = model.getReservations().stream()
-                            .filter(res -> {
-                                LocalDate resStart = res.getStartDate();
-                                LocalDate resEnd = res.getEndDate();
-                                return !resEnd.isBefore(startDate) && !resStart.isAfter(endDate);
-                            })
+                    // Contar vehículos SIN reservas superpuestas
+                    long disponibles = vehicles.stream()
+                            .filter(vehicle -> !vehicle.hasOverlappingReservation(startDate, endDate))
                             .count();
 
-                    // Solo devolvemos el modelo si tiene más vehículos que reservas superpuestas
-                    return overlappingReservations < totalVehicles;
+                    return disponibles > 0;
                 })
-                .map(Map.Entry::getKey)
-                .sorted(Comparator.comparing(Model::getBrand)
-                        .thenComparing(Model::getName))
-                .map(AvalaibleModelDTO::new)
+                .map(entry -> {
+                    Model model = entry.getKey();
+
+                    // Obtener valoraciones con score válido
+                    List<Integer> scores = model.getReservations().stream()
+                            .map(r->r.getValoration())
+                            .filter(Objects::nonNull)
+                            .map(v->v.getScore())
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toList());
+
+                    int scorePromedio = 0;
+                    if (!scores.isEmpty()) {
+                        double promedio = scores.stream().mapToInt(Integer::intValue).average().orElse(0);
+                        scorePromedio = (int) Math.ceil(promedio);
+                    }
+
+                    return new AvalaibleModelDTO(model,scorePromedio);
+                })
                 .toList();
-
-        return availableModels;
     }
-
     @GetMapping("/detalle")
     public ResponseEntity<GetModelDTO> getModelByBrandAndName(
             @RequestParam String brand,
