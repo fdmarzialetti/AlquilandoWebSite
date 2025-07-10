@@ -27,7 +27,7 @@ createApp({
 
         enviarValoracion() {
             console.log(this.nuevaValoracion);
-            axios.post('/api/reservation/addValoration/' + this.nuevaValoracion.reservaId, {"score":this.nuevaValoracion.score,"comment":this.nuevaValoracion.comment})
+            axios.post('/api/reservation/addValoration/' + this.nuevaValoracion.reservaId, { "score": this.nuevaValoracion.score, "comment": this.nuevaValoracion.comment })
                 .then(response => {
                     Swal.close(); // Cerrar loader
 
@@ -97,12 +97,13 @@ createApp({
 
         esHoy(fechaStr) {
             if (!fechaStr) return false;
-            const fecha = new Date(fechaStr);
-            const hoy = new Date();
 
-            return fecha.getUTCFullYear() === hoy.getUTCFullYear()
-                && fecha.getUTCMonth() === hoy.getUTCMonth()
-                && fecha.getUTCDate() === hoy.getUTCDate();
+            const [anio, mes, dia] = fechaStr.split("-").map(Number); // mes es 1-based
+
+            const hoy = new Date();
+            return hoy.getFullYear() === anio &&
+                (hoy.getMonth() + 1) === mes &&
+                hoy.getDate() === dia;
         },
         puedeCancelar(startDate) {
             const hoy = new Date();
@@ -129,6 +130,11 @@ createApp({
                 this.reservas = await response.json();
                 this.checkAuth();
                 console.log(this.reservas);
+
+
+                if (this.esReservaEnCurso(this.reservas[1].startDate, this.reservas[1].endDate) && this.reservas[1].vehicleId !== 0) {
+                    console.log("CONDICIÓN VERDADERA: Se cumple el else-if.");
+                }
             } catch (error) {
                 console.error("Error de red:", error);
             }
@@ -221,9 +227,17 @@ createApp({
                         text: "Hubo un problema al cerrar sesión. Intentalo de nuevo.",
                     });
                 });
+        },
+        esFechaAnteriorAHoy(fechaStr) {
+            const [anio, mes, dia] = fechaStr.split("-").map(Number); // mes = 1 a 12
+            const hoy = new Date();
+
+            const fecha = new Date(anio, mes - 1, dia); // mes en 0 a 11
+            return fecha < new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
         }
     },
     async mounted() {
         this.getReservations();
+
     },
 }).mount('#app');

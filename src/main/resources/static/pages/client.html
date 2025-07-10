@@ -167,13 +167,13 @@
                                 </span>
 
                                 <span
-                                    v-else-if="esReservaEnCurso(reserva.startDate, reserva.endDate) && reserva.vehicleId != 0"
+                                    v-else-if="esReservaEnCurso(reserva.startDate, reserva.endDate) && reserva.vehicleId !== 0"
                                     class="badge bg-primary">
                                     En curso
                                 </span>
 
                                 <span
-                                    v-else-if="reserva.vehicleId == 0 && new Date(reserva.startDate) < new Date() && !reservaFinalizada(reserva.endDate)"
+                                    v-else-if="reserva.vehicleId == 0 && esFechaAnteriorAHoy(reserva.startDate) && !reservaFinalizada(reserva.endDate)"
                                     class="badge bg-warning text-dark">
                                     Demorado
                                 </span>

@@ -169,6 +169,9 @@ public class ReservationController {
         if (!reserva.getStartDate().isEqual(hoy)) {
             return ResponseEntity.badRequest().body("La reserva no es para el día de hoy.");
         }
+        if(reserva.getCancelled()){
+            return ResponseEntity.badRequest().body("El codigo corresponde a una reserva cancelada.");
+        }
         System.out.println("empleado rama disponibles"+ empleado.getBranch());
         // Buscar vehículo disponible en la sucursal, del mismo modelo, que no tenga reserva activa hoy
         Optional<Vehicle> vehiculoDisponible = vehicleRepository.findAll().stream()
