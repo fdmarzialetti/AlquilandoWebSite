@@ -1,10 +1,9 @@
 package com.devgol53.rent_website.entities;
+
 import com.devgol53.rent_website.dtos.appUser.AppUserPostDTO;
 import com.devgol53.rent_website.enums.UserRol;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,18 +17,30 @@ public class AppUser {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
     private long id;
-    @Column(unique = true)
-    private String dni;
-    @Column(unique = true)
-    private String email;
-    private String name,lastname,phone,password;
-    @Enumerated(EnumType.STRING)
-    private UserRol rol;
-    private int verificationCode;
+
 
     @ManyToOne
     @JoinColumn(name = "branch_id")
     private Branch branch;
+
+
+    @Column(unique = true)
+    private String dni;
+
+    @Column(unique = true)
+    private String email;
+
+    private String name;
+    private String lastname;
+    private String phone;
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    private UserRol rol;
+
+    private int verificationCode;
+
+    private boolean state = true;
 
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST)
@@ -45,15 +56,17 @@ public class AppUser {
         this.rol = rol;
     }
 
-    public AppUser(AppUserPostDTO appUserPostDTO, String password){
-        this.name = appUserPostDTO.getName();
-        this.lastname = appUserPostDTO.getLastname();
-        this.dni = appUserPostDTO.getDni();
-        this.phone = appUserPostDTO.getPhone();
-        this.email = appUserPostDTO.getEmail();
-        this.rol = appUserPostDTO.getRol();
+    public AppUser(AppUserPostDTO dto, String password) {
+        this.name = dto.getName();
+        this.lastname = dto.getLastname();
+        this.dni = dto.getDni();
+        this.phone = dto.getPhone();
+        this.email = dto.getEmail();
+        this.rol = dto.getRol();
         this.password = password;
     }
 
-    public void addReservation(Reservation reservation){this.reservations.add(reservation);}
+    public void addReservation(Reservation reservation) {
+        this.reservations.add(reservation);
+    }
 }

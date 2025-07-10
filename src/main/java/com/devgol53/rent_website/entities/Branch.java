@@ -14,7 +14,7 @@ public class Branch {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
-    private long id;
+    private Long id;
     private String address;
     private String city;
     private boolean state = true; // Campo de estado inicializado en true
