@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.text.NumberFormat;
@@ -50,6 +51,36 @@ public class ReservationController {
             AppUser client = appUserRepository.findByEmail(auth.getName()).get();
             return client.getReservations().stream().map(ReservationGetDto::new).toList();
         }
+
+    @GetMapping("/employeeReservations")
+    public List<ReservationGetDto> getEmployeeReservations(
+            Authentication auth,
+            @RequestParam LocalDate startDate,
+            @RequestParam LocalDate endDate
+    ) {
+        Optional<AppUser> optionalUser = appUserRepository.findByEmail(auth.getName());
+        if (optionalUser.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Empleado no encontrado");
+        }
+
+        AppUser employee = optionalUser.get();
+        Branch branch = employee.getBranch();
+        if (branch == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Empleado sin sucursal asignada");
+        }
+
+        return reservationRepository.findAll().stream()
+                .filter(Objects::nonNull)
+                .filter(r -> r.getBranch() != null && r.getBranch().equals(branch))
+                .filter(r -> {
+                    LocalDate start = r.getStartDate();
+                    LocalDate end = r.getEndDate();
+                    return (start != null && !start.isBefore(startDate) && !start.isAfter(endDate)) ||
+                            (end != null && !end.isBefore(startDate) && !end.isAfter(endDate));
+                })
+                .map(ReservationGetDto::new)
+                .toList();
+    }
 
         @PostMapping("/createReservation")
         public ResponseEntity<String> createReservation(@RequestBody ReservationPostDto reservationPostDto, Authentication auth) throws MessagingException {
@@ -175,6 +206,7 @@ public class ReservationController {
         System.out.println("empleado rama disponibles"+ empleado.getBranch());
         // Buscar vehículo disponible en la sucursal, del mismo modelo, que no tenga reserva activa hoy
         Optional<Vehicle> vehiculoDisponible = vehicleRepository.findAll().stream()
+                .filter(v->v.getMaintence()==false)
                 .filter(v -> v.isActive())
                 .filter(v -> v.getBranch().equals(empleado.getBranch()))
                 .filter(v -> v.getModel().equals(reserva.getModel()))
@@ -182,10 +214,7 @@ public class ReservationController {
                 .findFirst();
         System.out.println("vehiculos disponibles"+ vehiculoDisponible);
         if (vehiculoDisponible.isPresent()) {
-            // Asignar el vehículo a la reserva
-            reserva.setVehicle(vehiculoDisponible.get());
-            reservationRepository.save(reserva);
-
+            // Redirigir a la carga de adicionales
             return ResponseEntity.ok("../pages/additional.html");
         }
 
@@ -202,7 +231,7 @@ public class ReservationController {
 
     @GetMapping("/{code}/additionals")
     public ResponseEntity<?> getAdditionalsByReservationCode(@PathVariable String code, Authentication auth) {
-        Optional<Reservation> optionalReservation = reservationRepository.findByCode(code);
+        Optional<Reservation> optionalReservation = reservationRepository.findByCode(code.toUpperCase());
         System.out.println("Código recibido: " + code);
         if (optionalReservation.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reserva no encontrada.");

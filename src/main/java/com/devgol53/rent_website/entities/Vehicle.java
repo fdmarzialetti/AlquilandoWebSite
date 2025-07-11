@@ -84,5 +84,8 @@ public class Vehicle {
         return false;
     }
 
+    public void addReservation(Reservation reservation){
+        this.reservations.add(reservation);
+    }
 
 }

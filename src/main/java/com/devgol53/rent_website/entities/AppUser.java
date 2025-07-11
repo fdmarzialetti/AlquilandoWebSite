@@ -46,6 +46,9 @@ public class AppUser {
     @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST)
     private List<Reservation> reservations = new ArrayList<>();
 
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.PERSIST)
+    private List<EmployeeComment> employeeComments = new ArrayList<>();
+
     public AppUser(String name, String lastname, String dni, String phone, String email, String password, UserRol rol) {
         this.name = name;
         this.lastname = lastname;

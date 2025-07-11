@@ -24,6 +24,8 @@ public class ReservationGetDto {
     private Boolean isCancelled;
     private long vehicleId;
     private long valorationId;
+    private String clientName;
+    private long employeeCommentId;
 
     public ReservationGetDto(Reservation reservation){
         this.id = reservation.getId();
@@ -38,5 +40,11 @@ public class ReservationGetDto {
         this.isCancelled = reservation.getCancelled();
         this.vehicleId = reservation.getVehicle() != null ? reservation.getVehicle().getId() : 0;
         this.valorationId = reservation.getValoration() != null ? reservation.getValoration().getId() : 0;
+        this.clientName = reservation.getClient().getName() +" "+ reservation.getClient().getLastname();
+        this.employeeCommentId =
+                reservation.getEmployeeComment() != null
+                        ? reservation.getEmployeeComment().getId()
+                        : 0;
+
     }
 }
