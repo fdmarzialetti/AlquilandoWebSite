@@ -307,7 +307,7 @@ public class DBRunner implements CommandLineRunner {
         Reservation reservation54 = new Reservation("RES054", LocalDate.of(2025, 8,  5), LocalDate.of(2025, 8,  9), 20000.0);
         reservation54.addValoration(new Valoration(5, "El mejor precio y la mejor calidad. Muy conforme."));
 
-        Reservation reservation55 = new Reservation("RES055", LocalDate.of(2025, 8,  6), LocalDate.of(2025, 8, 10), 19500.0);
+        Reservation reservation55 = new Reservation("RES055", LocalDate.of(2025, 8,  6), LocalDate.now(), 19500.0);
         reservation55.addValoration(new Valoration(3, "Todo correcto, aunque esperaba más amabilidad del personal."));
 
         reservation6.addModel(model6);
@@ -361,7 +361,7 @@ public class DBRunner implements CommandLineRunner {
         reservation54.addModel(model4);
         reservation55.addModel(model5);
 
-        reservation6.addClient(client1);
+        reservation6.addClient(client2);
         reservation7.addClient(client2);
         reservation8.addClient(client3);
         reservation9.addClient(client4);
@@ -373,7 +373,7 @@ public class DBRunner implements CommandLineRunner {
         reservation15.addClient(client10);
         reservation16.addClient(client11);
 
-        reservation17.addClient(client1);
+        reservation17.addClient(client2);
         reservation18.addClient(client2);
         reservation19.addClient(client3);
         reservation20.addClient(client4);
@@ -385,7 +385,7 @@ public class DBRunner implements CommandLineRunner {
         reservation26.addClient(client10);
         reservation27.addClient(client11);
 
-        reservation28.addClient(client1);
+        reservation28.addClient(client2);
         reservation29.addClient(client2);
         reservation30.addClient(client3);
         reservation31.addClient(client4);
@@ -397,7 +397,7 @@ public class DBRunner implements CommandLineRunner {
         reservation37.addClient(client10);
         reservation38.addClient(client11);
 
-        reservation39.addClient(client1);
+        reservation39.addClient(client2);
         reservation40.addClient(client2);
         reservation41.addClient(client3);
         reservation42.addClient(client4);
@@ -409,12 +409,14 @@ public class DBRunner implements CommandLineRunner {
         reservation48.addClient(client10);
         reservation49.addClient(client11);
 
-        reservation50.addClient(client1);
+        reservation50.addClient(client2);
         reservation51.addClient(client2);
         reservation52.addClient(client3);
         reservation53.addClient(client4);
         reservation54.addClient(client5);
         reservation55.addClient(client6);
+
+        reservation25.addVehicle(autonuevo5);
 
         // --- Asignar sucursal a TODAS las reservas ---
         reservation6.addBranch(branch1);

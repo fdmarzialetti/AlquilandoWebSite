@@ -48,7 +48,9 @@ public class Reservation {
     @OneToOne(mappedBy = "reservation", cascade = CascadeType.ALL)
     private Valoration valoration;
 
-    @OneToOne(mappedBy = "reservation",cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "reservation",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private EmployeeComment employeeComment;
 
     public Reservation(String code,LocalDate startDate, LocalDate endDate, Double payment) {
@@ -94,4 +96,10 @@ public class Reservation {
         this.vehicle = vehicle;
         vehicle.addReservation(this);
     }
+
+    public void addEmployeeComment(EmployeeComment employeeComment){
+        this.employeeComment = employeeComment;
+        employeeComment.addReservation(this);
+    }
+
 }

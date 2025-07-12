@@ -360,7 +360,39 @@ public class ReservationController {
         return ResponseEntity.ok(dto);
     }
 
+    @PostMapping("/registrar-devolucion/{reservationCode}")
+    public ResponseEntity<?> registerReturn(
+            @PathVariable String reservationCode,
+            @RequestParam String comentarioDevolucion,
+            Authentication auth) {
 
+        Reservation reservation = reservationRepository
+                .findByCode(reservationCode)
+                .orElse(null);
+
+        if (reservation == null)
+            return ResponseEntity.badRequest()
+                    .body("El codigo ingresado no corresponde a una reserva registrada.");
+
+        if (!reservation.getEndDate().isEqual(LocalDate.now()))
+            return ResponseEntity.badRequest()
+                    .body("El codigo ingresado no corresponde a una devolucion del deia de hoy.");
+
+        Vehicle vehicle = vehicleRepository.findByPatent(reservation.getVehicle().getPatent()).get();
+        vehicle.setMaintence(true);
+        vehicleRepository.save(vehicle);
+
+        AppUser employee = appUserRepository
+                .findByEmail(auth.getName())
+                .orElseThrow();
+
+        EmployeeComment comment = new EmployeeComment(employee, comentarioDevolucion);
+        reservation.addEmployeeComment(comment);
+        employee.addEmployeeComment(comment);
+        reservationRepository.save(reservation);
+
+        return ResponseEntity.ok("Devolución registrada correctamente!");
+    }
 
 
 

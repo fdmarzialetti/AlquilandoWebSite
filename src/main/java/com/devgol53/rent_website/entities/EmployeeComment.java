@@ -15,10 +15,24 @@ public class EmployeeComment {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
     private long id;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id", nullable = false)
     private AppUser employee;
     private String comment;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "reservation_id", nullable = false)
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reservation_id",
+            nullable = false,
+            unique   = true)
     private Reservation reservation;
+
+    public EmployeeComment(AppUser employee, String comment) {
+        this.employee = employee;
+        this.comment = comment;
+    }
+
+    public void addReservation(Reservation reservation){
+        this.reservation = reservation;
+    }
+
 }
