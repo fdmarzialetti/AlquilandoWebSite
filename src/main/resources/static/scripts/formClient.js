@@ -12,8 +12,10 @@ createApp({
                 rol: 'CLIENT',
                 phone: ''
             },
-            mensaje: '',
-            isAuthenticated: false
+             mensaje: '',
+             isAuthenticated: false,
+             isAdmin: false,
+             isEmployee: false
         };
     },
     methods: {
@@ -118,9 +120,34 @@ createApp({
                         text: "Hubo un problema al cerrar sesión. Inténtalo de nuevo.",
                     });
                 });
+        },
+        async verificarRolUsuario() {
+            try {
+                const adminRes = await axios.get('/api/user/isAdmin');
+                this.isAdmin = adminRes.data === true;
+
+                const employeeRes = await axios.get('/api/user/isEmployee');
+                this.isEmployee = employeeRes.data === true;
+
+                // Si no es ni admin ni empleado, lo consideramos cliente
+                if (!this.isAdmin && !this.isEmployee) {
+                    this.cliente.rol = 'CLIENT';
+                } else if (this.isAdmin) {
+                    this.cliente.rol = 'ADMIN';
+                } else if (this.isEmployee) {
+                    this.cliente.rol = 'EMPLOYEE';
+                }
+
+                this.isAuthenticated = true;
+
+            } catch (error) {
+                console.error('Error al verificar el rol:', error);
+                this.isAuthenticated = false;
+            }
         }
     },
     mounted() {
         this.checkAuth();
+        this.verificarRolUsuario();
     }
 }).mount('#app');

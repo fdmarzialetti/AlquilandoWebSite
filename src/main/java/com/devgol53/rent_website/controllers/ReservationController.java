@@ -203,6 +203,11 @@ public class ReservationController {
         if(reserva.getCancelled()){
             return ResponseEntity.badRequest().body("El codigo corresponde a una reserva cancelada.");
         }
+
+        if(reserva.getVehicle()!= null){
+            return ResponseEntity.badRequest().body("El codigo de reserva ya fue registrado anteriormente");
+        }
+
         System.out.println("empleado rama disponibles"+ empleado.getBranch());
         // Buscar vehículo disponible en la sucursal, del mismo modelo, que no tenga reserva activa hoy
         Optional<Vehicle> vehiculoDisponible = vehicleRepository.findAll().stream()
