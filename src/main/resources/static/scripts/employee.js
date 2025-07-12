@@ -50,10 +50,10 @@ createApp({
         /* ---------- ESTADOS ---------- */
         estadoTexto(r) {
             const hoy = todayISO_AR();
-            if (r.isCancelled) return "Cancelada";
+            if (r.isCancelled) return "Cancelado";
             if (r.startDate > hoy) return "Proximo";          // ← NUEVO
             if (r.vehicleId === 0) return "Pendiente";
-            return "Retirada";
+            return "Retirado";
         },
         estadoClase(r) {
             const hoy = todayISO_AR();
@@ -65,12 +65,12 @@ createApp({
         /* ---------- ESTADO DEVOLUCIÓN ---------- */
         estadoDevolucion(r) {
             const hoy = todayISO_AR();
-            if (r.endDate > hoy) return "Proximo";   // ← NUEVO
+            if (r.endDate > hoy && r.employeeCommentId === 0) return "Proximo";   // ← NUEVO
             return r.employeeCommentId === 0 ? "Pendiente" : "Registrada";
         },
         claseEstadoDevolucion(r) {
             const hoy = todayISO_AR();
-            if (r.endDate > hoy) return "text-bg-secondary"; // ← NUEVO
+            if (r.endDate > hoy && r.employeeCommentId === 0) return "text-bg-secondary"; // ← NUEVO
             return r.employeeCommentId === 0 ? "text-bg-warning" : "text-bg-info";
         },
 
@@ -112,7 +112,7 @@ createApp({
 
         /* ---------- VERIFICAR RETIRO ---------- */
         verificarRetiro() {
-            const codigo = this.codigoRetiro.trim();
+            const codigo = this.codigoRetiro.trim().toUpperCase();
             if (codigo.length !== 6) {
                 Swal.fire("Código inválido", "El código debe tener 6 caracteres.", "warning");
                 return;
@@ -152,37 +152,88 @@ createApp({
                 );
         },
 
-        /* ---------- REGISTRAR DEVOLUCIÓN ---------- */
-        registrarDevolucion() {
-            const codigo = this.codigoDevolucion.trim();
+        async registrarDevolucion() {
+            const codigo = this.codigoDevolucion.trim().toUpperCase();
             if (codigo.length !== 6) {
                 Swal.fire("Código inválido", "El código debe tener 6 caracteres.", "warning");
                 return;
             }
 
-            axios.post(
-                `/api/reservation/registrar-devolucion/${codigo}`,
-                null,
-                { params: { comentarioDevolucion: this.comentarioDevolucion } }
-            )
-                .then(res => {
-                
-                    Swal.fire("Operacion Exitosa", res.data, "success");
-                    this.obtenerReservas();
-                    this.codigoDevolucion = "";
-                    this.comentarioDevolucion = "";
-                    bootstrap.Modal.getInstance(
-                        document.getElementById("modalDevolucion")
-                    ).hide();
-                })
-                .catch(err => {
-                    const mensaje = typeof err.response?.data === "string"
-                        ? err.response.data
-                        : "No se pudo registrar la devolución.";
-                    Swal.fire("Error", mensaje, "error");
-                });
-        },
+            const hoy = new Date().toISOString().split("T")[0];   // "yyyy‑MM‑dd"
 
+            try {
+                /* ---------------------------------------------------------------
+                 * 1) Traemos la reserva para validar vehículo y fecha de fin
+                 * --------------------------------------------------------------- */
+                const { data: reserva } = await axios.get(`/api/reservation/${codigo}`);
+
+                /* ---------------------------------------------------------------
+                 * 2) Validaciones previas
+                 * --------------------------------------------------------------- */
+                if (!reserva.vehicle || reserva.vehicle.id === 0) {
+                    Swal.fire(
+                        "Sin vehículo asignado",
+                        "Esta reserva no tiene un vehículo asignado, por lo que no se puede registrar la devolución.",
+                        "warning"
+                    );
+                    return;
+                }
+
+                const endDate = reserva.endDate; // llega como "yyyy‑MM‑dd"
+
+                /* ---------------------------------------------------------------
+                 * 3) Función que realmente registra la devolución
+                 * --------------------------------------------------------------- */
+                const registrar = () =>
+                    axios
+                        .post(
+                            `/api/reservation/registrar-devolucion/${codigo}`,
+                            null,
+                            { params: { comentarioDevolucion: this.comentarioDevolucion } }
+                        )
+                        .then(res => {
+                            Swal.fire("Operación exitosa", res.data, "success");
+                            this.obtenerReservas();
+                            this.codigoDevolucion = "";
+                            this.comentarioDevolucion = "";
+                            bootstrap.Modal.getInstance(
+                                document.getElementById("modalDevolucion")
+                            ).hide();
+                        })
+                        .catch(err => {
+                            const mensaje =
+                                typeof err.response?.data === "string"
+                                    ? err.response.data
+                                    : "No se pudo registrar la devolución.";
+                            Swal.fire("Error", mensaje, "error");
+                        });
+
+                /* ---------------------------------------------------------------
+                 * 4) Confirmación si la reserva NO finaliza hoy
+                 * --------------------------------------------------------------- */
+                if (endDate !== hoy) {
+                    Swal.fire({
+                        title: "¿Confirmar devolución?",
+                        text: `Esta devolución se realizará antes de lo previsto. La fecha programada es ${this.formatDate(endDate)}. ¿Deseas continuar?`,
+                        icon: "question",
+                        showCancelButton: true,
+                        confirmButtonText: "Sí, continuar",
+                        cancelButtonText: "Cancelar"
+                    }).then(result => {
+                        if (result.isConfirmed) registrar();
+                    });
+                } else {
+                    // La reserva finaliza hoy → sin confirmación extra
+                    registrar();
+                }
+            } catch (e) {
+                Swal.fire(
+                    "Error",
+                    "No se encontró la reserva o ocurrió un problema al obtener la información.",
+                    "error"
+                );
+            }
+        },
         /* ---------- LOGOUT ---------- */
         logout() {
             axios.post("/logout").then(() => {
