@@ -374,9 +374,15 @@ public class ReservationController {
             return ResponseEntity.badRequest()
                     .body("El codigo ingresado no corresponde a una reserva registrada.");
 
-        if (!reservation.getEndDate().isEqual(LocalDate.now()))
+        if(reservation.getEmployeeComment()!=null){
             return ResponseEntity.badRequest()
-                    .body("El codigo ingresado no corresponde a una devolucion del deia de hoy.");
+                    .body("El codigo ingresado corresponde a un retiro ya registrado");
+        }
+
+        if(reservation.getVehicle() == null){
+            return ResponseEntity.badRequest()
+                    .body("El codigo ingresado no corresponde a una reserva con retiro pendiente");
+        }
 
         Vehicle vehicle = vehicleRepository.findByPatent(reservation.getVehicle().getPatent()).get();
         vehicle.setMaintence(true);

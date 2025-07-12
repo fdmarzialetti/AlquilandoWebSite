@@ -217,7 +217,7 @@ public class DBRunner implements CommandLineRunner {
         Reservation reservation24 = new Reservation("RES024", LocalDate.of(2025, 7,  6), LocalDate.of(2025, 7, 10), 20000.0);
         reservation24.addValoration(new Valoration(4, "Buena atención y rápida gestión al momento de retirar el auto."));
 
-        Reservation reservation25 = new Reservation("RES025", LocalDate.of(2025, 7,  7), LocalDate.of(2025, 7, 11), 19500.0);
+        Reservation reservation25 = new Reservation("RES025", LocalDate.of(2025, 7,  7), LocalDate.now(), 19500.0);
         reservation25.addValoration(new Valoration(2, "El auto presentaba algunos detalles estéticos que no me gustaron."));
 
         Reservation reservation26 = new Reservation("RES026", LocalDate.of(2025, 7,  8), LocalDate.of(2025, 7, 12), 21000.0);
