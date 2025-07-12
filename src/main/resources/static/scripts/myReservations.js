@@ -140,51 +140,92 @@ createApp({
             }
         },
 
-        deleteReservation(reservationCode) {
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: "Esta acción cancelará la reserva.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Continuar',
-                cancelButtonText: 'Atrás'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Mostrar loading mientras se cancela la reserva y se envía el mail
-                    Swal.fire({
-                        title: 'Procesando...',
-                        text: 'Cancelando la reserva...',
-                        allowOutsideClick: false,
-                        didOpen: () => {
-                            Swal.showLoading();
-                        }
-                    });
-
-                    axios.delete("/api/reservation/" + reservationCode)
-                        .then(response => {
-                            Swal.close(); // Cierra el loading
-                            Swal.fire({
-                                title: 'Reserva cancelada',
-                                html: `
-                            <p>${response.data}</p>
-                        `,
-                                icon: 'success'
-                            });
-                            this.getReservations();
-                        })
-                        .catch(error => {
-                            Swal.close(); // Cierra el loading si hay error
-                            const message = error.response ? error.response.data : "Ocurrió un error al intentar eliminar la reserva.";
-                            Swal.fire(
-                                'Error',
-                                message,
-                                'error'
-                            );
-                        });
+        async deleteReservation(reservationCode) {
+            try {
+                /* ------------------------------------------------------------------
+                 * 1) Buscar la reserva en memoria
+                 * ------------------------------------------------------------------ */
+                const reserva = this.reservas.find(r => r.code === reservationCode);
+                if (!reserva) {
+                    Swal.fire('Error', 'Reserva no encontrada.', 'error');
+                    return;
                 }
-            });
+
+                /* ------------------------------------------------------------------
+                 * 2) Pedir el modelo (para conocer su política de cancelación)
+                 * ------------------------------------------------------------------ */
+                // Si la política ya viene adentro de la reserva, salta esta llamada
+                const modelId = reserva.modelId;               // ajusta si tu campo se llama distinto
+                const model = await axios.get(`/api/model/${modelId}`);
+
+                /* ------------------------------------------------------------------
+                 * 3) Calcular el reembolso (FULL, TWENTY, ZERO)
+                 * ------------------------------------------------------------------ */
+                let refund = 0;
+                switch (model.data.cancelationPolicy) {             // ajusta el nombre si hace falta
+                    case 'FULL':
+                        refund = reserva.payment;                  // ajusta el nombre
+                        break;
+                    case 'TWENTY':
+                        refund = reserva.payment * 0.20;
+                        break;
+                    case 'ZERO':
+                    default:
+                        refund = 0;
+                        break;
+                }
+
+                /* ------------------------------------------------------------------
+                 * 4) Confirmar con el usuario mostrando el monto
+                 * ------------------------------------------------------------------ */
+                const { isConfirmed } = await Swal.fire({
+                    title: '¿Está seguro de cancelar la reserva?',
+                    html: `AL realizar esta operacion se le reembolsará un total de <strong>$${refund.toFixed(2)}</strong>.`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Continuar',
+                    cancelButtonText: 'Atrás'
+                });
+                if (!isConfirmed) return;
+
+                /* ------------------------------------------------------------------
+                 * 5) Mostrar loader SIN await y cancelar en el servidor
+                 * ------------------------------------------------------------------ */
+                Swal.fire({
+                    title: 'Procesando...',
+                    text: 'Cancelando la reserva...',
+                    allowOutsideClick: false,
+                    didOpen: () => Swal.showLoading()
+                });
+
+                await axios.delete(`/api/reservation/${reservationCode}`);
+
+                /* ------------------------------------------------------------------
+                 * 6) Cerrar loader y mostrar éxito
+                 * ------------------------------------------------------------------ */
+                Swal.close();
+                await Swal.fire({
+                    title: 'Reserva cancelada',
+                    html: `
+    <p>La reserva fue cancelada correctamente.</p>
+    <p>Se enviará la información correspondiente al reembolso a su e‑mail.</p>
+    `,
+                    icon: 'success'
+                });
+
+                /* ------------------------------------------------------------------
+                 * 7) Refrescar la lista de reservas
+                 * ------------------------------------------------------------------ */
+                this.getReservations();
+
+            } catch (error) {
+                Swal.close();
+                const message = error.response?.data ||
+                    'Ocurrió un error al intentar cancelar la reserva.';
+                Swal.fire('Error', message, 'error');
+            }
         },
         formatFecha(fechaStr) {
             const [year, month, day] = fechaStr.split('-');
