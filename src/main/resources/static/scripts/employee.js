@@ -51,7 +51,7 @@ createApp({
         estadoTexto(r) {
             const hoy = todayISO_AR();
             if (r.isCancelled) return "Cancelada";
-            if (r.startDate > hoy) return "Posterior";          // ← NUEVO
+            if (r.startDate > hoy) return "Proximo";          // ← NUEVO
             if (r.vehicleId === 0) return "Pendiente";
             return "Retirada";
         },
@@ -65,7 +65,7 @@ createApp({
         /* ---------- ESTADO DEVOLUCIÓN ---------- */
         estadoDevolucion(r) {
             const hoy = todayISO_AR();
-            if (r.endDate > hoy) return "Posterior";   // ← NUEVO
+            if (r.endDate > hoy) return "Proximo";   // ← NUEVO
             return r.employeeCommentId === 0 ? "Pendiente" : "Registrada";
         },
         claseEstadoDevolucion(r) {
@@ -165,9 +165,9 @@ createApp({
                 null,
                 { params: { comentarioDevolucion: this.comentarioDevolucion } }
             )
-                .then((data) => {
-                    console.log(data)
-                    Swal.fire("Éxito", "Devolución registrada", "success");
+                .then(res => {
+                
+                    Swal.fire("Operacion Exitosa", res.data, "success");
                     this.obtenerReservas();
                     this.codigoDevolucion = "";
                     this.comentarioDevolucion = "";
