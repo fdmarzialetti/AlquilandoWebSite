@@ -3,6 +3,7 @@ const { createApp } = Vue;
 createApp({
   data() {
     return {
+        vehicleId: null,
         car_id: "",
         year: "",
         selectedBranchId: "",
@@ -11,11 +12,24 @@ createApp({
         models: []
       };
   }, created() { },
-  mounted() {
-          this.loadBranches();
-          this.loadModels();
+      mounted() {
+        this.loadBranches();
+        this.loadModels();
+
+        const params = new URLSearchParams(window.location.search);
+        this.vehicleId = params.get("id");
+
+        // Primero cargar modelos y sucursales en paralelo
+        Promise.all([this.loadModels(), this.loadBranches()])
+          .then(() => {
+            if (this.vehicleId) {
+              this.loadVehicle(this.vehicleId);
+            }
+          });
       },
       methods: {
+
+
           loadBranches() {
               axios.get("/api/branches")
                   .then(response => {
@@ -25,6 +39,24 @@ createApp({
                   .catch(error => {
                       console.error("ERROR AL CARGAR SUCURSALES:", error);
                   });
+          },
+          loadVehicle(id) {
+            axios.get(`/api/vehicle/${id}`)
+              .then(response => {
+                const v = response.data;
+                this.car_id = v.patent;
+                this.year = v.yearV;
+                this.selectedModelId = v.modelId;
+                this.selectedBranchId = v.branchId;
+              })
+              .catch(error => {
+                console.error("Error al cargar el vehículo:", error);
+                Swal.fire({
+                  icon: "error",
+                  title: "Error",
+                  text: "No se pudo cargar el vehículo para editar."
+                });
+              });
           },
           loadModels() {
                       axios.get('/api/model/listModels')
@@ -53,22 +85,35 @@ createApp({
               branchId: this.selectedBranchId
             };
 
-            const response = await axios.post('/api/vehicle/createVehicle', vehicleData);
+            if (this.vehicleId) {
+              // Editar
+              await axios.put(`/api/vehicle/${this.vehicleId}/updateVehicle`, vehicleData);
 
+            } else {
+              // Crear
+              await axios.post('/api/vehicle/createVehicle', vehicleData);
+            }
             Swal.fire({
-              title: "Vehículo creado con éxito",
-              icon: "success"
+              icon: "success",
+              title: this.vehicleId ? "Vehículo actualizado" : "Vehículo creado",
+              text: this.vehicleId
+                ? "Los datos del vehículo fueron modificados correctamente"
+                : "El vehículo fue dado de alta correctamente",
+              timer: 1500,
+              showConfirmButton: false
             }).then(() => {
               window.location.href = "./listVehicles.html";
             });
 
+
           } catch (error) {
+            const msg = error.response?.data || "Ocurrió un error inesperado";
             Swal.fire({
               icon: "error",
-              title: "Error al crear el vehículo",
-              text: "Revisá los datos e intentá nuevamente"
+              title: "Error al guardar",
+              text: msg
             });
-            console.error("Error al crear el vehículo:", error);
+            console.error("Error:", error);
           }
         },
         logout() {

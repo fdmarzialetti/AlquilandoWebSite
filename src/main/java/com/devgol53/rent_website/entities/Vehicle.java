@@ -19,7 +19,7 @@ public class Vehicle {
     @Setter(AccessLevel.NONE)
     private long id;
     private String patent;
-    private String status;
+    private Boolean maintence;
     private int yearV;
     private boolean active;
 
@@ -36,9 +36,9 @@ public class Vehicle {
 
     public Vehicle(){};
 
-    public Vehicle(String patent, String status, int year) {
+    public Vehicle(String patent, Boolean maintence, int year) {
         this.patent = patent.replaceAll("\\s+", "").toUpperCase();
-        this.status = status;
+        this.maintence = maintence;
         this.yearV = year;
         this.active = true;
     }
@@ -46,7 +46,7 @@ public class Vehicle {
     public Vehicle(VehicleCreateDTO vehicleCreateDTO){
         this.patent = vehicleCreateDTO.getPatent().replaceAll("\\s+", "").toUpperCase();
         this.yearV = vehicleCreateDTO.getYearV();
-        this.status = "Disponible";
+        this.maintence = false;
         this.active = true;
     }
 
@@ -84,5 +84,8 @@ public class Vehicle {
         return false;
     }
 
+    public void addReservation(Reservation reservation){
+        this.reservations.add(reservation);
+    }
 
 }

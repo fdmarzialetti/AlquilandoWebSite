@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/branches")
@@ -38,13 +39,43 @@ public class BranchController {
         return ResponseEntity.ok(saved);
     }
 
-    // 🔁 Solo lista las sucursales activas (state == true)
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateBranch(@PathVariable Long id, @RequestBody Branch updatedBranch) {
+        Optional<Branch> optionalBranch = branchRepository.findById(id);
+
+        if (optionalBranch.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Sucursal no encontrada.");
+        }
+
+        String city = updatedBranch.getCity().trim();
+        String address = updatedBranch.getAddress().trim();
+
+        // Verifica si ya existe otra sucursal con esa ciudad y dirección
+        boolean exists = branchRepository.existsByCityIgnoreCaseAndAddressIgnoreCaseAndIdNot(city, address, id);
+        if (exists) {
+            return ResponseEntity
+                    .badRequest()
+                    .body("Ya existe otra sucursal con esa ciudad y dirección.");
+        }
+
+        Branch branch = optionalBranch.get();
+        branch.setCity(city);
+        branch.setAddress(address);
+        // cualquier otro campo a actualizar...
+
+        branchRepository.save(branch);
+        return ResponseEntity.ok("Sucursal actualizada con éxito.");
+    }
+
+
+
+    // Solo lista las sucursales activas (state == true)
     @GetMapping
     public List<BranchGetDTO> getAllBranches() {
         return branchRepository.findByStateTrue().stream().map(BranchGetDTO::new).toList();
     }
 
-    // ❌ Cambia el estado a false en lugar de eliminar
+    //  Cambia el estado a false en lugar de eliminar
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deactivateBranch(@PathVariable Long id) {
         Branch branch = branchRepository.findById(id)

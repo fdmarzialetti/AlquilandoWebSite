@@ -47,6 +47,7 @@
               <li><a class="dropdown-item" href="../pages/formBranch.html">Crear Sucursal</a></li>
               <li><a class="dropdown-item" href="../pages/addModel.html">Crear Modelo</a></li>
               <li><a class="dropdown-item" href="../pages/addVehicle.html">Crear Vehículo</a></li>
+              <li><a class="dropdown-item" href="../pages/commentsReport.html">Comentarios y Valoraciones</a></li>
             </ul>
           </li>
         </ul>
@@ -102,7 +103,9 @@
 
 
         <div class="text-center">
-          <button type="submit" class="btn btn-custom">Dar de alta</button>
+            <button type="submit" class="btn btn-custom">
+                {{ vehicleId ? 'Actualizar vehículo' : 'Dar de alta' }}
+            </button>
         </div>
       </form>
       </div>

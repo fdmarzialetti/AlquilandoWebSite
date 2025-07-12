@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Lista de Adicionales</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8" />
+    <title>Empleados</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -28,12 +28,10 @@
                     <li class="nav-item"><a class="nav-link text-white" href="../pages/listModels.html">Modelos</a></li>
                     <li class="nav-item"><a class="nav-link text-white" href="../pages/listBranches.html">Sucursales</a></li>
                     <li class="nav-item"><a class="nav-link text-white" href="../pages/listVehicles.html">Vehículos</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="../pages/listEmployees.html">Empleados</a></li>
-                    <li class="nav-item"><a class="nav-link active text-white" href="../pages/listAdditionals.html">Adicionales</a></li>
+                    <li class="nav-item"><a class="nav-link active text-white" href="../pages/listEmployees.html">Empleados</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="../pages/listAdditionals.html">Adicionales</a></li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
-                            Acciones
-                        </a>
+                        <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">Acciones</a>
                         <ul class="dropdown-menu dropdown-menu-dark">
                             <li><a class="dropdown-item" href="../pages/formBranch.html">Crear Sucursal</a></li>
                             <li><a class="dropdown-item" href="../pages/addModel.html">Crear Modelo</a></li>
@@ -53,63 +51,71 @@
     Panel de administrador
 </div>
 
-<!-- Contenido principal: Lista de Adicionales -->
+<!-- Contenido principal -->
 <div class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">Adicionales</h2>
+        <h2 class="mb-0">Empleados</h2>
     </div>
 
-    <!-- Adicionales activos -->
-    <h4 class="text-success">Adicionales Activos</h4>
+    <!-- Activos -->
+    <h4 class="text-success">Activos</h4>
     <table class="table table-bordered table-striped mb-5">
         <thead class="table-success">
         <tr>
             <th>Nombre</th>
-            <th>Precio</th>
+            <th>Email</th>
+            <th>DNI</th>
+            <th>Sucursal</th>
             <th>Acciones</th>
         </tr>
         </thead>
         <tbody>
-        <tr v-for="item in activeAdditionals" :key="item.id">
-            <td>{{ item.name }}</td>
-            <td>${{ item.price.toFixed(2) }}</td>
+        <tr v-for="e in activeEmployeesSorted" :key="e.id">
+            <td>{{ e.name }} {{ e.lastname }}</td>
+            <td>{{ e.email }}</td>
+            <td>{{ e.dni }}</td>
+            <td>{{ e.branchAddress ?? 'N/A' }}</td>
             <td>
-                <button class="btn btn-sm btn-warning me-2" @click="editItem(item)">Editar</button>
-                <button class="btn btn-sm btn-danger" @click="deactivateItem(item)">Dar de baja</button>
+                <button class="btn btn-sm btn-warning me-2" @click="editEmployee(e)">Editar</button>
+                <button class="btn btn-sm btn-danger" @click="deactivateEmployee(e)">Dar de baja</button>
             </td>
         </tr>
-        <tr v-if="activeAdditionals.length === 0">
-            <td colspan="3" class="text-center text-muted">No hay adicionales activos.</td>
+        <tr v-if="activeEmployees.length === 0">
+            <td colspan="5" class="text-center text-muted">No hay empleados activos.</td>
         </tr>
         </tbody>
     </table>
 
-    <!-- Adicionales inactivos -->
-    <h4 class="text-secondary">Adicionales No Activos</h4>
+    <!-- Inactivos -->
+    <h4 class="text-secondary">Inactivos</h4>
     <table class="table table-bordered table-striped">
         <thead class="table-secondary">
         <tr>
             <th>Nombre</th>
-            <th>Precio</th>
-            <th>Acciones</th> <!-- 👈 NUEVO -->
+            <th>Email</th>
+            <th>DNI</th>
+            <th>Sucursal</th>
+            <th>Acciones</th>
         </tr>
         </thead>
         <tbody>
-        <tr v-for="item in inactiveAdditionals" :key="'inactivo-' + item.id">
-            <td>{{ item.name }}</td>
-            <td>${{ item.price.toFixed(2) }}</td>
+        <tr v-for="e in inactiveEmployeesSorted" :key="e.id">
+            <td>{{ e.name }} {{ e.lastname }}</td>
+            <td>{{ e.email }}</td>
+            <td>{{ e.dni }}</td>
+            <td>{{ e.branchAddress ?? 'N/A' }}</td>
             <td>
-                <button class="btn btn-sm btn-success" @click="activateItem(item)">Reactivar</button>
+                <button class="btn btn-sm btn-success" @click="activateEmployee(e)">Reactivar</button>
             </td>
         </tr>
-        <tr v-if="inactiveAdditionals.length === 0">
-            <td colspan="3" class="text-center text-muted">No hay adicionales inactivos.</td>
+        <tr v-if="inactiveEmployees.length === 0">
+            <td colspan="5" class="text-center text-muted">No hay empleados inactivos.</td>
         </tr>
         </tbody>
     </table>
 </div>
 
-<script src="../scripts/listAdditionals.js"></script>
+<script src="../scripts/listEmployees.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

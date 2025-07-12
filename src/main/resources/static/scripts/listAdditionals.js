@@ -10,7 +10,7 @@ createApp({
   },
   methods: {
     fetchAdditionals() {
-      axios.get('http://localhost:8080/api/additionals/all') // <--- Nuevo endpoint que trae todos (activos e inactivos)
+      axios.get('http://localhost:8080/api/additionals/all')
         .then(res => {
           this.allAdditionals = res.data;
           this.activeAdditionals = this.allAdditionals.filter(a => a.state);
@@ -21,21 +21,41 @@ createApp({
           Swal.fire('Error al cargar los adicionales', '', 'error');
         });
     },
+
     goToForm() {
       window.location.href = 'formAdditional.html';
     },
+
     editItem(item) {
       Swal.fire({
         title: 'Editar adicional',
-        html:
-          `<input id="swal-name" class="swal2-input" placeholder="Nombre" value="${item.name}">` +
-          `<input id="swal-price" class="swal2-input" type="number" step="0.01" placeholder="Precio" value="${item.price}">`,
+        html: `
+          <input id="swal-name" class="swal2-input" placeholder="Nombre" value="${item.name}">
+          <input id="swal-price" class="swal2-input" type="number" step="0.01" placeholder="Precio" value="${item.price}">
+        `,
         focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: 'Guardar',
         preConfirm: () => {
-          return {
-            name: document.getElementById('swal-name').value,
-            price: parseFloat(document.getElementById('swal-price').value)
-          };
+          const name = document.getElementById('swal-name').value.trim();
+          const price = parseFloat(document.getElementById('swal-price').value);
+
+          if (!name || isNaN(price) || price < 0) {
+            Swal.showValidationMessage('Nombre y precio válidos requeridos');
+            return false;
+          }
+
+          const nameLower = name.toLowerCase();
+          const exists = this.allAdditionals.some(a =>
+            a.id !== item.id && a.name.trim().toLowerCase() === nameLower
+          );
+
+          if (exists) {
+            Swal.showValidationMessage('Ya existe un adicional con ese nombre');
+            return false;
+          }
+
+          return { name, price };
         }
       }).then(result => {
         if (result.isConfirmed) {
@@ -45,11 +65,17 @@ createApp({
               this.fetchAdditionals();
             })
             .catch(err => {
-              Swal.fire('Error al actualizar', err.response?.data || 'Error desconocido', 'error');
+              console.error(err);
+              Swal.fire(
+                'Error al actualizar',
+                err.response?.data || 'Error desconocido',
+                'error'
+              );
             });
         }
       });
     },
+
     deactivateItem(item) {
       Swal.fire({
         title: `¿Dar de baja "${item.name}"?`,
@@ -64,10 +90,45 @@ createApp({
               this.fetchAdditionals();
             })
             .catch(err => {
-              Swal.fire('Error al desactivar', err.response?.data || 'Error desconocido', 'error');
+              console.error(err);
+              Swal.fire(
+                'Error al desactivar',
+                err.response?.data || 'Error desconocido',
+                'error'
+              );
             });
         }
       });
+    },
+
+    activateItem(item) {
+      Swal.fire({
+        title: `¿Reactivar "${item.name}"?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, reactivar'
+      }).then(result => {
+        if (result.isConfirmed) {
+          axios.post(`http://localhost:8080/api/additionals/${item.id}/activate`)
+            .then(() => {
+              Swal.fire('Adicional reactivado', '', 'success');
+              this.fetchAdditionals();
+            })
+            .catch(err => {
+              console.error(err);
+              Swal.fire(
+                'Error al reactivar',
+                err.response?.data || 'Error desconocido',
+                'error'
+              );
+            });
+        }
+      });
+    },
+
+    logout() {
+      // Si necesitás implementar cierre de sesión, colocá la lógica acá
+      window.location.href = '../index.html';
     }
   },
   mounted() {

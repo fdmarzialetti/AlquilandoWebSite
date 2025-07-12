@@ -3,6 +3,7 @@ package com.devgol53.rent_website.controllers;
 import com.devgol53.rent_website.dtos.model.AvalaibleModelDTO;
 import com.devgol53.rent_website.dtos.model.CreateModelDTO;
 import com.devgol53.rent_website.dtos.model.GetModelDTO;
+import com.devgol53.rent_website.dtos.model.ModelCommentsDTO;
 import com.devgol53.rent_website.entities.Branch;
 import com.devgol53.rent_website.entities.Model;
 import com.devgol53.rent_website.entities.Vehicle;
@@ -17,10 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -35,6 +33,11 @@ public class ModelController {
     @GetMapping("/listModels")
     public List<GetModelDTO> getModels(){
         return modelRepository.findAll().stream().map(GetModelDTO::new).toList();
+    }
+
+    @GetMapping("/allModelsComments")
+    public List<ModelCommentsDTO> getAllModelsComments(){
+        return modelRepository.findAll().stream().map(m->new ModelCommentsDTO(m)).toList();
     }
 
     @GetMapping("/listActiveModels")
@@ -64,6 +67,55 @@ public class ModelController {
         return ResponseEntity.status(HttpStatus.CONFLICT).body("Ya existe el modelo");
     }
 
+    @PutMapping(value = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> updateModel(
+            @PathVariable Long id,
+            @ModelAttribute CreateModelDTO modelDto) throws IOException {
+
+        Optional<Model> optionalModel = modelRepository.findById(id);
+        if (optionalModel.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Modelo no encontrado.");
+        }
+
+        String brand = modelDto.getBrand().trim();
+        String name = modelDto.getName().trim();
+
+        boolean alreadyExists = modelRepository
+                .existsByBrandIgnoreCaseAndNameIgnoreCaseAndIdNot(brand, name, id);
+        if (alreadyExists) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("Ya existe otro modelo con esa marca y nombre.");
+        }
+
+        Model model = optionalModel.get();
+        model.setBrand(brand);
+        model.setName(name);
+        model.setPrice(modelDto.getPrice());
+        model.setCapacity(modelDto.getCapacity());
+        model.setCancelationPolicy(modelDto.getCancelationPolicy());
+
+        // Solo actualizar si se subió una imagen nueva
+        if (modelDto.getImage() != null && !modelDto.getImage().isEmpty()) {
+            model.setImage(modelDto.getImage().getBytes());
+        }
+
+        modelRepository.save(model);
+        return ResponseEntity.ok("Modelo actualizado con éxito.");
+    }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<GetModelDTO> getModelById(@PathVariable Long id) {
+        Optional<Model> optionalModel = modelRepository.findById(id);
+        if (optionalModel.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Model model = optionalModel.get();
+        GetModelDTO dto = new GetModelDTO(model);
+        return ResponseEntity.ok(dto);
+    }
+
     @GetMapping("/availableModels")
     public List<AvalaibleModelDTO> getAvailableModels(
             @RequestParam LocalDate startDate,
@@ -74,7 +126,7 @@ public class ModelController {
                 .orElseThrow(() -> new RuntimeException("Branch not found"));
 
         // Agrupamos vehículos por modelo
-        Map<Model, List<Vehicle>> modelToVehicles = branch.getVehicles().stream()
+        Map<Model, List<Vehicle>> modelToVehicles = branch.getVehicles().stream().filter(v->v.getMaintence()==false)
                 .collect(Collectors.groupingBy(Vehicle::getModel));
 
         return modelToVehicles.entrySet().stream()

@@ -36,6 +36,7 @@
                         <li><a class="dropdown-item" href="../pages/formBranch.html">Crear Sucursal</a></li>
                         <li><a class="dropdown-item" href="../pages/addModel.html">Crear Modelo</a></li>
                         <li><a class="dropdown-item" href="../pages/addVehicle.html">Crear Vehículo</a></li>
+                        <li><a class="dropdown-item" href="../pages/commentsReport.html">Comentarios y Valoraciones</a></li>
                     </ul>
                 </li>
             </ul>
@@ -66,7 +67,8 @@
         <tr v-for="branch in branches" :key="branch.id">
             <td>{{ branch.city }}</td>
             <td>{{ branch.address }}</td>
-            <td>
+            <td class="d-flex gap-2">
+                <a class="btn btn-primary btn-sm" :href="`../pages/formBranch.html?id=${branch.id}`">Editar</a>
                 <button class="btn btn-danger btn-sm" @click="confirmDelete(branch.id)">
                     Eliminar
                 </button>

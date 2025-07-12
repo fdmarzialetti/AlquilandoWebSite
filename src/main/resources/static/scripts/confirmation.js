@@ -19,6 +19,12 @@ createApp({
     this.cargarAdicionales();
   },
   methods: {
+    normalizarFecha(fechaStr) {
+      if (!fechaStr || typeof fechaStr !== 'string') return null;
+
+      const [anio, mes, dia] = fechaStr.split("-").map(Number);
+      return new Date(anio, mes - 1, dia); // ← new Date en horario local
+    },
     async cargarReserva() {
       try {
         const response = await axios.get(`/api/reservation/${this.codigoReserva}`);
@@ -59,19 +65,26 @@ createApp({
     }
   },
   computed: {
+    fechaInicioFormateada() {
+      if (!this.reserva) return "";
+
+      const date = this.normalizarFecha(this.reserva.startDate);
+      if (!date) return "";
+
+      return `${String(date.getDate()).padStart(2, "0")}/${String(date.getMonth() + 1).padStart(2, "0")}/${date.getFullYear()}`;
+    },
+
+    fechaFinFormateada() {
+      if (!this.reserva || !this.reserva.endDate) return "";
+
+      const date = this.normalizarFecha(this.reserva.endDate);
+      if (!date) return "";
+
+      return `${String(date.getDate()).padStart(2, "0")}/${String(date.getMonth() + 1).padStart(2, "0")}/${date.getFullYear()}`;
+    },
     resumenVehiculo() {
       if (!this.reserva || !this.reserva.vehicle) return "No asignado";
       return `${this.reserva.vehicle.model}`;
-    },
-    fechaInicioFormateada() {
-      if (!this.reserva) return "";
-      const date = new Date(this.reserva.startDate);
-      return `${String(date.getDate()).padStart(2, "0")}/${String(date.getMonth() + 1).padStart(2, "0")}/${date.getFullYear()}`;
-    },
-    fechaFinFormateada() {
-      if (!this.reserva) return "";
-      const date = new Date(this.reserva.endDate);
-      return `${String(date.getDate()).padStart(2, "0")}/${String(date.getMonth() + 1).padStart(2, "0")}/${date.getFullYear()}`;
     },
     totalAdicionales() {
       return this.adicionales.reduce((total, adicional) => total + adicional.price, 0);

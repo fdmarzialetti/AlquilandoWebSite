@@ -1,39 +1,38 @@
 package com.devgol53.rent_website.entities;
 
-import com.devgol53.rent_website.dtos.valoration.ValorationDTO;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-@NoArgsConstructor
+
+@Entity
 @Getter
 @Setter
-@Entity
-public class Valoration {
+@NoArgsConstructor
+public class EmployeeComment {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
     private long id;
-    private int score;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id", nullable = false)
+    private AppUser employee;
     private String comment;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "reservation_id", nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "reservation_id",
+            nullable = false,
+            unique   = true)
     private Reservation reservation;
 
-
-    public Valoration(int score, String comment) {
-        this.score = score;
+    public EmployeeComment(AppUser employee, String comment) {
+        this.employee = employee;
         this.comment = comment;
-    }
-
-    public Valoration(ValorationDTO valorationDTO) {
-        this.score= valorationDTO.getScore();
-        this.comment = valorationDTO.getComment();
     }
 
     public void addReservation(Reservation reservation){
         this.reservation = reservation;
     }
+
 }
