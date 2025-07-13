@@ -6,6 +6,7 @@ createApp({
         vehicleId: null,
         car_id: "",
         year: "",
+        maintence:"",
         selectedBranchId: "",
         selectedModelId: "",
         branches: [],
@@ -46,6 +47,7 @@ createApp({
                 const v = response.data;
                 this.car_id = v.patent;
                 this.year = v.yearV;
+                this.maintence = v.maintence;
                 this.selectedModelId = v.modelId;
                 this.selectedBranchId = v.branchId;
               })
@@ -81,6 +83,7 @@ createApp({
             const vehicleData = {
               patent: this.car_id,
               yearV: parseInt(this.year),
+              maintence: this.maintence,
               modelId: this.selectedModelId,
               branchId: this.selectedBranchId
             };

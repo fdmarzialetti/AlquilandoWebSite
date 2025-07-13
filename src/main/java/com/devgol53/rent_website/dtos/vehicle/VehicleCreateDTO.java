@@ -12,4 +12,5 @@ public class VehicleCreateDTO {
     private int yearV;
     private long modelId;
     private long branchId;
+    private Boolean maintence;
 }

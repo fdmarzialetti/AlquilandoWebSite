@@ -46,7 +46,7 @@ public class Vehicle {
     public Vehicle(VehicleCreateDTO vehicleCreateDTO){
         this.patent = vehicleCreateDTO.getPatent().replaceAll("\\s+", "").toUpperCase();
         this.yearV = vehicleCreateDTO.getYearV();
-        this.maintence = false;
+        this.maintence = vehicleCreateDTO.getMaintence();
         this.active = true;
     }
 
