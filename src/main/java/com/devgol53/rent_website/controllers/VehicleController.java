@@ -67,6 +67,7 @@
 
                 vehicle.setPatent(normalizedPatent);
                 vehicle.setYearV(dto.getYearV());
+                vehicle.setMaintence(dto.getMaintence());
 
                 modelRepository.findById(dto.getModelId()).ifPresent(vehicle::addModel);
                 branchRepository.findById(dto.getBranchId()).ifPresent(vehicle::addBranch);

@@ -79,6 +79,7 @@
       <th>Año</th>
       <th>Modelo</th>
       <th>Sucursal</th>
+      <th>En Mantenimiento</th>
       <th>Acciones</th>
     </tr>
     </thead>
@@ -88,6 +89,7 @@
       <td>{{ vehicle.yearV }}</td>
       <td>{{ vehicle.model }}</td>
       <td>{{ vehicle.branch }}</td>
+      <td>{{ vehicle.maintence ? 'SI' : 'NO' }}</td>
       <td>
         <button class="btn btn-danger btn-sm" @click="deleteVehicle(vehicle.id)">Eliminar</button>
       </td>
