@@ -47,31 +47,59 @@ createApp({
             return `${d}/${m}/${y}`;
         },
 
-        /* ---------- ESTADOS ---------- */
+        /* ---------- RETIRO ESTADOS ---------- */
         estadoTexto(r) {
             const hoy = todayISO_AR();
             if (r.isCancelled) return "Cancelado";
-            if (r.startDate > hoy) return "Proximo";          // ← NUEVO
-            if (r.vehicleId === 0) return "Pendiente";
-            return "Retirado";
+            if (r.startDate > hoy) return "Retiro Proximo";          // ← NUEVO
+            if (r.vehicleId === 0) return "Retiro Pendiente";
+            return "Reserva Finalizada";
         },
         estadoClase(r) {
             const hoy = todayISO_AR();
             if (r.isCancelled) return "text-bg-danger";
             if (r.startDate > hoy) return "text-bg-secondary";  // ← NUEVO
             if (r.vehicleId === 0) return "text-bg-warning";
-            return "text-bg-info";
+            return "text-bg-success";
         },
         /* ---------- ESTADO DEVOLUCIÓN ---------- */
         estadoDevolucion(r) {
             const hoy = todayISO_AR();
-            if (r.endDate > hoy && r.employeeCommentId === 0) return "Proximo";   // ← NUEVO
-            return r.employeeCommentId === 0 ? "Pendiente" : "Registrada";
+            if (r.endDate > hoy && r.employeeCommentId === 0) return "Devolucion Proxima";   // ← NUEVO
+            return r.employeeCommentId === 0 ? "Devolucion Pendiente" : "Reserva Finalizada";
         },
         claseEstadoDevolucion(r) {
             const hoy = todayISO_AR();
             if (r.endDate > hoy && r.employeeCommentId === 0) return "text-bg-secondary"; // ← NUEVO
-            return r.employeeCommentId === 0 ? "text-bg-warning" : "text-bg-info";
+            return r.employeeCommentId === 0 ? "text-bg-warning" : "text-bg-success";
+        },
+        estadoGeneralReserva(r) {
+            const hoy = todayISO_AR();
+
+            if (r.isCancelled) return "Cancelado";
+
+            // Primero: ver estado de retiro
+            if (r.startDate > hoy) return "Retiro Próximo";
+            if (r.vehicleId === 0) return "Retiro Pendiente";
+
+            // Luego: si ya se retiró, evaluamos la devolución
+            if (r.endDate > hoy && r.employeeCommentId === 0) return "Devolución Próxima";
+            if (r.employeeCommentId === 0) return "Devolución Pendiente";
+
+            return "Reserva Finalizada";
+        },
+        estadoGeneralClase(r) {
+            const hoy = todayISO_AR();
+
+            if (r.isCancelled) return "text-bg-danger";
+
+            if (r.startDate > hoy) return "text-bg-secondary";
+            if (r.vehicleId === 0) return "text-bg-warning";
+
+            if (r.endDate > hoy && r.employeeCommentId === 0) return "text-bg-secondary";
+            if (r.employeeCommentId === 0) return "text-bg-warning";
+
+            return "text-bg-success";
         },
 
         /* ---------- CARGA DE RESERVAS ---------- */
@@ -89,7 +117,9 @@ createApp({
                     this.pickups = this.reservations
                         .filter(r =>
                             parseISOLocal(r.startDate) >= start &&
-                            parseISOLocal(r.startDate) <= end
+                            parseISOLocal(r.startDate) <= end &&
+                            this.estadoTexto(r) != "Reserva Finalizada" &&
+                            !r.isCancelled
                         )
                         .sort((a, b) =>
                             parseISOLocal(a.startDate) - parseISOLocal(b.startDate)
@@ -98,7 +128,9 @@ createApp({
                     this.returns = this.reservations
                         .filter(r =>
                             parseISOLocal(r.endDate) >= start &&
-                            parseISOLocal(r.endDate) <= end
+                            parseISOLocal(r.endDate) <= end &&
+                            this.estadoDevolucion(r) != "Reserva Finalizada" &&
+                            !r.isCancelled
                         )
                         .filter(r => r.vehicleId != 0)
                         .sort((a, b) =>
@@ -248,14 +280,19 @@ createApp({
         devolucionesPendientesHoy() {
             const hoy = todayISO_AR();
             return this.returns.filter(r =>
-                r.endDate === hoy && r.employeeCommentId === 0
+                r.endDate === hoy &&
+                !r.isCancelled &&
+                this.estadoDevolucion(r) != "Reserva Finalizada"
             );
         },
-        retirosPendientesHoy() {
-            const hoy = todayISO_AR();
-            return this.pickups.filter(r =>
-                r.startDate === hoy && r.vehicleId === 0
-            );
-        }
+       retirosPendientesHoy() {
+           const hoy = todayISO_AR();
+           return this.pickups.filter(r =>
+               r.startDate === hoy &&
+               r.vehicleId === 0 &&
+               !r.isCancelled &&
+               this.estadoTexto(r) != "Reserva Finalizada"
+           );
+       }
     }
 }).mount("#app");
