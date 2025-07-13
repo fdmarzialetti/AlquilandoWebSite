@@ -3,68 +3,74 @@ const { createApp } = Vue;
 createApp({
   data() {
     return {
+      model: {
+        brand: "",
+        name: "",
+        price: null,
+        capacity: null,
+        cancelationPolicy: "",
+        image: null
+      },
+      previewImage: null,
+      isEditMode: false,
       id: null,
-      marca: "",
-      modelo: "",
-      precio: null,
-      capacidad: null,
-      politica: null,
-      image: null,
-      isEdit: false
     };
   },
   mounted() {
     const params = new URLSearchParams(window.location.search);
     this.id = params.get("id");
     if (this.id) {
-      this.isEdit = true;
+      this.isEditMode = true;
       this.fetchModel();
     }
   },
   methods: {
-    validarEntero(event) {
-      const valor = event.target.value;
-      if (!/^\d*$/.test(valor)) {
-        event.target.value = this.capacidad || '';
-      } else {
-        this.capacidad = parseInt(valor);
+    handleImageUpload(event) {
+      const file = event.target.files[0];
+      this.model.image = file;
+      if (file) {
+        this.previewImage = URL.createObjectURL(file);
       }
     },
-    handleFileUpload(event) {
-      this.image = event.target.files[0];
-    },
+
     async fetchModel() {
       try {
         const response = await axios.get(`/api/model/${this.id}`);
         const data = response.data;
+        this.model.brand = data.brand;
+        this.model.name = data.name;
+        this.model.price = data.price;
+        this.model.capacity = data.capacity;
+        this.model.cancelationPolicy = data.cancelationPolicy;
 
-        this.marca = data.brand;
-        this.modelo = data.name;
-        this.precio = data.price;
-        this.capacidad = data.capacity;
-        this.politica = data.cancelationPolicy;
+        if (data.image) {
+          const blob = new Blob([new Uint8Array(data.image)], { type: "image/jpeg" });
+          this.previewImage = URL.createObjectURL(blob);
+        }
+
       } catch (error) {
         console.error("Error al cargar modelo:", error);
         Swal.fire("Error", "No se pudo cargar el modelo.", "error");
       }
     },
-    async createOrUpdateModel() {
+
+    async submitModel() {
       try {
         const formData = new FormData();
-        formData.append("brand", this.marca);
-        formData.append("name", this.modelo);
-        formData.append("price", this.precio);
-        formData.append("capacity", this.capacidad);
-        formData.append("cancelationPolicy", this.politica);
-        if (this.image) {
-          formData.append("image", this.image);
+        formData.append("brand", this.model.brand);
+        formData.append("name", this.model.name);
+        formData.append("price", this.model.price);
+        formData.append("capacity", this.model.capacity);
+        formData.append("cancelationPolicy", this.model.cancelationPolicy);
+        if (this.model.image) {
+          formData.append("image", this.model.image);
         }
 
-        const url = this.isEdit
+        const url = this.isEditMode
           ? `/api/model/update/${this.id}`
           : `/api/model/create`;
 
-        const method = this.isEdit ? 'put' : 'post';
+        const method = this.isEditMode ? "put" : "post";
 
         await axios({
           method,
@@ -75,44 +81,33 @@ createApp({
 
         Swal.fire({
           icon: "success",
-          title: this.isEdit ? "Modelo actualizado con éxito!" : "Modelo creado con éxito!",
+          title: this.isEditMode ? "Modelo actualizado con éxito!" : "Modelo creado con éxito!",
           showConfirmButton: false,
           timer: 2000
         }).then(() => {
           window.location.href = "./listModels.html";
         });
+
       } catch (error) {
-        console.error(error);
+        console.error("Error al crear o actualizar el modelo:", error);
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: this.isEdit
-            ? "No se pudo actualizar el modelo."
-            : "Error al crear el modelo, probablemente ya exista.",
+          text: error?.response?.data || "No se pudo completar la operación.",
         });
       }
     },
+
     logout() {
       axios.post("/logout")
         .then(() => {
-          this.isAuthenticated = false;
-          Swal.fire({
-            icon: "success",
-            title: "Sesión cerrada",
-            text: "Has cerrado sesión correctamente. Hasta pronto!",
-            confirmButtonText: "Aceptar"
-          }).then(() => {
+          Swal.fire("Sesión cerrada", "Has cerrado sesión correctamente.", "success").then(() => {
             window.location.href = "/index.html";
           });
         })
-        .catch(error => {
-          console.error("Error al cerrar sesión:", error);
-          Swal.fire({
-            icon: "error",
-            title: "Error",
-            text: "Hubo un problema al cerrar sesión. Inténtalo de nuevo.",
-          });
+        .catch(() => {
+          Swal.fire("Error", "No se pudo cerrar sesión.", "error");
         });
     }
   }
-}).mount('#app');
+}).mount("#appModel");

@@ -39,7 +39,7 @@ public class SecurityConfiguration {
 //                        // Rutas públicas
 //                        .requestMatchers("/", "/index.html", "/login.html", "/styles/**", "/scripts/**", "/images/**", "/api/branches").permitAll()
 //                        // Rutas según roles
-//                        .requestMatchers("/pages/admin.html", "/h2-console/**", "/api/car/all", "/api/car/create").hasRole("ADMIN")
+//                        .requestMatchers("/pages/reportFacturation.html", "/h2-console/**", "/api/car/all", "/api/car/create").hasRole("ADMIN")
 //                        .requestMatchers("/pages/client.html").hasRole("CLIENT")
 //                        .requestMatchers("/pages/employee.html").hasRole("EMPLOYEE")
 //                        .anyRequest().authenticated()

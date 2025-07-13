@@ -1,92 +1,100 @@
 const { createApp } = Vue;
 
 createApp({
-    data() {
-        return {
-            models: []
-        };
+  data() {
+    return {
+      activeModels: [],
+      inactiveModels: [],
+    };
+  },
+  computed: {
+    activeModelsSorted() {
+      return this.activeModels.sort((a, b) => a.brand.localeCompare(b.brand));
     },
-    methods: {
-        // Cargar modelos activos desde el backend
-        loadModels() {
-            axios.get('/api/model/listActiveModels')
-                .then(response => {
-                    this.models = response.data;
-                    console.log("Modelos cargados:", this.models); // Para depuración
-                })
-                .catch(error => {
-                    console.error("Error al cargar modelos de autos:", error);
-                });
-        },
+    inactiveModelsSorted() {
+      return this.inactiveModels.sort((a, b) => a.brand.localeCompare(b.brand));
+    },
+  },
+  methods: {
+    async fetchModels() {
+      try {
+        const response = await axios.get("/api/model/listModels");
+        this.activeModels = response.data.filter((model) => model.status === true);
+        this.inactiveModels = response.data.filter((model) => model.status === false);
+      } catch (error) {
+        console.error("Error al cargar modelos:", error);
+        Swal.fire("Error", "No se pudieron cargar los modelos.", "error");
+      }
+    },
 
-        // Desactivar un modelo por ID
-        deactivateModel(id) {
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: 'Esta acción eliminará el modelo.',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    axios.put(`/api/model/${id}/deactivate`)
-                        .then(() => {
-                            // Remueve el modelo de la lista local
-                            this.models = this.models.filter(model => model.id !== id);
-                            Swal.fire('Eliminado', 'El modelo ha sido eliminado.', 'success');
-                        })
-                        .catch(error => {
-                            console.error("Error al eliminar el modelo:", error);
-                            let msg = "No se pudo eliminar el modelo, porque tiene vehiculos asociados";
+    getCancelationText(policy) {
+      switch (policy) {
+        case "ZERO": return "0%";
+        case "TWENTY": return "20%";
+        case "FULL": return "100%";
+        default: return "-";
+      }
+    },
 
-                            if (error.response && error.response.status === 409) {
-                                // Mensaje devuelto por el backend si hay vehículos asociados
-                                msg = error.response.data;
-                            }
+    editModel(id) {
+      window.location.href = `../pages/addModel.html?id=${id}`;
+    },
 
-                            Swal.fire('Error', msg, 'error');
-                        });
-                }
-            });
-        },
+    async deactivateModel(id) {
+      const confirm = await Swal.fire({
+        title: "¿Estás seguro?",
+        text: "Esta acción dará de baja el modelo.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, dar de baja",
+        cancelButtonText: "Cancelar",
+      });
 
-        // Cerrar sesión
-        logout() {
-            axios.post("/logout")
-                .then(() => {
-                    Swal.fire({
-                        icon: "success",
-                        title: "Sesión cerrada",
-                        text: "Has cerrado sesión correctamente. Hasta pronto!",
-                        confirmButtonText: "Aceptar"
-                    }).then(() => {
-                        window.location.href = "/index.html";
-                    });
-                })
-                .catch(error => {
-                    console.error("Error al cerrar sesión:", error);
-                    Swal.fire({
-                        icon: "error",
-                        title: "Error",
-                        text: "Hubo un problema al cerrar sesión. Inténtalo de nuevo.",
-                    });
-                });
-        },
-
-        // Convertir enum de política de cancelación a texto
-        getCancelationText(policy) {
-            switch (policy) {
-                case 'ZERO': return '0%';
-                case 'TWENTY': return '20%';
-                case 'FULL': return '100%';
-                default: return '-';
-            }
+      if (confirm.isConfirmed) {
+        try {
+          await axios.put(`/api/model/${id}/deactivate`);
+          await this.fetchModels();
+          Swal.fire("Modelo dado de baja", "", "success");
+        } catch (error) {
+          let msg = "Error al dar de baja el modelo.";
+          if (error.response?.data) msg = error.response.data;
+          Swal.fire("Error", msg, "error");
         }
+      }
     },
 
-    // Se ejecuta al cargar la página
-    mounted() {
-        this.loadModels();
-    }
-}).mount('#app');
+    async activateModel(id) {
+      const confirm = await Swal.fire({
+        title: "¿Activar modelo?",
+        text: "Esta acción reactivará el modelo.",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Sí, activar",
+        cancelButtonText: "Cancelar",
+      });
+
+      if (confirm.isConfirmed) {
+        try {
+          await axios.put(`/api/model/${id}/activate`);
+          await this.fetchModels();
+          Swal.fire("Modelo reactivado", "", "success");
+        } catch (error) {
+          Swal.fire("Error", "No se pudo reactivar el modelo.", "error");
+        }
+      }
+    },
+
+    logout() {
+      axios.post("/logout").then(() => {
+        Swal.fire("Sesión cerrada", "Has cerrado sesión correctamente.", "success").then(() => {
+          window.location.href = "/index.html";
+        });
+      }).catch(() => {
+        Swal.fire("Error", "No se pudo cerrar sesión.", "error");
+      });
+    },
+  },
+  mounted() {
+    this.fetchModels();
+  },
+}).mount("#appList");

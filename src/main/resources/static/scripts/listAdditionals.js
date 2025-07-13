@@ -22,10 +22,6 @@ createApp({
         });
     },
 
-    goToForm() {
-      window.location.href = 'formAdditional.html';
-    },
-
     editItem(item) {
       Swal.fire({
         title: 'Editar adicional',
@@ -66,11 +62,7 @@ createApp({
             })
             .catch(err => {
               console.error(err);
-              Swal.fire(
-                'Error al actualizar',
-                err.response?.data || 'Error desconocido',
-                'error'
-              );
+              Swal.fire('Error al actualizar', err.response?.data || 'Error desconocido', 'error');
             });
         }
       });
@@ -91,11 +83,7 @@ createApp({
             })
             .catch(err => {
               console.error(err);
-              Swal.fire(
-                'Error al desactivar',
-                err.response?.data || 'Error desconocido',
-                'error'
-              );
+              Swal.fire('Error al desactivar', err.response?.data || 'Error desconocido', 'error');
             });
         }
       });
@@ -116,19 +104,32 @@ createApp({
             })
             .catch(err => {
               console.error(err);
-              Swal.fire(
-                'Error al reactivar',
-                err.response?.data || 'Error desconocido',
-                'error'
-              );
+              Swal.fire('Error al reactivar', err.response?.data || 'Error desconocido', 'error');
             });
         }
       });
     },
 
     logout() {
-      // Si necesitás implementar cierre de sesión, colocá la lógica acá
-      window.location.href = '../index.html';
+      axios.post("/logout")
+        .then(() => {
+          Swal.fire({
+            icon: "success",
+            title: "Sesión cerrada",
+            text: "Has cerrado sesión correctamente. Hasta pronto!",
+            confirmButtonText: "Aceptar"
+          }).then(() => {
+            window.location.href = "/index.html";
+          });
+        })
+        .catch(error => {
+          console.error("Error al cerrar sesión:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Hubo un problema al cerrar sesión. Inténtalo de nuevo.",
+          });
+        });
     }
   },
   mounted() {

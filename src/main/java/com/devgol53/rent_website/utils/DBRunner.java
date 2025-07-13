@@ -141,13 +141,13 @@ public class DBRunner implements CommandLineRunner {
         Reservation reservation3 = new Reservation("BBBBBB", LocalDate.of(2025, 7, 1), LocalDate.of(2025, 7, 25), 45000.0);
         reservation3.addClient(client1);
         reservation3.addModel(model4);
-        reservation3.addBranch(branch1);
+        reservation3.addBranch(branch2);
         reservation3.setVehicle(autonuevo4);
 
         Reservation reservation4 = new Reservation("ZZZZZZ", LocalDate.now(), LocalDate.of(2025, 7, 25), 45000.0);
         reservation4.addClient(client1);
         reservation4.addModel(model5);
-        reservation4.addBranch(branch1);
+        reservation4.addBranch(branch2);
 
         Reservation reservation6 = new Reservation("CODE006", LocalDate.of(2025, 6, 6), LocalDate.of(2025, 6, 10), 15000.0);
         reservation6.addValoration(new Valoration(4, "Buena atención en la sucursal y el auto estaba limpio y en buen estado."));
@@ -349,6 +349,58 @@ public class DBRunner implements CommandLineRunner {
         reservation53.addModel(model3);
         reservation54.addModel(model4);
         reservation55.addModel(model5);
+        reservation6.addBranch(branch2);
+        reservation7.addBranch(branch2);
+        reservation8.addBranch(branch2);
+        reservation9.addBranch(branch2);
+        reservation10.addBranch(branch2);
+        reservation11.addBranch(branch2);
+        reservation12.addBranch(branch2);
+        reservation13.addBranch(branch2);
+        reservation14.addBranch(branch2);
+        reservation15.addBranch(branch2);
+        reservation16.addBranch(branch2);
+        reservation17.addBranch(branch2);
+        reservation18.addBranch(branch2);
+        reservation19.addBranch(branch2);
+        reservation20.addBranch(branch2);
+        reservation21.addBranch(branch2);
+        reservation22.addBranch(branch2);
+        reservation23.addBranch(branch2);
+        reservation24.addBranch(branch2);
+        reservation25.addBranch(branch2);
+        reservation26.addBranch(branch2);
+        reservation27.addBranch(branch2);
+        reservation28.addBranch(branch2);
+        reservation29.addBranch(branch2);
+        reservation30.addBranch(branch2);
+
+        reservation31.addBranch(branch3);
+        reservation32.addBranch(branch3);
+        reservation33.addBranch(branch3);
+        reservation34.addBranch(branch3);
+        reservation35.addBranch(branch3);
+        reservation36.addBranch(branch3);
+        reservation37.addBranch(branch3);
+        reservation38.addBranch(branch3);
+        reservation39.addBranch(branch3);
+        reservation40.addBranch(branch3);
+        reservation41.addBranch(branch3);
+        reservation42.addBranch(branch3);
+        reservation43.addBranch(branch3);
+        reservation44.addBranch(branch3);
+        reservation45.addBranch(branch3);
+        reservation46.addBranch(branch3);
+        reservation47.addBranch(branch3);
+        reservation48.addBranch(branch3);
+        reservation49.addBranch(branch3);
+        reservation50.addBranch(branch3);
+        reservation51.addBranch(branch3);
+        reservation52.addBranch(branch3);
+        reservation53.addBranch(branch3);
+        reservation54.addBranch(branch3);
+        reservation55.addBranch(branch3);
+
 
         //appUsers
         userRepository.save(new AppUser("Maria","Ceccato","00000000","","mariaceccato@gmail.com", passwordEncoder.encode("123456"), UserRol.ADMIN));

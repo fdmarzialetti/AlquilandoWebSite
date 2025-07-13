@@ -19,6 +19,23 @@ public class BranchController {
 
     @Autowired
     private BranchRepository branchRepository;
+    @PostMapping("/{id}/activate")
+    public ResponseEntity<?> activateBranch(@PathVariable Long id) {
+        Branch branch = branchRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Sucursal no encontrada"));
+
+        branch.setState(true);
+        branchRepository.save(branch);
+        return ResponseEntity.ok("Sucursal reactivada");
+    }
+    // Lista las sucursales inactivas (state == false)
+    @GetMapping("/inactive")
+    public List<BranchGetDTO> getInactiveBranches() {
+        return branchRepository.findByStateFalse()
+                .stream()
+                .map(BranchGetDTO::new)
+                .toList();
+    }
 
     @PostMapping
     public ResponseEntity<?> createBranch(@RequestBody Branch branch) {

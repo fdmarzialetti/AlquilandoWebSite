@@ -17,7 +17,7 @@ public class Vehicle {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
-    private long id;
+    private Long id;
     private String patent;
     private String status;
     private int yearV;

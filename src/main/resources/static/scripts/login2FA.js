@@ -70,7 +70,7 @@ createApp({
                                 validateStatus: () => true // Para ver respuestas incluso si son 4xx o 5xx
                             }).then(r => {
                                 axios.post("/api/user/resetVerificationCode").then(r=>{
-                                window.location.href = "../pages/listModels.html";
+                                window.location.href = "../pages/reportFacturation.html";
                                 })
                                 
                             });

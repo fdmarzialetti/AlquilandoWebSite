@@ -8,8 +8,7 @@ createApp({
         address: ''
       },
       isEdit: false,
-      branchId: null,
-      successMessage: ''
+      branchId: null
     };
   },
   mounted() {
@@ -46,9 +45,7 @@ createApp({
       try {
         const response = await fetch(url, {
           method,
-          headers: {
-            'Content-Type': 'application/json'
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(this.branch)
         });
 
@@ -60,8 +57,7 @@ createApp({
             title: this.isEdit ? "Sucursal actualizada" : "Sucursal creada",
             text: "Redirigiendo al listado...",
             showConfirmButton: false,
-            timer: 2000,
-            timerProgressBar: true
+            timer: 2000
           });
 
           setTimeout(() => {
@@ -78,12 +74,22 @@ createApp({
     logout() {
       axios.post("/logout")
         .then(() => {
-          Swal.fire("Sesión cerrada", "Hasta pronto!", "success").then(() => {
+          Swal.fire({
+            icon: "success",
+            title: "Sesión cerrada",
+            text: "Has cerrado sesión correctamente. Hasta pronto!",
+            confirmButtonText: "Aceptar"
+          }).then(() => {
             window.location.href = "/index.html";
           });
         })
-        .catch(() => {
-          Swal.fire("Error", "No se pudo cerrar sesión", "error");
+        .catch(error => {
+          console.error("Error al cerrar sesión:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Hubo un problema al cerrar sesión. Inténtalo de nuevo.",
+          });
         });
     }
   }

@@ -1,6 +1,5 @@
 package com.devgol53.rent_website.entities;
 
-
 import com.devgol53.rent_website.dtos.model.CreateModelDTO;
 import com.devgol53.rent_website.enums.CancelationPolicy;
 import jakarta.persistence.*;
@@ -18,28 +17,34 @@ import java.util.List;
 @Setter
 @Entity
 public class Model {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Setter(AccessLevel.NONE)
-    private long id;
+    private Long id;
+
     private String brand;
     private String name;
     private Double price;
+
     @Lob
     @Column(columnDefinition = "BLOB")
     private byte[] image;
 
     private int capacity;
+
     @Enumerated(EnumType.STRING)
     private CancelationPolicy cancelationPolicy;
-    private boolean status;
 
-    @OneToMany (mappedBy = "model", cascade = CascadeType.PERSIST)
+    private boolean status= true; // true = activo, false = inactivo
+
+    @OneToMany(mappedBy = "model", cascade = CascadeType.PERSIST)
     private List<Reservation> reservations = new ArrayList<>();
 
-    @OneToMany (mappedBy = "model", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "model", cascade = CascadeType.PERSIST)
     private List<Vehicle> vehicles = new ArrayList<>();
 
+    // Constructor normal
     public Model(String brand, String name, Double price, byte[] image, int capacity, CancelationPolicy cancelationPolicy) {
         this.brand = brand;
         this.name = name;
@@ -47,9 +52,10 @@ public class Model {
         this.image = image;
         this.capacity = capacity;
         this.cancelationPolicy = cancelationPolicy;
-        this.status = true;
+        this.status = true; // Se crea como activo
     }
 
+    // Constructor con DTO
     public Model(CreateModelDTO modelDto) throws IOException {
         this.brand = modelDto.getBrand();
         this.name = modelDto.getName();
@@ -57,17 +63,18 @@ public class Model {
         this.image = modelDto.getImage().getBytes();
         this.capacity = modelDto.getCapacity();
         this.cancelationPolicy = modelDto.getCancelationPolicy();
-        this.status =true;
+        this.status = true; // Se crea como activo
     }
 
-    public void addVehicle(Vehicle vehicle){
+    public void addVehicle(Vehicle vehicle) {
         this.vehicles.add(vehicle);
     }
-    public void addReservation(Reservation reservation){
+
+    public void addReservation(Reservation reservation) {
         this.reservations.add(reservation);
     }
+
     public boolean hasActiveVehicles() {
         return vehicles.stream().anyMatch(Vehicle::isActive);
     }
 }
-

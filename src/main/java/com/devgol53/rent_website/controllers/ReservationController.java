@@ -44,6 +44,13 @@ public class ReservationController {
         @Autowired
         private AdditionalRepository additionalRepository;
 
+    @GetMapping("/all")
+    public List<ReservationGetDto> getAllReservations() {
+        return reservationRepository.findAll()
+                .stream()
+                .map(ReservationGetDto::new)
+                .toList();
+    }
 
         @GetMapping("/myReservations")
         public List<ReservationGetDto> getMyReservations(Authentication auth){

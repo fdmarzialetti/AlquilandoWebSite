@@ -1,79 +1,64 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Lista de Vehiculos</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <title>Lista de Vehículos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <link rel="stylesheet" href="../Styles/listModels.css">
 </head>
 <body id="app">
 
-<div class="d-flex justify-content-between">
-  <h1>Admin Page</h1>
-  <button class="btn btn-outline-dark" @click="logout">Cerrar Sesion</button>
+<!-- Encabezado -->
+<div class="d-flex justify-content-between align-items-center p-3">
+  <h1 class="m-0">Admin Page</h1>
+  <button class="btn btn-outline-dark" @click="logout">Cerrar Sesión</button>
 </div>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="font-family: sans-serif;">
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <!-- Navegación izquierda -->
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0 barra-de-navegacion">
-        <li class="nav-item">
-          <a class="nav-link text-white" href="../pages/listModels.html">Modelos</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white" href="../pages/listBranches.html">Sucursales</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white" href="../pages/listVehicles.html">Vehículos</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white" href="#">Empleados</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-white" href="../pages/listAdditionals.html">Adicionales</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle text-white" href="#" id="navbarDropdown" role="button"
-             data-bs-toggle="dropdown" aria-expanded="false">
-            Acciones
-          </a>
-          <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" href="../pages/formBranch.html">Crear Sucursal</a></li>
-            <li><a class="dropdown-item" href="../pages/addModel.html">Crear Modelo</a></li>
-            <li><a class="dropdown-item" href="../pages/addVehicle.html">Crear Vehículo</a></li>
-            <li><a class="dropdown-item" href="../pages/formAdditional.html">Crear Adicional</a></li>
-            <li><a class="dropdown-item" href="../pages/commentsReport.html">Comentarios y Valoraciones</a></li>
-          </ul>
-        </li>
-      </ul>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <div class="mx-auto">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link text-white" href="../pages/listModels.html">Modelos</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="../pages/listBranches.html">Sucursales</a></li>
+          <li class="nav-item"><a class="nav-link active text-white" href="../pages/listVehicles.html">Vehículos</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="../pages/listEmployees.html">Empleados</a></li>
+          <li class="nav-item"><a class="nav-link text-white" href="../pages/listAdditionals.html">Adicionales</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">Acciones</a>
+            <ul class="dropdown-menu dropdown-menu-dark">
+              <li><a class="dropdown-item" href="formBranch.html">Crear Sucursal</a></li>
+              <li><a class="dropdown-item" href="addModel.html">Crear Modelo</a></li>
+              <li><a class="dropdown-item" href="addVehicle.html">Crear Vehículo</a></li>
+              <li><a class="dropdown-item" href="formAdditional.html">Crear Adicional</a></li>
+              <li><a class="dropdown-item" href="formEmployee.html">Crear Empleado</a></li>
+              <li><a class="dropdown-item" href="commentsReport.html">Comentarios y Valoraciones</a></li>
+              <li><a class="dropdown-item" href="reportFacturation.html">Reporte de Facturación</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </nav>
 
 <!-- Banner -->
-<div class="banner bg-secondary text-white fw-semibold fs-4 p-3">
+<div class="bg-secondary text-white fw-semibold fs-4 p-3">
   Panel de administrador
 </div>
 
-<!-- Tabla de vehiculos -->
-<div id="app" class="container mt-5">
-  <h2 class="mb-4">Lista de Vehiculos</h2>
-  <div v-if="vehicles.length === 0" class="alert alert-info text-center">
-    Aún no se ha cargado ningún vehiculo.
-  </div>
+<!-- Lista de vehículos -->
+<div class="container mt-5">
+  <h2 class="mb-4">Vehículos</h2>
 
-  <table v-else class="table table-bordered">
-    <thead class="table-light">
+  <!-- Activos -->
+  <h4 class="text-success">Activos</h4>
+  <table class="table table-bordered table-striped mb-5">
+    <thead class="table-success">
     <tr>
       <th>Patente</th>
       <th>Año</th>
@@ -83,21 +68,52 @@
     </tr>
     </thead>
     <tbody>
-    <tr v-for="vehicle in vehicles" :key="vehicle.id">
-      <td>{{ vehicle.patent }}</td>
-      <td>{{ vehicle.yearV }}</td>
-      <td>{{ vehicle.model }}</td>
-      <td>{{ vehicle.branch }}</td>
+    <tr v-for="v in activeVehicles" :key="v.id">
+      <td>{{ v.patent }}</td>
+      <td>{{ v.yearV }}</td>
+      <td>{{ v.model }}</td>
+      <td>{{ v.branch }}</td>
       <td>
-        <button class="btn btn-danger btn-sm" @click="deleteVehicle(vehicle.id)">Eliminar</button>
+        <button class="btn btn-sm btn-warning me-2" @click="editVehicle(v)">Editar</button>
+        <button class="btn btn-sm btn-danger" @click="deactivateVehicle(v)">Dar de baja</button>
       </td>
+    </tr>
+    <tr v-if="activeVehicles.length === 0">
+      <td colspan="5" class="text-center text-muted">No hay vehículos activos.</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <!-- Inactivos -->
+  <h4 class="text-secondary">Inactivos</h4>
+  <table class="table table-bordered table-striped">
+    <thead class="table-secondary">
+    <tr>
+      <th>Patente</th>
+      <th>Año</th>
+      <th>Modelo</th>
+      <th>Sucursal</th>
+      <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr v-for="v in inactiveVehicles" :key="v.id">
+      <td>{{ v.patent }}</td>
+      <td>{{ v.yearV }}</td>
+      <td>{{ v.model }}</td>
+      <td>{{ v.branch }}</td>
+      <td>
+        <button class="btn btn-sm btn-success" @click="activateVehicle(v)">Reactivar</button>
+      </td>
+    </tr>
+    <tr v-if="inactiveVehicles.length === 0">
+      <td colspan="5" class="text-center text-muted">No hay vehículos inactivos.</td>
     </tr>
     </tbody>
   </table>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-RvGg7Bk8r1eF3Yh9PnFKZb2GFaKbU4kzwmU4IuzGxFptu5IhQ0yoaKaK5S67xI+C" crossorigin="anonymous"></script>
 <script src="../scripts/listVehicles.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

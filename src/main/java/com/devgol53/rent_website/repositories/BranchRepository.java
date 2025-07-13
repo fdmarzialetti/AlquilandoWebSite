@@ -12,4 +12,6 @@ public interface BranchRepository extends JpaRepository<Branch,Long> {
     boolean existsByCityIgnoreCaseAndAddressIgnoreCase(String city, String address);
     boolean existsByCityIgnoreCaseAndAddressIgnoreCaseAndIdNot(String city, String address, Long id);
     List<Branch> findByStateTrue();
+    List<Branch> findByStateFalse();
+
 }

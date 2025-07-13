@@ -34,7 +34,6 @@ createApp({
             email: res.data.email || '',
             dni: res.data.dni || '',
             phone: res.data.phone || '',
-            // Aseguramos que branchId tome el id de la sucursal del empleado
             branchId: res.data.branch ? res.data.branch.id : null,
             password: ''
           };
@@ -59,15 +58,33 @@ createApp({
             .then(() => window.location.href = 'listEmployees.html');
         })
         .catch(err => {
-          const msg = err.response && err.response.data ? err.response.data : 'Error al guardar empleado';
+          const msg = err.response?.data || 'Error al guardar empleado';
           Swal.fire(msg, '', 'error');
         });
     },
-    goBack() {
-      window.location.href = 'listEmployees.html';
-    },
     submitForm() {
       this.saveEmployee();
+    },
+    logout() {
+      axios.post("/logout")
+        .then(() => {
+          Swal.fire({
+            icon: "success",
+            title: "Sesión cerrada",
+            text: "Has cerrado sesión correctamente. Hasta pronto!",
+            confirmButtonText: "Aceptar"
+          }).then(() => {
+            window.location.href = "/index.html";
+          });
+        })
+        .catch(error => {
+          console.error("Error al cerrar sesión:", error);
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Hubo un problema al cerrar sesión. Inténtalo de nuevo.",
+          });
+        });
     }
   },
   mounted() {

@@ -9,32 +9,21 @@ createApp({
   },
   computed: {
     activeEmployeesSorted() {
-      return this.activeEmployees.slice().sort((a, b) => {
-        const aBranch = a.branch?.address ?? '';
-        const bBranch = b.branch?.address ?? '';
-        return aBranch.localeCompare(bBranch);
-      });
+      return this.activeEmployees.slice().sort((a, b) => (a.branchAddress ?? '').localeCompare(b.branchAddress ?? ''));
     },
     inactiveEmployeesSorted() {
-      return this.inactiveEmployees.slice().sort((a, b) => {
-        const aBranch = a.branch?.address ?? '';
-        const bBranch = b.branch?.address ?? '';
-        return aBranch.localeCompare(bBranch);
-      });
+      return this.inactiveEmployees.slice().sort((a, b) => (a.branchAddress ?? '').localeCompare(b.branchAddress ?? ''));
     }
   },
   methods: {
     fetchAll() {
-      axios.get('http://localhost:8080/api/user/employees/active')
+      axios.get('/api/user/employees/active')
         .then(res => this.activeEmployees = res.data)
         .catch(() => Swal.fire('Error al cargar empleados activos', '', 'error'));
 
-      axios.get('http://localhost:8080/api/user/employees/inactive')
+      axios.get('/api/user/employees/inactive')
         .then(res => this.inactiveEmployees = res.data)
         .catch(() => Swal.fire('Error al cargar empleados inactivos', '', 'error'));
-    },
-    goToForm() {
-      window.location.href = 'formEmployee.html';
     },
     editEmployee(e) {
       window.location.href = `formEmployee.html?id=${e.id}`;
@@ -47,16 +36,36 @@ createApp({
         cancelButtonText: 'Cancelar'
       }).then(res => {
         if (res.isConfirmed) {
-          axios.delete(`http://localhost:8080/api/user/employees/${e.id}`)
+          axios.delete(`/api/user/employees/${e.id}`)
             .then(() => this.fetchAll())
             .catch(() => Swal.fire('Error al desactivar', '', 'error'));
         }
       });
     },
     activateEmployee(e) {
-      axios.post(`http://localhost:8080/api/user/employees/${e.id}/activate`)
+      axios.post(`/api/user/employees/${e.id}/activate`)
         .then(() => this.fetchAll())
         .catch(() => Swal.fire('Error al reactivar', '', 'error'));
+    },
+    logout() {
+      axios.post("/logout")
+        .then(() => {
+          Swal.fire({
+            icon: "success",
+            title: "Sesión cerrada",
+            text: "Has cerrado sesión correctamente. Hasta pronto!",
+            confirmButtonText: "Aceptar"
+          }).then(() => {
+            window.location.href = "/index.html";
+          });
+        })
+        .catch(() => {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Hubo un problema al cerrar sesión. Intentalo de nuevo.",
+          });
+        });
     }
   },
   mounted() {

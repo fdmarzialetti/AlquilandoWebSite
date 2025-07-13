@@ -10,13 +10,13 @@
 </head>
 <body id="appForm">
 
-<!-- Encabezado superior -->
+<!-- Encabezado -->
 <div class="d-flex justify-content-between align-items-center p-3">
     <h1>Admin Page</h1>
     <button class="btn btn-outline-dark" @click="logout">Cerrar Sesión</button>
 </div>
 
-<!-- Barra de navegación -->
+<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="font-family: sans-serif;">
     <div class="container-fluid">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -40,6 +40,8 @@
                             <li><a class="dropdown-item" href="addVehicle.html">Crear Vehículo</a></li>
                             <li><a class="dropdown-item" href="formAdditional.html">Crear Adicional</a></li>
                             <li><a class="dropdown-item" href="formEmployee.html">Crear Empleado</a></li>
+                            <li><a class="dropdown-item" href="commentsReport.html">Comentarios y Valoraciones</a></li>
+                            <li><a class="dropdown-item" href="reportFacturation.html">Reporte De Facturación</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -57,20 +59,16 @@
 <div class="container my-5">
     <div class="card shadow border-0">
         <div class="card-body">
-            <h2 class="mb-4">Crear Nuevo Empleado</h2>
+            <h2 class="mb-4 text-center">Alta Empleado</h2>
             <form @submit.prevent="submitForm">
                 <div class="row mb-3">
                     <div class="col">
                         <label class="form-label">Nombre</label>
-                        <input type="text" v-model="employee.name" class="form-control"
-                               required pattern="[A-Za-zÁÉÍÓÚÑáéíóúñ ]+"
-                               title="Solo se permiten letras y espacios.">
+                        <input type="text" v-model="employee.name" class="form-control" required pattern="[A-Za-zÁÉÍÓÚÑáéíóúñ ]+" title="Solo se permiten letras y espacios.">
                     </div>
                     <div class="col">
                         <label class="form-label">Apellido</label>
-                        <input type="text" v-model="employee.lastname" class="form-control"
-                               required pattern="[A-Za-zÁÉÍÓÚÑáéíóúñ ]+"
-                               title="Solo se permiten letras y espacios.">
+                        <input type="text" v-model="employee.lastname" class="form-control" required pattern="[A-Za-zÁÉÍÓÚÑáéíóúñ ]+" title="Solo se permiten letras y espacios.">
                     </div>
                 </div>
 
@@ -81,24 +79,18 @@
                     </div>
                     <div class="col">
                         <label class="form-label">Contraseña</label>
-                        <input type="password" v-model="employee.password" class="form-control"
-                               required minlength="6"
-                               title="Debe tener al menos 6 caracteres.">
+                        <input type="password" v-model="employee.password" class="form-control" required minlength="6" title="Debe tener al menos 6 caracteres.">
                     </div>
                 </div>
 
                 <div class="row mb-3">
                     <div class="col">
                         <label class="form-label">Teléfono</label>
-                        <input type="text" v-model="employee.phone" class="form-control"
-                               required pattern="[0-9]+"
-                               title="Solo se permiten números.">
+                        <input type="text" v-model="employee.phone" class="form-control" required pattern="[0-9]+" title="Solo se permiten números.">
                     </div>
                     <div class="col">
                         <label class="form-label">DNI</label>
-                        <input type="text" v-model="employee.dni" class="form-control"
-                               required pattern="[0-9]+"
-                               title="Solo se permiten números.">
+                        <input type="text" v-model="employee.dni" class="form-control" required pattern="[0-9]+" title="Solo se permiten números.">
                     </div>
                 </div>
 

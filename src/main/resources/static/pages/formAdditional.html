@@ -9,7 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="../styles/formAdditional.css">
 </head>
-<body id="app">
+<body id="formAdditional">
 
 <!-- Encabezado superior -->
 <div class="d-flex justify-content-between align-items-center p-3">
@@ -17,7 +17,7 @@
     <button class="btn btn-outline-dark" @click="logout">Cerrar Sesión</button>
 </div>
 
-<!-- Barra de navegación -->
+<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="font-family: sans-serif;">
     <div class="container-fluid">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -30,17 +30,19 @@
                     <li class="nav-item"><a class="nav-link text-white" href="listBranches.html">Sucursales</a></li>
                     <li class="nav-item"><a class="nav-link text-white" href="listVehicles.html">Vehículos</a></li>
                     <li class="nav-item"><a class="nav-link text-white" href="listEmployees.html">Empleados</a></li>
-                    <li class="nav-item"><a class="nav-link active text-white" href="formAdditional.html">Adicionales</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="listAdditionals.html">Adicionales</a></li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
                             Acciones
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark">
-                            <li><a class="dropdown-item" href="../pages/formBranch.html">Crear Sucursal</a></li>
-                            <li><a class="dropdown-item" href="../pages/addModel.html">Crear Modelo</a></li>
-                            <li><a class="dropdown-item" href="../pages/addVehicle.html">Crear Vehículo</a></li>
-                            <li><a class="dropdown-item" href="../pages/formAdditional.html">Crear Adicional</a></li>
-                            <li><a class="dropdown-item" href="../pages/formEmployee.html">Crear Empleado</a></li>
+                            <li><a class="dropdown-item" href="formBranch.html">Crear Sucursal</a></li>
+                            <li><a class="dropdown-item" href="addModel.html">Crear Modelo</a></li>
+                            <li><a class="dropdown-item" href="addVehicle.html">Crear Vehículo</a></li>
+                            <li><a class="dropdown-item" href="formAdditional.html">Crear Adicional</a></li>
+                            <li><a class="dropdown-item" href="formEmployee.html">Crear Empleado</a></li>
+                            <li><a class="dropdown-item" href="commentsReport.html">Comentarios y Valoraciones</a></li>
+                            <li><a class="dropdown-item" href="reportFacturation.html">Reporte De Facturación</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -55,10 +57,10 @@
 </div>
 
 <!-- Formulario -->
-<div class="container my-5" id="formAdditional">
+<div class="container my-5">
     <div class="card shadow border-0">
         <div class="card-body">
-            <h2 class="mb-4">Crear Nuevo Adicional</h2>
+            <h2 class="mb-4 text-center">Alta Adicional</h2>
             <form @submit.prevent="submitForm">
                 <div class="mb-3">
                     <label for="name" class="form-label">Nombre del adicional:</label>
@@ -72,7 +74,6 @@
                             title="Solo se permiten letras, números y espacios."
                     />
                 </div>
-
                 <div class="mb-4">
                     <label for="price" class="form-label">Precio (en $):</label>
                     <input
@@ -85,12 +86,10 @@
                             required
                     />
                 </div>
-
                 <div class="text-center">
                     <button type="submit" class="btn btn-primary">Dar de alta</button>
                 </div>
             </form>
-
             <div v-if="successMessage" class="alert alert-success mt-3" role="alert">
                 {{ successMessage }}
             </div>
@@ -98,7 +97,6 @@
     </div>
 </div>
 
-<!-- Scripts -->
 <script src="../scripts/formAdditional.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

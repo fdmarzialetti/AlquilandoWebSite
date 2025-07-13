@@ -26,7 +26,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
                 switch (role) {
                     case "ROLE_ADMIN":
-                        response.sendRedirect("/pages/admin.html");
+                        response.sendRedirect("/pages/reportFacturationreportFacturation.html");
                         return;
                     case "ROLE_EMPLOYEE":
                         response.sendRedirect("/pages/employee.html");

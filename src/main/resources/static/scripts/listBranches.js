@@ -1,91 +1,68 @@
 const { createApp } = Vue;
 
 createApp({
-    data() {
-        return {
-            branches: []
-        };
+  data() {
+    return {
+      activeBranches: [],
+      inactiveBranches: []
+    };
+  },
+  methods: {
+    fetchBranches() {
+      axios.get("/api/branches")
+        .then(res => this.activeBranches = res.data)
+        .catch(() => Swal.fire("Error al cargar sucursales activas", "", "error"));
+
+      axios.get("/api/branches/inactive")
+        .then(res => this.inactiveBranches = res.data)
+        .catch(() => Swal.fire("Error al cargar sucursales inactivas", "", "error"));
     },
-    methods: {
-        loadBranches() {
-            axios.get('http://localhost:8080/api/branches')
-                .then(response => {
-                    this.branches = response.data;
-                })
-                .catch(error => {
-                    console.error("Error al cargar sucursales:", error);
-                });
-        },
-        confirmDelete(id) {
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: "Esta acción no se puede deshacer.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    this.deleteBranch(id);
-                }
+    editBranch(branch) {
+      window.location.href = `formBranch.html?id=${branch.id}`;
+    },
+    deactivateBranch(branch) {
+      Swal.fire({
+        title: `¿Dar de baja la sucursal ${branch.city}?`,
+        text: "Esta acción no se puede deshacer.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, dar de baja",
+        cancelButtonText: "Cancelar"
+      }).then(result => {
+        if (result.isConfirmed) {
+          axios.delete(`/api/branches/${branch.id}`)
+            .then(() => this.fetchBranches())
+            .catch(error => {
+              const msg = error.response?.data || "Error al desactivar";
+              Swal.fire("No se pudo desactivar", msg, "error");
             });
-        },
-        deleteBranch(id) {
-            axios.delete(`http://localhost:8080/api/branches/${id}`)
-                .then(() => {
-                    Swal.fire({
-                        icon: "success",
-                        title: "Sucursal eliminada",
-                        text: "La sucursal fue eliminada exitosamente.",
-                        confirmButtonText: "Aceptar"
-                    }).then(() => {
-                        this.loadBranches();
-                        // También podrías redirigir con:
-                        // window.location.href = '../pages/listBranches.html';
-                    });
-                })
-                .catch(error => {
-                    if (error.response && error.response.status === 400) {
-                        Swal.fire({
-                            icon: "warning",
-                            title: "No se puede eliminar",
-                            text: error.response.data || "La sucursal no se puede eliminar porque tiene datos asociados."
-                        });
-                    } else {
-                        console.error("Error al eliminar:", error);
-                        Swal.fire({
-                            icon: "error",
-                            title: "Error",
-                            text: "Ocurrió un error al intentar eliminar la sucursal.",
-                        });
-                    }
-                });
-        },
-        logout() {
-            axios.post("/logout")
-                .then(() => {
-                    Swal.fire({
-                        icon: "success",
-                        title: "Sesión cerrada",
-                        text: "Has cerrado sesión correctamente. Hasta pronto!",
-                        confirmButtonText: "Aceptar"
-                    }).then(() => {
-                        window.location.href = "/index.html";
-                    });
-                })
-                .catch(error => {
-                    console.error("Error al cerrar sesión:", error);
-                    Swal.fire({
-                        icon: "error",
-                        title: "Error",
-                        text: "Hubo un problema al cerrar sesión. Inténtalo de nuevo.",
-                    });
-                });
         }
+      });
     },
-    mounted() {
-        this.loadBranches();
+    activateBranch(branch) {
+      axios.post(`/api/branches/${branch.id}/activate`)
+        .then(() => this.fetchBranches())
+        .catch(() => Swal.fire("Error al reactivar la sucursal", "", "error"));
+    },
+    logout() {
+      axios.post("/logout")
+        .then(() => {
+          Swal.fire({
+            icon: "success",
+            title: "Sesión cerrada",
+            text: "Has cerrado sesión correctamente.",
+          }).then(() => window.location.href = "/index.html");
+        })
+        .catch(() => {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Hubo un problema al cerrar sesión.",
+          });
+        });
     }
-}).mount('#app');
+  },
+  mounted() {
+    this.fetchBranches();
+  }
+}).mount("#appBranches");
