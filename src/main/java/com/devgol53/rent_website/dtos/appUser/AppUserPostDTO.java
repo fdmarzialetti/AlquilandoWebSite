@@ -12,4 +12,5 @@ public class AppUserPostDTO {
     private String password;
     private UserRol rol;
     private String phone;
+    private boolean registradoPorEmpleado;
 }
