@@ -2,15 +2,19 @@
 
     import com.devgol53.rent_website.dtos.vehicle.VehicleGetDTO;
     import com.devgol53.rent_website.dtos.vehicle.VehicleCreateDTO;
+    import com.devgol53.rent_website.entities.AppUser;
     import com.devgol53.rent_website.entities.Branch;
     import com.devgol53.rent_website.entities.Model;
     import com.devgol53.rent_website.entities.Vehicle;
+    import com.devgol53.rent_website.enums.UserRol;
+    import com.devgol53.rent_website.repositories.AppUserRepository;
     import com.devgol53.rent_website.repositories.BranchRepository;
     import com.devgol53.rent_website.repositories.ModelRepository;
     import com.devgol53.rent_website.repositories.VehicleRepository;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.http.HttpStatus;
     import org.springframework.http.ResponseEntity;
+    import org.springframework.security.core.Authentication;
     import org.springframework.web.bind.annotation.*;
 
     import java.util.List;
@@ -20,6 +24,9 @@
     @RequestMapping("api/vehicle")
     @CrossOrigin(origins = "*")
     public class VehicleController {
+
+        @Autowired
+        private AppUserRepository appUserRepository;
 
         @Autowired
         private VehicleRepository vehicleRepository;
@@ -78,8 +85,16 @@
         }
 
         @GetMapping("/listVehicles")
-        public List<VehicleGetDTO> getVehicles() {
-            return vehicleRepository.findAll().stream().filter(Vehicle::isActive).map(VehicleGetDTO::new).toList();
+        public List<VehicleGetDTO> getVehicles(Authentication auth) {
+            AppUser appUser = appUserRepository.findByEmail(auth.getName()).get();
+            if(appUser.getRol().equals(UserRol.ADMIN)){
+                return vehicleRepository.findAll().stream().map(VehicleGetDTO::new).toList();
+
+            }
+            return vehicleRepository.findAll().stream()
+                    .filter(v->v.getBranch().equals(appUser.getBranch()))
+                    .filter(v->v.isActive())
+                    .map(VehicleGetDTO::new).toList();
         }
 
         @GetMapping("/{id}")

@@ -170,4 +170,18 @@ public class AppUserController {
         AppUser findAdmin = appUserRepository.findByEmail(username).get();
         return findAdmin.getVerificationCode() == verificationCode;
     }
+
+    @GetMapping("/userRol")
+    public ResponseEntity<String> getUserRol(Authentication auth){
+        if (auth == null){
+            return ResponseEntity.badRequest().body("El usuario no esta autenticado");
+        }
+        Optional<AppUser> optionalUser = appUserRepository.findByEmail(auth.getName());
+        if(optionalUser.isEmpty()){
+            return ResponseEntity.badRequest().body("El usuario no esta autenticado");
+        }
+        AppUser user = optionalUser.get();
+        return ResponseEntity.ok(user.getRol().toString());
+    }
+
 }

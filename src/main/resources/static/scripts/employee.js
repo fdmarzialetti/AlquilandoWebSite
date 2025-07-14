@@ -37,6 +37,7 @@ createApp({
 
     mounted() {
         this.obtenerReservas();
+        axios.get("/api/vehicle/listVehicles").then(data=>console.log(data)).catch(err=>console.log(err))
     },
 
     methods: {
@@ -176,7 +177,10 @@ createApp({
 
                         /* ---------- 2) ADICIONALES ---------- */
                     } else if (data === "../pages/additional.html") {
-                        window.location.href = `${data}?code=${codigo}`;
+                        const params = new URLSearchParams({ code: codigo});
+
+                        console.log("data:", data);
+                        window.location.href = `${data.trim()}?${params.toString()}`;
                     }
                 })
                 .catch(err =>
@@ -285,14 +289,14 @@ createApp({
                 this.estadoDevolucion(r) != "Reserva Finalizada"
             );
         },
-       retirosPendientesHoy() {
-           const hoy = todayISO_AR();
-           return this.pickups.filter(r =>
-               r.startDate === hoy &&
-               r.vehicleId === 0 &&
-               !r.isCancelled &&
-               this.estadoTexto(r) != "Reserva Finalizada"
-           );
-       }
+        retirosPendientesHoy() {
+            const hoy = todayISO_AR();
+            return this.pickups.filter(r =>
+                r.startDate === hoy &&
+                r.vehicleId === 0 &&
+                !r.isCancelled &&
+                this.estadoTexto(r) != "Reserva Finalizada"
+            );
+        }
     }
 }).mount("#app");

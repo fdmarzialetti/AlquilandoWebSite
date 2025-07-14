@@ -101,9 +101,9 @@ public class DBRunner implements CommandLineRunner {
         autonuevo5.addBranch(branch1);
         autonuevo6.addBranch(branch1);
         autonuevo7.addBranch(branch1);
-        autonuevo8.addBranch(branch1);
-        autonuevo9.addBranch(branch1);
-        autonuevo10.addBranch(branch1);
+        autonuevo8.addBranch(branch2);
+        autonuevo9.addBranch(branch2);
+        autonuevo10.addBranch(branch2);
 
         // Guardarlos en el repositorio
 
