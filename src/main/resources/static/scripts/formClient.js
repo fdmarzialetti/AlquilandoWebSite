@@ -13,10 +13,10 @@ createApp({
                 phone: '',
                 registradoPorEmpleado: false
             },
-             mensaje: '',
-             isAuthenticated: false,
-             isAdmin: false,
-             isEmployee: false
+            mensaje: '',
+            isAuthenticated: false,
+            isAdmin: false,
+            isEmployee: false
         };
     },
     methods: {
@@ -34,6 +34,16 @@ createApp({
                 });
                 return;
             }
+
+            Swal.fire({
+                title: 'Registrando cliente…',
+                html: 'Por favor, espera.',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
 
             try {
                 const response = await fetch('http://localhost:8080/api/clients', {

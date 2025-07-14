@@ -90,6 +90,6 @@ createApp({
   mounted() {
     this.verificarRolUsuario();
     this.loadVehicles();
-
+    
   }
 }).mount("#app");
