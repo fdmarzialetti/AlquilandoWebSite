@@ -12,12 +12,21 @@
 </head>
 <body id="app">
 
-<div class="d-flex justify-content-between">
+<div v-if="rol === 'ADMIN'" class="d-flex justify-content-between">
   <h1>Admin Page</h1>
   <button class="btn btn-outline-dark" @click="logout">Cerrar Sesion</button>
 </div>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="font-family: sans-serif;">
+<div v-if="rol === 'EMPLOYEE'" class="d-flex justify-content-between align-items-center p-2"
+     style="background-image: url('../images/backgroundHeader.jpg');">
+  <a href="../index.html" class="d-flex align-items-center text-decoration-none">
+    <img src="../images/AlquilandoLogo.png" alt="Alquilando" width="120" />
+    <span class="fs-3 fw-bold text-dark ms-2">Alquilando</span>
+  </a>
+  <button class="btn btn-outline-dark" @click="logout">Cerrar Sesión</button>
+</div>
+
+<nav v-if="rol === 'ADMIN'" class="navbar navbar-expand-lg navbar-dark bg-dark" style="font-family: sans-serif;">
   <div class="container-fluid">
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,9 +69,40 @@
   </div>
 </nav>
 
+<nav v-if="rol === 'EMPLOYEE'" class="navbar navbar-expand-lg navbar-dark bg-dark " style="font-family: sans-serif; width: 100%;">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mx-auto d-flex flex-row gap-4">
+        <li class="nav-item">
+          <a class="nav-link text-white" href="../pages/listVehicles.html">Vehículos</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">
+            Acciones
+          </a>
+          <ul class="dropdown-menu dropdown-menu-dark">
+            <li><a class="dropdown-item" href="../pages/confirmWhitdraw.html">Confirmar Retiro</a></li>
+            <li><a class="dropdown-item" href="../pages/formClient.html">Registrar Cliente</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
 <!-- Banner -->
-<div class="banner bg-secondary text-white fw-semibold fs-4 p-3">
+<div v-if="rol === 'ADMIN'" class="banner bg-secondary text-white fw-semibold fs-4 p-3">
   Panel de administrador
+</div>
+
+<div v-if="rol === 'EMPLOYEE'" class="bg-secondary py-3 border-bottom shadow-sm mb-4">
+  <div class="container text-center">
+    <h2 class="fw-semibold text-white m-0">Gestión de Vehículos</h2>
+  </div>
 </div>
 
 <!-- Tabla de vehiculos -->

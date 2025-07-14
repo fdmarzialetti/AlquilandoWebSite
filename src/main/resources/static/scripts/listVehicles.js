@@ -3,7 +3,8 @@ const { createApp } = Vue;
 createApp({
   data() {
     return {
-      vehicles: []
+      vehicles: [],
+      rol:""
     };
   },
   methods: {
@@ -62,9 +63,33 @@ createApp({
                 text: "Hubo un problema al cerrar sesión. Intentalo de nuevo.",
             });
         });
-}
+    },
+    async verificarRolUsuario() {
+                try {
+                    const adminRes = await axios.get('/api/user/isAdmin');
+                    this.isAdmin = adminRes.data === true;
+
+                    const employeeRes = await axios.get('/api/user/isEmployee');
+                    this.isEmployee = employeeRes.data === true;
+
+                    // Si no es ni admin ni empleado, lo consideramos cliente
+                    if (!this.isAdmin && !this.isEmployee) {
+                        this.rol = 'CLIENT';
+                    } else if (this.isAdmin) {
+                        this.rol = 'ADMIN';
+                    } else if (this.isEmployee) {
+                        this.rol = 'EMPLOYEE';
+                    }
+
+
+                } catch (error) {
+                    console.error('Error al verificar el rol:', error);
+                }
+            }
   },
   mounted() {
+    this.verificarRolUsuario();
     this.loadVehicles();
+
   }
 }).mount("#app");
