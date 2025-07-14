@@ -31,11 +31,34 @@ createApp({
             /* -----------------  NUEVOS  ----------------- */
             codigoRetiro: "",
             codigoDevolucion: "",
-            comentarioDevolucion: ""
+            comentarioDevolucion: "",
+            cambiarClave: ""
         };
     },
 
     mounted() {
+
+        axios.get("/api/user/mustChangePassword")
+          .then(res => {
+            console.log(res);
+            if (res.data === true) {
+              Swal.fire({
+                icon: "warning",
+                title: "Cambio de contraseña requerido",
+                text: "Debes cambiar tu contraseña temporal antes de continuar.",
+                confirmButtonText: "Cambiar contraseña",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false
+              }).then(() => {
+                window.location.href = "/change-password.html";
+              });
+            }
+          })
+          .catch(err => {
+            console.error("Error al verificar mustChangePassword", err);
+          });
+
         this.obtenerReservas();
         axios.get("/api/vehicle/listVehicles").then(data=>console.log(data)).catch(err=>console.log(err))
     },

@@ -51,6 +51,7 @@ public class ClientController {
             //guardo cliente
             AppUser savedClient = new AppUser(client, passwordEncoder.encode(passwordToUse));
             savedClient.setRol(UserRol.CLIENT);
+            savedClient.setMustChangePassword(true);
             appUserRepository.save(savedClient);
 
             //  cuerpo

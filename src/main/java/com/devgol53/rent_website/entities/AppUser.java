@@ -42,6 +42,7 @@ public class AppUser {
 
     private boolean state = true;
 
+    private boolean mustChangePassword = false;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST)
     private List<Reservation> reservations = new ArrayList<>();
