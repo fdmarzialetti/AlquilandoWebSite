@@ -126,7 +126,7 @@ public class DBRunner implements CommandLineRunner {
         vehicleRepository.save(autonuevo9);
         vehicleRepository.save(autonuevo10);
 
-        AppUser client1 = new AppUser("Fernando","Marzialetti","35060094","","fdmarzialetti@gmail", passwordEncoder.encode("123456"), UserRol.CLIENT);
+        AppUser client1 = new AppUser("Fernando","Marzialetti","35060094","","fdmarzialetti@gmail.com", passwordEncoder.encode("123456"), UserRol.CLIENT);
         AppUser client2  = new AppUser("Lucía",   "González",   "37111222", "", "lucia.gonzalez@gmail.com",   passwordEncoder.encode("123456"), UserRol.CLIENT);
         AppUser client3  = new AppUser("Marcos",  "Pereyra",    "29877456", "", "marcos.pereyra@hotmail.com", passwordEncoder.encode("123456"), UserRol.CLIENT);
         AppUser client4  = new AppUser("Sofía",   "Quiroga",    "41002345", "", "sofia.quiroga@yahoo.com",    passwordEncoder.encode("123456"), UserRol.CLIENT);
@@ -158,7 +158,7 @@ public class DBRunner implements CommandLineRunner {
         Reservation reservation4 = new Reservation("ZZZZZZ", LocalDate.now(), LocalDate.of(2025, 7, 25), 45000.0);
         reservation4.addClient(client1);
         reservation4.addModel(model5);
-        reservation4.addBranch(branch1);
+        reservation4.addBranch(branch3);
 
 
         Reservation reservation6  = new Reservation("RES006", LocalDate.of(2025, 6,  6), LocalDate.of(2025, 6, 10), 15000.0);
@@ -483,8 +483,9 @@ public class DBRunner implements CommandLineRunner {
         AppUser empleadoM = new AppUser("Martin","Esquercia","11111111","","martincito@gmail.com", passwordEncoder.encode("123456"), UserRol.EMPLOYEE);
         empleadoM.setBranch(branch1);
         userRepository.save(empleadoM);
-
-
+        AppUser empleado2 = new AppUser("Augusto","Esquercia","11111112","","augusto@gmail.com", passwordEncoder.encode("123456"), UserRol.EMPLOYEE);
+        empleado2.setBranch(branch3);
+        userRepository.save(empleado2);
         userRepository.save(new AppUser("Agustina","Sar","000020001","","agus99cabj12@gmail.com", passwordEncoder.encode("123456"), UserRol.CLIENT));
         userRepository.save(new AppUser("Emiliano","Sar","000020003","","emilianoross649@gmail.com", passwordEncoder.encode("123456"), UserRol.CLIENT));
 
@@ -519,7 +520,7 @@ public class DBRunner implements CommandLineRunner {
         reservationRepository.save(reservaSinVehiculoAsignado);
 
         //Reserva con fecha de entrega hoy ("RESHOY")
-        Reservation reservaFechaEntregaHoy = new Reservation("RESHOY", LocalDate.now().plusDays(5), LocalDate.now(), 20000.0);
+        Reservation reservaFechaEntregaHoy = new Reservation("RESHOY", LocalDate.now().minusDays(20), LocalDate.now(), 20000.0);
         reservaFechaEntregaHoy.addClient(client3);
         reservaFechaEntregaHoy.addModel(model8);
         reservaFechaEntregaHoy.addBranch(branch1);
