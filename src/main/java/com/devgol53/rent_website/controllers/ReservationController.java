@@ -203,6 +203,11 @@ public class ReservationController {
         if(reserva.getCancelled()){
             return ResponseEntity.badRequest().body("El codigo corresponde a una reserva cancelada.");
         }
+
+        if(reserva.getVehicle()!= null){
+            return ResponseEntity.badRequest().body("El codigo de reserva ya fue registrado anteriormente");
+        }
+
         System.out.println("empleado rama disponibles"+ empleado.getBranch());
         // Buscar vehículo disponible en la sucursal, del mismo modelo, que no tenga reserva activa hoy
         Optional<Vehicle> vehiculoDisponible = vehicleRepository.findAll().stream()
@@ -374,9 +379,15 @@ public class ReservationController {
             return ResponseEntity.badRequest()
                     .body("El codigo ingresado no corresponde a una reserva registrada.");
 
-        if (!reservation.getEndDate().isEqual(LocalDate.now()))
+        if(reservation.getEmployeeComment()!=null){
             return ResponseEntity.badRequest()
-                    .body("El codigo ingresado no corresponde a una devolucion del deia de hoy.");
+                    .body("El codigo ingresado corresponde a un retiro ya registrado");
+        }
+
+        if(reservation.getVehicle() == null){
+            return ResponseEntity.badRequest()
+                    .body("El codigo ingresado no corresponde a una reserva con retiro pendiente");
+        }
 
         Vehicle vehicle = vehicleRepository.findByPatent(reservation.getVehicle().getPatent()).get();
         vehicle.setMaintence(true);

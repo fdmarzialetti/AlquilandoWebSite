@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro exitoso</title>
+</head>
+<body style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;">
+    <div style="max-width: 600px; margin: auto; background-color: white; border-radius: 8px; padding: 20px; border: 1px solid #ddd;">
+        <h2 style="color: #007BFF;">¡Bienvenido a Alquilando!</h2>
+
+        <p>Hola,</p>
+
+        <p>Has sido registrado exitosamente en <strong>Alquilando</strong> por uno de nuestros empleados.</p>
+
+        <p>
+            <strong>Tu contraseña temporal es:</strong><br>
+            <span style="display: inline-block; background-color: #f0f0f0; padding: 10px; font-size: 18px; font-weight: bold;" th:text="${message}">CONTRASEÑA</span>
+        </p>
+
+        <p>
+            Por favor, inicia sesión y cámbiala lo antes posible para mantener tu cuenta segura.
+        </p>
+
+        <br>
+        <p style="color: #666;">Saludos,<br><strong>El equipo de Alquilando</strong></p>
+    </div>
+</body>
+</html>

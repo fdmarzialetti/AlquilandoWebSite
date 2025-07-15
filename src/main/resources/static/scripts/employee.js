@@ -31,12 +31,36 @@ createApp({
             /* -----------------  NUEVOS  ----------------- */
             codigoRetiro: "",
             codigoDevolucion: "",
-            comentarioDevolucion: ""
+            comentarioDevolucion: "",
+            cambiarClave: ""
         };
     },
 
     mounted() {
+
+        axios.get("/api/user/mustChangePassword")
+          .then(res => {
+            console.log(res);
+            if (res.data === true) {
+              Swal.fire({
+                icon: "warning",
+                title: "Cambio de contraseña requerido",
+                text: "Debes cambiar tu contraseña temporal antes de continuar.",
+                confirmButtonText: "Cambiar contraseña",
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false
+              }).then(() => {
+                window.location.href = "/change-password.html";
+              });
+            }
+          })
+          .catch(err => {
+            console.error("Error al verificar mustChangePassword", err);
+          });
+
         this.obtenerReservas();
+        axios.get("/api/vehicle/listVehicles").then(data=>console.log(data)).catch(err=>console.log(err))
     },
 
     methods: {
@@ -47,31 +71,59 @@ createApp({
             return `${d}/${m}/${y}`;
         },
 
-        /* ---------- ESTADOS ---------- */
+        /* ---------- RETIRO ESTADOS ---------- */
         estadoTexto(r) {
             const hoy = todayISO_AR();
-            if (r.isCancelled) return "Cancelada";
-            if (r.startDate > hoy) return "Proximo";          // ← NUEVO
-            if (r.vehicleId === 0) return "Pendiente";
-            return "Retirada";
+            if (r.isCancelled) return "Cancelado";
+            if (r.startDate > hoy) return "Retiro Proximo";          // ← NUEVO
+            if (r.vehicleId === 0) return "Retiro Pendiente";
+            return "Reserva Finalizada";
         },
         estadoClase(r) {
             const hoy = todayISO_AR();
             if (r.isCancelled) return "text-bg-danger";
             if (r.startDate > hoy) return "text-bg-secondary";  // ← NUEVO
             if (r.vehicleId === 0) return "text-bg-warning";
-            return "text-bg-info";
+            return "text-bg-success";
         },
         /* ---------- ESTADO DEVOLUCIÓN ---------- */
         estadoDevolucion(r) {
             const hoy = todayISO_AR();
-            if (r.endDate > hoy) return "Proximo";   // ← NUEVO
-            return r.employeeCommentId === 0 ? "Pendiente" : "Registrada";
+            if (r.endDate > hoy && r.employeeCommentId === 0) return "Devolucion Proxima";   // ← NUEVO
+            return r.employeeCommentId === 0 ? "Devolucion Pendiente" : "Reserva Finalizada";
         },
         claseEstadoDevolucion(r) {
             const hoy = todayISO_AR();
-            if (r.endDate > hoy) return "text-bg-secondary"; // ← NUEVO
-            return r.employeeCommentId === 0 ? "text-bg-warning" : "text-bg-info";
+            if (r.endDate > hoy && r.employeeCommentId === 0) return "text-bg-secondary"; // ← NUEVO
+            return r.employeeCommentId === 0 ? "text-bg-warning" : "text-bg-success";
+        },
+        estadoGeneralReserva(r) {
+            const hoy = todayISO_AR();
+
+            if (r.isCancelled) return "Cancelado";
+
+            // Primero: ver estado de retiro
+            if (r.startDate > hoy) return "Retiro Próximo";
+            if (r.vehicleId === 0) return "Retiro Pendiente";
+
+            // Luego: si ya se retiró, evaluamos la devolución
+            if (r.endDate > hoy && r.employeeCommentId === 0) return "Devolución Próxima";
+            if (r.employeeCommentId === 0) return "Devolución Pendiente";
+
+            return "Reserva Finalizada";
+        },
+        estadoGeneralClase(r) {
+            const hoy = todayISO_AR();
+
+            if (r.isCancelled) return "text-bg-danger";
+
+            if (r.startDate > hoy) return "text-bg-secondary";
+            if (r.vehicleId === 0) return "text-bg-warning";
+
+            if (r.endDate > hoy && r.employeeCommentId === 0) return "text-bg-secondary";
+            if (r.employeeCommentId === 0) return "text-bg-warning";
+
+            return "text-bg-success";
         },
 
         /* ---------- CARGA DE RESERVAS ---------- */
@@ -89,7 +141,9 @@ createApp({
                     this.pickups = this.reservations
                         .filter(r =>
                             parseISOLocal(r.startDate) >= start &&
-                            parseISOLocal(r.startDate) <= end
+                            parseISOLocal(r.startDate) <= end &&
+                            this.estadoTexto(r) != "Reserva Finalizada" &&
+                            !r.isCancelled
                         )
                         .sort((a, b) =>
                             parseISOLocal(a.startDate) - parseISOLocal(b.startDate)
@@ -98,7 +152,9 @@ createApp({
                     this.returns = this.reservations
                         .filter(r =>
                             parseISOLocal(r.endDate) >= start &&
-                            parseISOLocal(r.endDate) <= end
+                            parseISOLocal(r.endDate) <= end &&
+                            this.estadoDevolucion(r) != "Reserva Finalizada" &&
+                            !r.isCancelled
                         )
                         .filter(r => r.vehicleId != 0)
                         .sort((a, b) =>
@@ -112,7 +168,7 @@ createApp({
 
         /* ---------- VERIFICAR RETIRO ---------- */
         verificarRetiro() {
-            const codigo = this.codigoRetiro.trim();
+            const codigo = this.codigoRetiro.trim().toUpperCase();
             if (codigo.length !== 6) {
                 Swal.fire("Código inválido", "El código debe tener 6 caracteres.", "warning");
                 return;
@@ -144,7 +200,10 @@ createApp({
 
                         /* ---------- 2) ADICIONALES ---------- */
                     } else if (data === "../pages/additional.html") {
-                        window.location.href = `${data}?code=${codigo}`;
+                        const params = new URLSearchParams({ code: codigo});
+
+                        console.log("data:", data);
+                        window.location.href = `${data.trim()}?${params.toString()}`;
                     }
                 })
                 .catch(err =>
@@ -152,37 +211,88 @@ createApp({
                 );
         },
 
-        /* ---------- REGISTRAR DEVOLUCIÓN ---------- */
-        registrarDevolucion() {
-            const codigo = this.codigoDevolucion.trim();
+        async registrarDevolucion() {
+            const codigo = this.codigoDevolucion.trim().toUpperCase();
             if (codigo.length !== 6) {
                 Swal.fire("Código inválido", "El código debe tener 6 caracteres.", "warning");
                 return;
             }
 
-            axios.post(
-                `/api/reservation/registrar-devolucion/${codigo}`,
-                null,
-                { params: { comentarioDevolucion: this.comentarioDevolucion } }
-            )
-                .then(res => {
-                
-                    Swal.fire("Operacion Exitosa", res.data, "success");
-                    this.obtenerReservas();
-                    this.codigoDevolucion = "";
-                    this.comentarioDevolucion = "";
-                    bootstrap.Modal.getInstance(
-                        document.getElementById("modalDevolucion")
-                    ).hide();
-                })
-                .catch(err => {
-                    const mensaje = typeof err.response?.data === "string"
-                        ? err.response.data
-                        : "No se pudo registrar la devolución.";
-                    Swal.fire("Error", mensaje, "error");
-                });
-        },
+            const hoy = new Date().toISOString().split("T")[0];   // "yyyy‑MM‑dd"
 
+            try {
+                /* ---------------------------------------------------------------
+                 * 1) Traemos la reserva para validar vehículo y fecha de fin
+                 * --------------------------------------------------------------- */
+                const { data: reserva } = await axios.get(`/api/reservation/${codigo}`);
+
+                /* ---------------------------------------------------------------
+                 * 2) Validaciones previas
+                 * --------------------------------------------------------------- */
+                if (!reserva.vehicle || reserva.vehicle.id === 0) {
+                    Swal.fire(
+                        "Sin vehículo asignado",
+                        "Esta reserva no tiene un vehículo asignado, por lo que no se puede registrar la devolución.",
+                        "warning"
+                    );
+                    return;
+                }
+
+                const endDate = reserva.endDate; // llega como "yyyy‑MM‑dd"
+
+                /* ---------------------------------------------------------------
+                 * 3) Función que realmente registra la devolución
+                 * --------------------------------------------------------------- */
+                const registrar = () =>
+                    axios
+                        .post(
+                            `/api/reservation/registrar-devolucion/${codigo}`,
+                            null,
+                            { params: { comentarioDevolucion: this.comentarioDevolucion } }
+                        )
+                        .then(res => {
+                            Swal.fire("Operación exitosa", res.data, "success");
+                            this.obtenerReservas();
+                            this.codigoDevolucion = "";
+                            this.comentarioDevolucion = "";
+                            bootstrap.Modal.getInstance(
+                                document.getElementById("modalDevolucion")
+                            ).hide();
+                        })
+                        .catch(err => {
+                            const mensaje =
+                                typeof err.response?.data === "string"
+                                    ? err.response.data
+                                    : "No se pudo registrar la devolución.";
+                            Swal.fire("Error", mensaje, "error");
+                        });
+
+                /* ---------------------------------------------------------------
+                 * 4) Confirmación si la reserva NO finaliza hoy
+                 * --------------------------------------------------------------- */
+                if (endDate !== hoy) {
+                    Swal.fire({
+                        title: "¿Confirmar devolución?",
+                        text: `Esta devolución se realizará antes de lo previsto. La fecha programada es ${this.formatDate(endDate)}. ¿Deseas continuar?`,
+                        icon: "question",
+                        showCancelButton: true,
+                        confirmButtonText: "Sí, continuar",
+                        cancelButtonText: "Cancelar"
+                    }).then(result => {
+                        if (result.isConfirmed) registrar();
+                    });
+                } else {
+                    // La reserva finaliza hoy → sin confirmación extra
+                    registrar();
+                }
+            } catch (e) {
+                Swal.fire(
+                    "Error",
+                    "No se encontró la reserva o ocurrió un problema al obtener la información.",
+                    "error"
+                );
+            }
+        },
         /* ---------- LOGOUT ---------- */
         logout() {
             axios.post("/logout").then(() => {
@@ -197,13 +307,18 @@ createApp({
         devolucionesPendientesHoy() {
             const hoy = todayISO_AR();
             return this.returns.filter(r =>
-                r.endDate === hoy && r.employeeCommentId === 0
+                r.endDate === hoy &&
+                !r.isCancelled &&
+                this.estadoDevolucion(r) != "Reserva Finalizada"
             );
         },
         retirosPendientesHoy() {
             const hoy = todayISO_AR();
             return this.pickups.filter(r =>
-                r.startDate === hoy && r.vehicleId === 0
+                r.startDate === hoy &&
+                r.vehicleId === 0 &&
+                !r.isCancelled &&
+                this.estadoTexto(r) != "Reserva Finalizada"
             );
         }
     }

@@ -100,6 +100,15 @@
         </select>
     </div>
 
+    <div class="mb-3">
+        <label for="sucursal" class="form-label">Mantenimiento</label>
+        <select class="form-select" v-model="maintence" id="mantenimiento" required>
+            <option disabled value="">Seleccionar...</option>
+            <option :value="true">Sí</option>
+            <option :value="false">No</option>
+        </select>
+    </div>
+
 
 
         <div class="text-center">

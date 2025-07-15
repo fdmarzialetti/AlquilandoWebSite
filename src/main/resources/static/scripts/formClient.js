@@ -10,16 +10,23 @@ createApp({
                 email: '',
                 password: '',
                 rol: 'CLIENT',
-                phone: ''
+                phone: '',
+                registradoPorEmpleado: false
             },
             mensaje: '',
-            isAuthenticated: false
+            isAuthenticated: false,
+            isAdmin: false,
+            isEmployee: false
         };
     },
     methods: {
         async registrarCliente() {
+            //Si un empleado lleno el form 
             // Validación JS de contraseña
-            if (this.cliente.password.length < 6) {
+            if (this.isEmployee) {
+                this.cliente.registradoPorEmpleado = true;
+            }
+            else if (this.cliente.password.length < 6) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Contraseña inválida',
@@ -27,6 +34,16 @@ createApp({
                 });
                 return;
             }
+
+            Swal.fire({
+                title: 'Registrando cliente…',
+                html: 'Por favor, espera.',
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
 
             try {
                 const response = await fetch('http://localhost:8080/api/clients', {
@@ -38,18 +55,17 @@ createApp({
                 });
 
                 if (response.ok) {
-                    await response.json();
+                    const mensaje = await response.text();
                     this.resetForm();
 
                     Swal.fire({
                         icon: 'success',
                         title: 'Registro exitoso',
-                        text: '¡Tu cuenta ha sido creada exitosamente!',
+                        text: mensaje, // podés mostrar el mensaje real del backend
                         confirmButtonText: 'Ir al Login'
                     }).then(() => {
-                        window.location.href = 'http://localhost:8080/login.html';
+                        window.location.href = 'http://localhost:8080/pages/formClient.html';
                     });
-
                 } else {
                     const errorText = await response.text();
                     let mensajeError = 'Error en el registro.';
@@ -118,9 +134,34 @@ createApp({
                         text: "Hubo un problema al cerrar sesión. Inténtalo de nuevo.",
                     });
                 });
+        },
+        async verificarRolUsuario() {
+            try {
+                const adminRes = await axios.get('/api/user/isAdmin');
+                this.isAdmin = adminRes.data === true;
+
+                const employeeRes = await axios.get('/api/user/isEmployee');
+                this.isEmployee = employeeRes.data === true;
+
+                // Si no es ni admin ni empleado, lo consideramos cliente
+                if (!this.isAdmin && !this.isEmployee) {
+                    this.cliente.rol = 'CLIENT';
+                } else if (this.isAdmin) {
+                    this.cliente.rol = 'ADMIN';
+                } else if (this.isEmployee) {
+                    this.cliente.rol = 'EMPLOYEE';
+                }
+
+                this.isAuthenticated = true;
+
+            } catch (error) {
+                console.error('Error al verificar el rol:', error);
+                this.isAuthenticated = false;
+            }
         }
     },
     mounted() {
         this.checkAuth();
+        this.verificarRolUsuario();
     }
 }).mount('#app');

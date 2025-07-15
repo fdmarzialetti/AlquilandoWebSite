@@ -12,11 +12,14 @@ import com.devgol53.rent_website.services.IEmailService;
 import com.devgol53.rent_website.utils.CodeGenerator;
 import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -31,6 +34,9 @@ public class AppUserController {
 
     @Autowired
     private BranchRepository branchRepository;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     // ------------------ EMPLEADOS ------------------
 
@@ -158,7 +164,44 @@ public class AppUserController {
                 .anyMatch(authority -> authority.getAuthority().equals("ROLE_EMPLOYEE"));
     }
 
-    @PostMapping("/resetVerificationCode")
+    @GetMapping("/mustChangePassword")
+    public ResponseEntity<Boolean> mustChangePassword(Authentication auth) {
+        if (auth == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false);
+        }
+
+        String email = auth.getName();
+        Optional<AppUser> user = appUserRepository.findByEmail(email);
+
+        return user.map(appUser -> ResponseEntity.ok(appUser.isMustChangePassword())).orElseGet(() -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(false));
+
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody Map<String, String> body, Authentication auth) {
+        if (auth == null || auth.getName() == null) {
+            return ResponseEntity.status(401).body("No autenticado");
+        }
+
+        String nuevaPassword = body.get("nuevaPassword");
+        if (nuevaPassword == null || nuevaPassword.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("La nueva contraseña no puede estar vacía");
+        }
+
+        Optional<AppUser> userOpt = appUserRepository.findByEmail(auth.getName());
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(404).body("Usuario no encontrado");
+        }
+
+        AppUser user = userOpt.get();
+        user.setPassword(passwordEncoder.encode(nuevaPassword));
+        user.setMustChangePassword(false);
+        appUserRepository.save(user);
+
+        return ResponseEntity.ok("Contraseña actualizada con éxito");
+    }
+
+        @PostMapping("/resetVerificationCode")
     public void resetVerificationCode(Authentication auth) {
         AppUser admin = appUserRepository.findByEmail(auth.getName()).get();
         admin.setVerificationCode(0);
@@ -170,4 +213,18 @@ public class AppUserController {
         AppUser findAdmin = appUserRepository.findByEmail(username).get();
         return findAdmin.getVerificationCode() == verificationCode;
     }
+
+    @GetMapping("/userRol")
+    public ResponseEntity<String> getUserRol(Authentication auth){
+        if (auth == null){
+            return ResponseEntity.badRequest().body("El usuario no esta autenticado");
+        }
+        Optional<AppUser> optionalUser = appUserRepository.findByEmail(auth.getName());
+        if(optionalUser.isEmpty()){
+            return ResponseEntity.badRequest().body("El usuario no esta autenticado");
+        }
+        AppUser user = optionalUser.get();
+        return ResponseEntity.ok(user.getRol().toString());
+    }
+
 }
