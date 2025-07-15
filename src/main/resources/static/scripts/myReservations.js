@@ -180,7 +180,7 @@ createApp({
                  * ------------------------------------------------------------------ */
                 const { isConfirmed } = await Swal.fire({
                     title: '¿Está seguro de cancelar la reserva?',
-                    html: `AL realizar esta operacion se le reembolsará un total de <strong>$${refund.toFixed(2)}</strong>.`,
+                    html: `Al realizar esta operacion se le reembolsará un total de <strong>$${refund.toFixed(2)}</strong>.`,
                     icon: 'warning',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
@@ -210,7 +210,7 @@ createApp({
                     title: 'Reserva cancelada',
                     html: `
     <p>La reserva fue cancelada correctamente.</p>
-    <p>Se enviará la información correspondiente al reembolso a su e‑mail.</p>
+    <p>Se enviará la información correspondiente del reembolso a su e‑mail.</p>
     `,
                     icon: 'success'
                 });

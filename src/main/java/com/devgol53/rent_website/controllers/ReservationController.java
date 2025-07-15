@@ -221,6 +221,17 @@ public class ReservationController {
             return ResponseEntity.ok("../pages/additional.html");
         }
 
+        Optional<Vehicle> vehiculosDisponibles = vehicleRepository.findAll().stream()
+                .filter(v->v.getMaintence()==false)
+                .filter(v -> v.isActive())
+                .filter(v -> v.getBranch().equals(empleado.getBranch()))
+                .filter(v -> !v.hasOngoingReservationToday())
+                .findAny();
+
+        if(vehiculosDisponibles.isEmpty()){
+            return ResponseEntity.badRequest().body("No hay ningun vehiculo disponible en esta sucursal");
+        }
+
         // No hay vehículo disponible: redirigir a reassign
         Map<String, Object> response = new HashMap<>();
         response.put("redirect", "../pages/reassign.html");
