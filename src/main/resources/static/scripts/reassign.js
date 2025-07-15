@@ -173,6 +173,37 @@ createApp({
         .map(([valor, cantidad]) => ({ valor: Number(valor), cantidad }))
         .sort((a, b) => a.valor - b.valor);
     },
+    async consultarVehiculoDisponible(model) {
+  try {
+    const response = await axios.post('/api/reservation/asignar-vehiculo', null, {
+      params: {
+        codigoReserva: this.codigoReserva,
+        modelId: model.id
+      }
+    });
+
+    const vehiculo = response.data;
+
+    await Swal.fire({
+      icon: 'success',
+      title: 'Vehículo disponible',
+      html: `Se seleccionó un vehículo disponible`,
+      confirmButtonText: 'Continuar'
+    });
+
+    // Redirige con parámetros
+    window.location.href = `additional.html?code=${this.codigoReserva}&vehiculoId=${vehiculo.id}&modelo=${encodeURIComponent(vehiculo.modelo)}`;
+
+  } catch (error) {
+    console.error("Error al consultar vehículo disponible:", error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Sin disponibilidad',
+      text: error.response?.data || 'No se encontró un vehículo disponible para este modelo en la sucursal.',
+    });
+  }
+  }
+  ,
     async asignarVehiculo(model) {
       try {
         const response = await axios.post('/api/reservation/asignar-vehiculo', null, {
@@ -216,4 +247,5 @@ createApp({
     },
   },
 }).mount("#app");
+
 

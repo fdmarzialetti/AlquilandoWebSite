@@ -3,10 +3,7 @@ package com.devgol53.rent_website.controllers;
 import com.devgol53.rent_website.dtos.additional.AdditionalDetailCreateDto;
 import com.devgol53.rent_website.dtos.additional.AdditionalDetailDto;
 import com.devgol53.rent_website.dtos.email.EmailDTO;
-import com.devgol53.rent_website.dtos.reservation.ReservationConfirmWhitdrawDto;
-import com.devgol53.rent_website.dtos.reservation.ReservationGetDto;
-import com.devgol53.rent_website.dtos.reservation.ReservationPostDto;
-import com.devgol53.rent_website.dtos.reservation.ReservationSummaryDto;
+import com.devgol53.rent_website.dtos.reservation.*;
 import com.devgol53.rent_website.dtos.valoration.ValorationDTO;
 import com.devgol53.rent_website.entities.*;
 import com.devgol53.rent_website.repositories.*;
@@ -311,7 +308,11 @@ public class ReservationController {
 
 
     @PostMapping("/asignar-vehiculo")
-    public ResponseEntity<?> asignarVehiculoAReserva(@RequestParam String codigoReserva, @RequestParam Long modelId, Authentication auth) {
+    public ResponseEntity<?> obtenerVehiculoDisponible(
+            @RequestParam String codigoReserva,
+            @RequestParam Long modelId,
+            Authentication auth) {
+
         Optional<Reservation> optionalReserva = reservationRepository.findByCode(codigoReserva);
         if (optionalReserva.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reserva no encontrada.");
@@ -326,22 +327,27 @@ public class ReservationController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Sucursal inválida.");
         }
 
-        // Buscar vehículo activo del modelo solicitado y sucursal actual
-        Optional<Vehicle> vehiculo = vehicleRepository.findAll().stream().filter(v->v.getMaintence()==false)
-                .filter(v -> v.isActive())
-                .filter(v -> v.getModel().getId() == modelId)
+        // Buscar vehículo activo, sin mantenimiento, del modelo y sucursal correspondiente, sin reservas activas
+        Optional<Vehicle> vehiculo = vehicleRepository.findAll().stream()
+                .filter(v -> !v.getMaintence())
+                .filter(Vehicle::isActive)
+                .filter(v -> v.getModel().getId()==(modelId))
                 .filter(v -> v.getBranch().equals(reserva.getBranch()))
-                .filter(v -> !v.hasOngoingReservationToday()) // si tenés lógica de reserva activa
+                .filter(v -> !v.hasOngoingReservationToday()) // si tenés lógica para esto
                 .findFirst();
 
         if (vehiculo.isPresent()) {
-            reserva.setVehicle(vehiculo.get());
-            reservationRepository.save(reserva);
-            return ResponseEntity.ok("Vehículo asignado correctamente.");
+            Vehicle v = vehiculo.get();
+            Map<String, Object> response = new HashMap<>();
+            response.put("id", v.getId());
+            response.put("modelo", v.getModel().getName()); // o `getModel().getFullName()` si tenés marca + modelo
+            return ResponseEntity.ok(response);
         }
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No hay vehículos disponibles para este modelo en la sucursal.");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body("No hay vehículos disponibles para este modelo en la sucursal.");
     }
+
 
     @GetMapping("/{code}")
     public ResponseEntity<?> getReservation(@PathVariable String code, Authentication auth) {
@@ -405,6 +411,55 @@ public class ReservationController {
         return ResponseEntity.ok("Devolución registrada correctamente!");
     }
 
+    @GetMapping("/dates/{codigo}")
+    public ResponseEntity<?> getReservationDates(@PathVariable String codigo) {
+        Optional<Reservation> optional = reservationRepository.findByCode(codigo);
+
+        if (optional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reserva no encontrada");
+        }
+
+        Reservation r = optional.get();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("startDate", r.getStartDate());
+        response.put("endDate", r.getEndDate());
+        response.put("price",r.getPayment());
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/assign-vehicle")
+    public ResponseEntity<?> assignVehicleToReservation(@RequestBody AssignVehicleDto dto, Authentication auth) {
+        Optional<Reservation> optionalReservation = reservationRepository.findByCode(dto.getCodigoReserva());
+        Optional<Vehicle> optionalVehicle = vehicleRepository.findById(dto.getVehicleId());
+
+        if (optionalReservation.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reserva no encontrada.");
+        }
+
+        if (optionalVehicle.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Vehículo no encontrado.");
+        }
+
+        Reservation reserva = optionalReservation.get();
+        Vehicle vehiculo = optionalVehicle.get();
+
+        // Verificación: sucursal del empleado debe coincidir con la reserva
+        AppUser empleado = appUserRepository.findByEmail(auth.getName())
+                .orElseThrow(() -> new RuntimeException("Empleado no encontrado."));
+
+        if (!empleado.getBranch().equals(reserva.getBranch())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No tiene permiso para asignar un vehículo a esta reserva.");
+        }
+
+        // Asignar vehículo y modelo
+        reserva.setVehicle(vehiculo);
+        reserva.setModel(vehiculo.getModel()); // Actualizar el modelo de la reserva (por si no estaba)
+        reservationRepository.save(reserva);
+
+        return ResponseEntity.ok("Vehículo asignado correctamente a la reserva.");
+    }
 
 
 

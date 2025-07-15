@@ -19,36 +19,21 @@ createApp({
     this.cargarAdicionales();
   },
   methods: {
-    normalizarFecha(fechaStr) {
-      if (!fechaStr || typeof fechaStr !== 'string') return null;
-
-      const [anio, mes, dia] = fechaStr.split("-").map(Number);
-      return new Date(anio, mes - 1, dia); // ← new Date en horario local
-    },
     async cargarReserva() {
       try {
-        const response = await axios.get(`/api/reservation/${this.codigoReserva}`);
-        this.reserva = response.data;
-        this.error = null;
-        console.log("Reserva cargada:", response.data);
+        const res = await axios.get(`/api/reservation/${this.codigoReserva}`);
+        this.reserva = res.data;
       } catch (error) {
-        if (error.response && error.response.status === 401) {
-          this.error = "No tiene permiso para ver esta reserva.";
-        } else if (error.response && error.response.status === 404) {
-          this.error = "Reserva no encontrada.";
-        } else {
-          this.error = "Ocurrió un error al cargar la reserva.";
-        }
-        console.error("Error al obtener reserva:", error);
+        this.error = "Error al cargar la reserva.";
+        console.error(error);
       }
     },
     async cargarAdicionales() {
       try {
-        const response = await axios.get(`/api/reservation/${this.codigoReserva}/additionals`);
-        this.adicionales = response.data;
-        console.log("Adicionales cargados:", response.data);
+        const res = await axios.get(`/api/reservation/${this.codigoReserva}/additionals`);
+        this.adicionales = res.data;
       } catch (error) {
-        console.error("Error al obtener adicionales:", error);
+        console.error("Error al cargar adicionales", error);
       }
     },
     formatPriceArg(value) {
@@ -57,39 +42,32 @@ createApp({
         currency: "ARS",
       }).format(value);
     },
-    volverAAdditional() {
-      window.location.href = `additional.html?codigoReserva=${this.codigoReserva}`;
-    },
     irAlPanelEmpleado() {
       window.location.href = 'employee.html';
+    },
+    normalizarFecha(fechaStr) {
+      if (!fechaStr) return "";
+      const [anio, mes, dia] = fechaStr.split("-").map(Number);
+      return new Date(anio, mes - 1, dia);
     }
   },
   computed: {
     fechaInicioFormateada() {
-      if (!this.reserva) return "";
-
-      const date = this.normalizarFecha(this.reserva.startDate);
-      if (!date) return "";
-
-      return `${String(date.getDate()).padStart(2, "0")}/${String(date.getMonth() + 1).padStart(2, "0")}/${date.getFullYear()}`;
+      const date = this.normalizarFecha(this.reserva?.startDate);
+      return date ? date.toLocaleDateString("es-AR") : "";
     },
-
     fechaFinFormateada() {
-      if (!this.reserva || !this.reserva.endDate) return "";
-
-      const date = this.normalizarFecha(this.reserva.endDate);
-      if (!date) return "";
-
-      return `${String(date.getDate()).padStart(2, "0")}/${String(date.getMonth() + 1).padStart(2, "0")}/${date.getFullYear()}`;
+      const date = this.normalizarFecha(this.reserva?.endDate);
+      return date ? date.toLocaleDateString("es-AR") : "";
     },
     resumenVehiculo() {
-      if (!this.reserva || !this.reserva.vehicle) return "No asignado";
-      return `${this.reserva.vehicle.model}`;
+      return this.reserva?.vehicle?.model || "No asignado";
     },
     totalAdicionales() {
-      return this.adicionales.reduce((total, adicional) => total + adicional.price, 0);
+      return this.adicionales.reduce((acc, val) => acc + val.price, 0);
+    },
+    totalFinal() {
+      return (this.reserva?.payment || 0) + this.totalAdicionales;
     }
   }
 }).mount("#app");
-
-
