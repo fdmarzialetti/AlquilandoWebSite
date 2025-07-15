@@ -39,28 +39,28 @@ createApp({
     mounted() {
 
         axios.get("/api/user/mustChangePassword")
-          .then(res => {
-            console.log(res);
-            if (res.data === true) {
-              Swal.fire({
-                icon: "warning",
-                title: "Cambio de contraseña requerido",
-                text: "Debes cambiar tu contraseña temporal antes de continuar.",
-                confirmButtonText: "Cambiar contraseña",
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                allowEnterKey: false
-              }).then(() => {
-                window.location.href = "/change-password.html";
-              });
-            }
-          })
-          .catch(err => {
-            console.error("Error al verificar mustChangePassword", err);
-          });
+            .then(res => {
+                console.log(res);
+                if (res.data === true) {
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Cambio de contraseña requerido",
+                        text: "Debes cambiar tu contraseña temporal antes de continuar.",
+                        confirmButtonText: "Cambiar contraseña",
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        allowEnterKey: false
+                    }).then(() => {
+                        window.location.href = "/change-password.html";
+                    });
+                }
+            })
+            .catch(err => {
+                console.error("Error al verificar mustChangePassword", err);
+            });
 
         this.obtenerReservas();
-        axios.get("/api/vehicle/listVehicles").then(data=>console.log(data)).catch(err=>console.log(err))
+        axios.get("/api/vehicle/listVehicles").then(data => console.log(data)).catch(err => console.log(err))
     },
 
     methods: {
@@ -200,7 +200,7 @@ createApp({
 
                         /* ---------- 2) ADICIONALES ---------- */
                     } else if (data === "../pages/additional.html") {
-                        const params = new URLSearchParams({ code: codigo});
+                        const params = new URLSearchParams({ code: codigo });
 
                         console.log("data:", data);
                         window.location.href = `${data.trim()}?${params.toString()}`;
@@ -210,7 +210,6 @@ createApp({
                     Swal.fire("Error", err.response?.data || "Verificación fallida", "error")
                 );
         },
-
         async registrarDevolucion() {
             const codigo = this.codigoDevolucion.trim().toUpperCase();
             if (codigo.length !== 6) {
@@ -238,7 +237,20 @@ createApp({
                     return;
                 }
 
-                const endDate = reserva.endDate; // llega como "yyyy‑MM‑dd"
+                /* ---------------------------------------------------------------
+                 * 2.5) ¿Ya se registró la devolución?
+                 * --------------------------------------------------------------- */
+                const { data: yaRegistrada } = await axios.get(`/api/reservation/estaRegistrada/${codigo}`);
+                if (yaRegistrada) {
+                    Swal.fire(
+                        "Devolución ya registrada",
+                        "Esta reserva ya tiene una devolucion resitrada",
+                        "warning"
+                    );
+                    return;
+                }
+
+                const endDate = reserva.endDate; // "yyyy‑MM‑dd"
 
                 /* ---------------------------------------------------------------
                  * 3) Función que realmente registra la devolución
@@ -268,7 +280,7 @@ createApp({
                         });
 
                 /* ---------------------------------------------------------------
-                 * 4) Confirmación si la reserva NO finaliza hoy
+                 * 4) Confirmación si la devolución es antes de la fecha prevista
                  * --------------------------------------------------------------- */
                 if (endDate !== hoy) {
                     Swal.fire({
