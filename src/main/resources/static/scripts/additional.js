@@ -9,19 +9,22 @@ createApp({
     return {
       codigoReserva: getParam("code"),
       modelo: getParam("modelo"),
+      vehicleId: getParam("vehiculoId"),
       adicionales: [],
+      addicionalesVehiculo: [],
       cargado: false,
       detalleVehiculo: null,
       fechasReserva: null,
       precioFinal: 0, // <--- NUEVO
+      idSeleccionado: "",
     };
   },
   computed: {
     mostrarLista() {
-      return this.cargado && this.adicionales.length > 0;
+      return this.addicionalesVehiculo.length > 0;
     },
     mostrarMensajeVacio() {
-      return this.cargado && this.adicionales.length === 0;
+      return this.addicionalesVehiculo.length === 0;
     },
     fechaInicioFormateada() {
       if (!this.fechasReserva) return "";
@@ -33,16 +36,21 @@ createApp({
     },
   },
   methods: {
-    async obtenerAdicionales() {
-      try {
-        const response = await axios.get(`/api/reservation/${this.codigoReserva}/additionals`);
-        this.adicionales = Array.isArray(response.data) ? response.data : [];
-      } catch (error) {
-        console.error("Error al obtener adicionales:", error);
-        this.adicionales = [];
-      } finally {
-        this.cargado = true;
-      }
+    obtenerAdicionales() {
+      axios.get('/api/additionals/all')
+        .then(response => {
+          this.adicionales = response.data;
+          console.log("Response:", response);
+          console.log("Adicionales:", JSON.parse(JSON.stringify(this.adicionales))); // para ver sin proxy
+        })
+        .catch(error => {
+          console.error("Error al obtener adicionales:", error);
+          this.adicionales = [];
+        });
+    }
+    ,
+    cargarAdicional() {
+      this.addicionalesVehiculo.push(this.adicionales.find(({id})=>id==this.idSeleccionado))
     },
     async obtenerDatosVehiculo() {
       try {
@@ -75,8 +83,41 @@ createApp({
       window.location.href = `addAdditional.html?code=${this.codigoReserva}`;
     },
     finalizar() {
+  // Paso 1: enviar adicionales
+  axios.post('/api/reservation/add-additional', {
+    adicionales: this.addicionalesVehiculo,
+    codigoReserva: this.codigoReserva
+  })
+  // Paso 2: luego asignar el vehículo
+  .then(() => {
+    return axios.post('/api/reservation/assign-vehicle', {
+      codigoReserva: this.codigoReserva,
+      vehicleId: this.vehicleId
+    });
+  })
+  // Paso 3: mostrar éxito y redirigir
+  .then(() => {
+    Swal.fire({
+      title: 'Operación completada',
+      text: 'El vehículo fue asignado y los adicionales guardados correctamente.',
+      icon: 'success',
+      confirmButtonText: 'Ir a confirmación'
+    }).then(() => {
       window.location.href = `../pages/confirmation.html?codigoReserva=${this.codigoReserva}`;
-    },
+    });
+  })
+  // Paso 4: manejo de errores
+  .catch(error => {
+    const msg = error.response?.data || 'Ocurrió un error al finalizar la operación.';
+    Swal.fire({
+      title: 'Error',
+      text: msg,
+      icon: 'error',
+      confirmButtonText: 'Entendido'
+    });
+    console.error(error);
+  });
+},
     formatPriceArg(value) {
       return new Intl.NumberFormat("es-AR", {
         style: "currency",
