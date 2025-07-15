@@ -387,7 +387,7 @@ public class ReservationController {
 
         if(reservation.getEmployeeComment()!=null){
             return ResponseEntity.badRequest()
-                    .body("El codigo ingresado corresponde a un retiro ya registrado");
+                    .body("El codigo ingresado corresponde a una reserva con una devolucion ya registrada");
         }
 
         if(reservation.getVehicle() == null){
@@ -461,7 +461,15 @@ public class ReservationController {
         return ResponseEntity.ok("Vehículo asignado correctamente a la reserva.");
     }
 
+    @GetMapping("/estaRegistrada/{codigo}")
+    public ResponseEntity<Boolean> reservaEstaRegistrada(@PathVariable String codigo) {
 
+        return reservationRepository.findByCode(codigo)          // Optional<Reservation>
+                .map(reserva -> ResponseEntity.ok(               // 200 OK + body true/false
+                        reserva.getEmployeeComment() != null
+                ))
+                .orElseGet(() -> ResponseEntity.notFound().build()); // 404 si no existe
+    }
 
 
 }
