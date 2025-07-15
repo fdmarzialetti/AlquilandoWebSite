@@ -1,5 +1,6 @@
 package com.devgol53.rent_website.controllers;
 
+import com.devgol53.rent_website.dtos.additional.AdditionalDetailDto;
 import com.devgol53.rent_website.entities.Additional;
 import com.devgol53.rent_website.repositories.AdditionalRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +37,8 @@ public class AdditionalController {
     }
 
     @GetMapping("/all")
-    public List<Additional> getAllAdditionalsRaw() {
-        return additionalRepository.findAll();
+    public List<AdditionalDetailDto> getAllAdditionalsRaw() {
+        return additionalRepository.findAll().stream().map(AdditionalDetailDto::new).toList();
     }
 
     @GetMapping("/{id}")

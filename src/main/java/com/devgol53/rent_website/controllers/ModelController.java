@@ -185,4 +185,22 @@ public class ModelController {
         }).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body("Modelo no encontrado"));
     }
 
+    @GetMapping("/by-name")
+    public ResponseEntity<?> getByModelName(@RequestParam String name) {
+        Optional<Model> optionalModel = modelRepository.findByName(name);
+        if (optionalModel.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Modelo no encontrado");
+        }
+
+        Model model = optionalModel.get();
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("name", model.getName());
+        response.put("price", model.getPrice());
+        response.put("image", model.getImage()); // debe estar en base64 si lo usás así
+        response.put("brand", Map.of("name", model.getBrand()));
+
+        return ResponseEntity.ok(response);
+    }
+
 }

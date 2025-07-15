@@ -2,7 +2,6 @@ package com.devgol53.rent_website.utils;
 
 import com.devgol53.rent_website.entities.*;
 import com.devgol53.rent_website.enums.CancelationPolicy;
-import com.devgol53.rent_website.enums.CarStatus;
 import com.devgol53.rent_website.enums.UserRol;
 import com.devgol53.rent_website.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +31,8 @@ public class DBRunner implements CommandLineRunner {
     VehicleRepository vehicleRepository;
     @Autowired
     BranchRepository branchRepository;
+    @Autowired
+    AdditionalRepository additionalRepository;
 
 
 
@@ -384,6 +385,12 @@ public class DBRunner implements CommandLineRunner {
         reservation25.addClient(client9);
         reservation26.addClient(client10);
         reservation27.addClient(client11);
+        Reservation reservation5 = new Reservation("XXXXXX", LocalDate.of(2025, 6, 3), LocalDate.of(2025, 7, 25), 20000.0);
+        reservation5.addClient(client1);
+        reservation5.addModel(model1);
+        reservation5.addBranch(branch1);
+        reservation5.setVehicle(autonuevo1);
+
 
         reservation28.addClient(client2);
         reservation29.addClient(client2);
@@ -495,9 +502,47 @@ public class DBRunner implements CommandLineRunner {
                 reservation46, reservation47, reservation48, reservation49, reservation50,
                 reservation51, reservation52, reservation53, reservation54, reservation55
         ));
-
-
-
+        Additional adicional2 = new Additional("Seguro",6000.0);
+        Additional adicional1 = new Additional("Silla de bebe",2000.0);
+        additionalRepository.save(adicional1);
+        additionalRepository.save(adicional2);
         cardRepository.saveAll(Arrays.asList(new Card("1234123412341234","123","FERNANDO MARZIALETTI"),new Card("4567456745674567","456","AGUSTIN SARGIOTTI")));// Tarjeta Optima, Tarjeta sin saldo, Tarjeta sin conexion.
+
+
+        //HU: REGISTRAR DEVOLUCION
+
+        //Reserva sin vehiculo asignado ("SINVEH")
+        Reservation reservaSinVehiculoAsignado = new Reservation("SINVEH", LocalDate.now().plusDays(5), LocalDate.now().plusDays(10), 20000.0);
+        reservaSinVehiculoAsignado.addClient(client3);
+        reservaSinVehiculoAsignado.addModel(model1);
+        reservaSinVehiculoAsignado.addBranch(branch1);
+        reservationRepository.save(reservaSinVehiculoAsignado);
+
+        //Reserva con fecha de entrega hoy ("RESHOY")
+        Reservation reservaFechaEntregaHoy = new Reservation("RESHOY", LocalDate.now().plusDays(5), LocalDate.now(), 20000.0);
+        reservaFechaEntregaHoy.addClient(client3);
+        reservaFechaEntregaHoy.addModel(model8);
+        reservaFechaEntregaHoy.addBranch(branch1);
+        reservaFechaEntregaHoy.addVehicle(autonuevo8);
+        reservationRepository.save(reservaFechaEntregaHoy);
+
+        //Reserva con fecha de entrega futura ("FUTURA")
+        Reservation reservaFechaEntregaFutura = new Reservation("FUTURA", LocalDate.now().minusDays(5), LocalDate.now().plusDays(5), 20000.0);
+        reservaFechaEntregaFutura.addClient(client3);
+        reservaFechaEntregaFutura.addModel(model7);
+        reservaFechaEntregaFutura.addBranch(branch1);
+        reservaFechaEntregaFutura.addVehicle(autonuevo7);
+        reservationRepository.save(reservaFechaEntregaFutura);
+
+        //Reserva con devolucion registrada ("YAREGI")
+        Reservation reservaYaRegistrada = new Reservation("YAREGI", LocalDate.now().minusDays(5), LocalDate.now().minusDays(1), 20000.0);
+        reservaYaRegistrada.addClient(client3);
+        reservaYaRegistrada.addModel(model7);
+        reservaYaRegistrada.addBranch(branch1);
+        reservaYaRegistrada.addVehicle(autonuevo7);
+        EmployeeComment comment = new EmployeeComment(empleadoM, "Devolucion ya registrada");
+        reservaYaRegistrada.addEmployeeComment(comment);
+        empleadoM.addEmployeeComment(comment);
+        reservationRepository.save(reservaYaRegistrada);
     }
 }

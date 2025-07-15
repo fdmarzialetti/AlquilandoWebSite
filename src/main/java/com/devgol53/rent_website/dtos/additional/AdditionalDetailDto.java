@@ -1,5 +1,12 @@
 package com.devgol53.rent_website.dtos.additional;
 
+import com.devgol53.rent_website.entities.Additional;
+import com.devgol53.rent_website.entities.AdditionalDetail;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@NoArgsConstructor
 public class AdditionalDetailDto {
     private Long id;
     private String name;
@@ -11,7 +18,11 @@ public class AdditionalDetailDto {
         this.price = price;
     }
 
-    public Long getId() { return id; }
-    public String getName() { return name; }
-    public Double getPrice() { return price; }
+    public AdditionalDetailDto(Additional additional){
+        this.id = additional.getId();
+        this.name = additional.getName();
+        this.price = additional.getPrice();
+    }
+
+
 }
