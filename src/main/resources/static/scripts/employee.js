@@ -333,5 +333,17 @@ createApp({
                 this.estadoTexto(r) != "Reserva Finalizada"
             );
         }
-    }
+    },
+    watch: {
+        startDate(nueva) {
+            if (this.endDate && nueva > this.endDate) {
+                this.endDate = nueva;        // ajusta fin al nuevo inicio
+            }
+        },
+        endDate(nueva) {
+            if (this.startDate && nueva < this.startDate) {
+                this.startDate = nueva;      // ajusta inicio al nuevo fin
+            }
+        }
+    },
 }).mount("#app");
