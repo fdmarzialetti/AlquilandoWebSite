@@ -384,6 +384,12 @@ public class DBRunner implements CommandLineRunner {
         reservation25.addClient(client9);
         reservation26.addClient(client10);
         reservation27.addClient(client11);
+        Reservation reservation5 = new Reservation("XXXXXX", LocalDate.of(2025, 6, 3), LocalDate.of(2025, 7, 25), 20000.0);
+        reservation5.addClient(client1);
+        reservation5.addModel(model1);
+        reservation5.addBranch(branch1);
+        reservation5.setVehicle(autonuevo1);
+
 
         reservation28.addClient(client2);
         reservation29.addClient(client2);
