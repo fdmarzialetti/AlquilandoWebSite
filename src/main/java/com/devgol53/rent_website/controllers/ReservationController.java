@@ -2,6 +2,7 @@ package com.devgol53.rent_website.controllers;
 
 import com.devgol53.rent_website.dtos.additional.AdditionalDetailCreateDto;
 import com.devgol53.rent_website.dtos.additional.AdditionalDetailDto;
+import com.devgol53.rent_website.dtos.additional.AdditionalDetailListDto;
 import com.devgol53.rent_website.dtos.email.EmailDTO;
 import com.devgol53.rent_website.dtos.reservation.*;
 import com.devgol53.rent_website.dtos.valoration.ValorationDTO;
@@ -265,13 +266,10 @@ public class ReservationController {
     }
 
     @PostMapping("/add-additional")
-    public ResponseEntity<?> addAdditionalToReservation(@RequestBody AdditionalDetailCreateDto dto, Authentication auth) {
-        Optional<Reservation> optionalReservation = reservationRepository.findByCode(dto.getReservationCode());
-        Optional<Additional> optionalAdditional = additionalRepository.findById(dto.getAdditionalId());
+    public ResponseEntity<?> addAdditionalToReservation(@RequestBody AdditionalDetailListDto dto, Authentication auth) {
+        Optional<Reservation> optionalReservation = reservationRepository.findByCode(dto.getCodigoReserva());
 
-        if (optionalReservation.isEmpty() || optionalAdditional.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reserva o adicional no encontrado.");
-        }
+
 
         Reservation reservation = optionalReservation.get();
 
@@ -285,11 +283,13 @@ public class ReservationController {
         if (!esCliente && !esEmpleadoSucursal) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No tiene permiso para modificar esta reserva.");
         }
+        dto.getAdicionales().forEach(a->{
+            AdditionalDetail detalle = new AdditionalDetail();
+            detalle.setAdicional(additionalRepository.findById(a.getId()).get());
+            detalle.setPrice(a.getPrice());
+            reservation.addAdditionalDetail(detalle);
+        });
 
-        AdditionalDetail detalle = new AdditionalDetail();
-        detalle.setAdicional(optionalAdditional.get());
-        detalle.setPrice(optionalAdditional.get().getPrice());
-        reservation.addAdditionalDetail(detalle);
 
         reservationRepository.save(reservation);
 
@@ -454,8 +454,8 @@ public class ReservationController {
         }
 
         // Asignar vehículo y modelo
-        reserva.setVehicle(vehiculo);
-        reserva.setModel(vehiculo.getModel()); // Actualizar el modelo de la reserva (por si no estaba)
+        reserva.addVehicle(vehiculo);
+        reserva.addModel(vehiculo.getModel()); // Actualizar el modelo de la reserva (por si no estaba)
         reservationRepository.save(reserva);
 
         return ResponseEntity.ok("Vehículo asignado correctamente a la reserva.");

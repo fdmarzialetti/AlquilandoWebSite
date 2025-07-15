@@ -32,6 +32,8 @@ public class DBRunner implements CommandLineRunner {
     VehicleRepository vehicleRepository;
     @Autowired
     BranchRepository branchRepository;
+    @Autowired
+    AdditionalRepository additionalRepository;
 
 
 
@@ -501,6 +503,10 @@ public class DBRunner implements CommandLineRunner {
                 reservation46, reservation47, reservation48, reservation49, reservation50,
                 reservation51, reservation52, reservation53, reservation54, reservation55
         ));
+        Additional adicional2 = new Additional("Seguro",6000.0);
+        Additional adicional1 = new Additional("Silla de bebe",2000.0);
+        additionalRepository.save(adicional1);
+        additionalRepository.save(adicional2);
 
 
 
