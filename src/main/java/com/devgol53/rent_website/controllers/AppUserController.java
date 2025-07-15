@@ -184,6 +184,8 @@ public class AppUserController {
         }
 
         String nuevaPassword = body.get("nuevaPassword");
+        String actualPassword = body.get("actualPassword"); //  null si es forzado.
+
         if (nuevaPassword == null || nuevaPassword.trim().isEmpty()) {
             return ResponseEntity.badRequest().body("La nueva contraseña no puede estar vacía");
         }
@@ -194,8 +196,17 @@ public class AppUserController {
         }
 
         AppUser user = userOpt.get();
+
+        // Si actualPassword viene validar (caso voluntario)
+        if (actualPassword != null) {
+            if (!passwordEncoder.matches(actualPassword, user.getPassword())) {
+                return ResponseEntity.status(403).body("La contraseña actual es incorrecta");
+            }
+        }
+
+        // cambio clave
         user.setPassword(passwordEncoder.encode(nuevaPassword));
-        user.setMustChangePassword(false);
+        user.setMustChangePassword(false); // por si venía con forzado
         appUserRepository.save(user);
 
         return ResponseEntity.ok("Contraseña actualizada con éxito");

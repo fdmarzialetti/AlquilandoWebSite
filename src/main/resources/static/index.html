@@ -30,6 +30,7 @@
           <li v-if="!isAuthenticated"><a class="dropdown-item" href="/login.html">Iniciar sesión</a></li>
           <li v-if="!isAuthenticated"><a class="dropdown-item" href="./pages/formClient.html">Registrarse</a></li>
           <li v-if="isAuthenticated"><a class="dropdown-item" href="./pages/client.html">Mis reservas</a></li>
+          <li v-if="isAuthenticated"><a class="dropdown-item" href="#" @click="mostrarModalCambioClaveVoluntario(true)">Cambiar Contraseña</a></li>
           <li v-if="isAuthenticated"><a class="dropdown-item" href="#" @click="logout">Cerrar sesión</a></li>
 
         </ul>
