@@ -9,10 +9,14 @@ createApp({
   },
   computed: {
     activeEmployeesSorted() {
-      return this.activeEmployees.slice().sort((a, b) => (a.branchAddress ?? '').localeCompare(b.branchAddress ?? ''));
+      return this.activeEmployees.slice().sort((a, b) =>
+        (a.branchAddress ?? '').localeCompare(b.branchAddress ?? '')
+      );
     },
     inactiveEmployeesSorted() {
-      return this.inactiveEmployees.slice().sort((a, b) => (a.branchAddress ?? '').localeCompare(b.branchAddress ?? ''));
+      return this.inactiveEmployees.slice().sort((a, b) =>
+        (a.branchAddress ?? '').localeCompare(b.branchAddress ?? '')
+      );
     }
   },
   methods: {
@@ -24,6 +28,11 @@ createApp({
       axios.get('/api/user/employees/inactive')
         .then(res => this.inactiveEmployees = res.data)
         .catch(() => Swal.fire('Error al cargar empleados inactivos', '', 'error'));
+    },
+    formatBranch(e) {
+      if (!e.branchCity && !e.branchAddress) return 'N/A';
+      if (e.branchCity && e.branchAddress) return `${e.branchCity} - ${e.branchAddress}`;
+      return e.branchAddress || e.branchCity || 'N/A';
     },
     editEmployee(e) {
       window.location.href = `formEmployee.html?id=${e.id}`;
@@ -63,7 +72,7 @@ createApp({
           Swal.fire({
             icon: "error",
             title: "Error",
-            text: "Hubo un problema al cerrar sesión. Intentalo de nuevo.",
+            text: "Hubo un problema al cerrar sesión. Inténtalo de nuevo.",
           });
         });
     }

@@ -14,10 +14,14 @@ createApp({
       },
       branches: [],
       isEdit: false,
-      employeeId: null
+      employeeId: null,
+      showPassword: false
     };
   },
   methods: {
+    togglePassword() {
+      this.showPassword = !this.showPassword;
+    },
     loadBranches() {
       axios.get('http://localhost:8080/api/branches')
         .then(res => {
@@ -34,13 +38,24 @@ createApp({
             email: res.data.email || '',
             dni: res.data.dni || '',
             phone: res.data.phone || '',
-            branchId: res.data.branch ? res.data.branch.id : null,
+            branchId: res.data.branchId || null,
             password: ''
           };
         })
         .catch(() => Swal.fire('Error al cargar empleado', '', 'error'));
     },
+    validateForm() {
+      const form = this.$refs.employeeForm;
+      if (!form.checkValidity()) {
+        form.classList.add('was-validated');
+        Swal.fire('Error', 'Por favor complete correctamente todos los campos.', 'error');
+        return false;
+      }
+      return true;
+    },
     saveEmployee() {
+      if (!this.validateForm()) return;
+
       const url = this.isEdit
         ? `http://localhost:8080/api/user/employees/${this.employeeId}`
         : 'http://localhost:8080/api/user/employees';
@@ -48,9 +63,17 @@ createApp({
       const method = this.isEdit ? axios.put : axios.post;
 
       const payload = {
-        ...this.employee,
-        branch: this.employee.branchId !== null ? { id: this.employee.branchId } : null
+        name: this.employee.name,
+        lastname: this.employee.lastname,
+        email: this.employee.email,
+        dni: this.employee.dni,
+        phone: this.employee.phone,
+        branch: this.employee.branchId !== null ? { id: this.employee.branchId } : null,
       };
+
+      if (!this.isEdit) {
+        payload.password = this.employee.password;
+      }
 
       method(url, payload)
         .then(() => {
@@ -77,8 +100,7 @@ createApp({
             window.location.href = "/index.html";
           });
         })
-        .catch(error => {
-          console.error("Error al cerrar sesión:", error);
+        .catch(() => {
           Swal.fire({
             icon: "error",
             title: "Error",

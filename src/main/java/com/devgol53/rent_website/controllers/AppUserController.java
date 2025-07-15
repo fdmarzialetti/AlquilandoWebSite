@@ -14,6 +14,7 @@ import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,16 +33,21 @@ public class AppUserController {
     @Autowired
     private BranchRepository branchRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     // ------------------ EMPLEADOS ------------------
 
     @GetMapping("/employees/active")
     public List<AppUserGetDTO> getActiveEmployees() {
-        return appUserRepository.findByRolAndStateTrue(UserRol.EMPLOYEE).stream().map(AppUserGetDTO::new).toList();
+        return appUserRepository.findByRolAndStateTrue(UserRol.EMPLOYEE)
+                .stream().map(AppUserGetDTO::new).toList();
     }
 
     @GetMapping("/employees/inactive")
     public List<AppUserGetDTO> getInactiveEmployees() {
-        return appUserRepository.findByRolAndStateFalse(UserRol.EMPLOYEE).stream().map(AppUserGetDTO::new).toList();
+        return appUserRepository.findByRolAndStateFalse(UserRol.EMPLOYEE)
+                .stream().map(AppUserGetDTO::new).toList();
     }
 
     @GetMapping("/employees/{id}")
@@ -67,6 +73,7 @@ public class AppUserController {
             employee.setBranch(null);
         }
 
+        employee.setPassword(passwordEncoder.encode(employee.getPassword()));
         employee.setRol(UserRol.EMPLOYEE);
         employee.setState(true);
 
@@ -80,9 +87,27 @@ public class AppUserController {
 
         AppUser employee = optional.get();
 
+        // ✅ Validación de email duplicado (excluyendo al actual)
+        Optional<AppUser> emailOwner = appUserRepository.findByEmail(updated.getEmail());
+        if (emailOwner.isPresent() && emailOwner.get().getId() != id) {
+            return ResponseEntity.badRequest().body("Ya existe otro empleado con ese email.");
+        }
+
+        // ✅ Validación de DNI duplicado (excluyendo al actual)
+        Optional<AppUser> dniOwner = appUserRepository.findByDni(updated.getDni());
+        if (dniOwner.isPresent() && dniOwner.get().getId() != id) {
+            return ResponseEntity.badRequest().body("Ya existe otro empleado con ese DNI.");
+        }
+
         employee.setName(updated.getName());
         employee.setLastname(updated.getLastname());
         employee.setPhone(updated.getPhone());
+        employee.setEmail(updated.getEmail());
+        employee.setDni(updated.getDni());
+
+        if (updated.getPassword() != null && !updated.getPassword().isBlank()) {
+            employee.setPassword(passwordEncoder.encode(updated.getPassword()));
+        }
 
         if (updated.getBranch() != null && updated.getBranch().getId() != 0) {
             Optional<Branch> optionalBranch = branchRepository.findById(updated.getBranch().getId());

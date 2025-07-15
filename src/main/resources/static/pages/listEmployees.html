@@ -10,13 +10,13 @@
 </head>
 <body id="appList">
 
-<!-- Encabezado superior -->
+<!-- Encabezado -->
 <div class="d-flex justify-content-between align-items-center p-3">
     <h1>Admin Page</h1>
     <button class="btn btn-outline-dark" @click="logout">Cerrar Sesión</button>
 </div>
 
-<!-- Navbar unificado -->
+<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="font-family: sans-serif;">
     <div class="container-fluid">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
@@ -67,6 +67,7 @@
             <th>Nombre</th>
             <th>Email</th>
             <th>DNI</th>
+            <th>Teléfono</th>
             <th>Sucursal</th>
             <th>Acciones</th>
         </tr>
@@ -76,14 +77,15 @@
             <td>{{ e.name }} {{ e.lastname }}</td>
             <td>{{ e.email }}</td>
             <td>{{ e.dni }}</td>
-            <td>{{ e.branchAddress ?? 'N/A' }}</td>
+            <td>{{ e.phone }}</td>
+            <td>{{ formatBranch(e) }}</td>
             <td>
                 <button class="btn btn-sm btn-warning me-2" @click="editEmployee(e)">Editar</button>
                 <button class="btn btn-sm btn-danger" @click="deactivateEmployee(e)">Dar de baja</button>
             </td>
         </tr>
         <tr v-if="activeEmployees.length === 0">
-            <td colspan="5" class="text-center text-muted">No hay empleados activos.</td>
+            <td colspan="6" class="text-center text-muted">No hay empleados activos.</td>
         </tr>
         </tbody>
     </table>
@@ -96,6 +98,7 @@
             <th>Nombre</th>
             <th>Email</th>
             <th>DNI</th>
+            <th>Teléfono</th>
             <th>Sucursal</th>
             <th>Acciones</th>
         </tr>
@@ -105,13 +108,14 @@
             <td>{{ e.name }} {{ e.lastname }}</td>
             <td>{{ e.email }}</td>
             <td>{{ e.dni }}</td>
-            <td>{{ e.branchAddress ?? 'N/A' }}</td>
+            <td>{{ e.phone }}</td>
+            <td>{{ formatBranch(e) }}</td>
             <td>
                 <button class="btn btn-sm btn-success" @click="activateEmployee(e)">Reactivar</button>
             </td>
         </tr>
         <tr v-if="inactiveEmployees.length === 0">
-            <td colspan="5" class="text-center text-muted">No hay empleados inactivos.</td>
+            <td colspan="6" class="text-center text-muted">No hay empleados inactivos.</td>
         </tr>
         </tbody>
     </table>
