@@ -14,11 +14,13 @@ public class VehicleGetDTO {
     private Long modelId;
     private String branch;
     private Long branchId;
+    private Boolean maintence;
 
     public VehicleGetDTO(Vehicle vehicle) {
         this.id = vehicle.getId();
         this.patent = vehicle.getPatent();
         this.yearV = vehicle.getYearV();
+        this.maintence = vehicle.getMaintence();
 
         this.model = vehicle.getModel().getBrand() + " " + vehicle.getModel().getName();
         this.modelId = vehicle.getModel().getId();

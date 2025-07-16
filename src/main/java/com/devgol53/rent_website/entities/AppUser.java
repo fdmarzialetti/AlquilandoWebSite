@@ -42,9 +42,13 @@ public class AppUser {
 
     private boolean state = true;
 
+    private boolean mustChangePassword = false;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.PERSIST)
     private List<Reservation> reservations = new ArrayList<>();
+
+    @OneToMany(mappedBy = "employee")
+    private List<EmployeeComment> employeeComments = new ArrayList<>();
 
     public AppUser(String name, String lastname, String dni, String phone, String email, String password, UserRol rol) {
         this.name = name;
@@ -68,5 +72,11 @@ public class AppUser {
 
     public void addReservation(Reservation reservation) {
         this.reservations.add(reservation);
+    }
+
+
+    public void addEmployeeComment(EmployeeComment comment) {
+        this.employeeComments.add(comment);
+        comment.setEmployee(this);
     }
 }

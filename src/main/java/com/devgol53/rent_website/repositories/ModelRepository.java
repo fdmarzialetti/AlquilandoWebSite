@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ModelRepository extends JpaRepository<Model, Long> {
-
-    boolean existsByBrandIgnoreCaseAndNameIgnoreCase(String brand, String name);
-
+public interface ModelRepository extends JpaRepository<Model,Long> {
+    Boolean existsByBrandIgnoreCaseAndNameIgnoreCase(String brand, String name);
     boolean existsByBrandIgnoreCaseAndNameIgnoreCaseAndIdNot(String brand, String name, Long id);
 
     Optional<Model> findByBrandAndName(String brand, String name);
+
+    Optional<Model> findByName(String name);
 
     List<Model> findByStatusTrue();
 
