@@ -8,8 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body id="appList">
-
+<body>
 <!-- Encabezado -->
 <div class="d-flex justify-content-between align-items-center p-3">
     <h1 class="m-0">Admin Page</h1>
@@ -50,67 +49,71 @@
     </div>
 </nav>
 
-<!-- Banner -->
-<div class="banner bg-secondary text-white fw-semibold fs-4 p-3">
-    Panel de administrador
-</div>
-
-<!-- Contenido -->
-<div class="container my-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">Adicionales</h2>
+<!-- VUE APP: appList -->
+<div id="appList">
+    <!-- Banner -->
+    <div class="banner bg-secondary text-white fw-semibold fs-4 p-3">
+        Panel de administrador
     </div>
 
-    <!-- Activos -->
-    <h4 class="text-success"> Activos</h4>
-    <table class="table table-bordered table-striped mb-5">
-        <thead class="table-success">
-        <tr>
-            <th>Nombre</th>
-            <th>Precio</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-for="item in activeAdditionals" :key="item.id">
-            <td>{{ item.name }}</td>
-            <td>${{ item.price.toFixed(2) }}</td>
-            <td>
-                <button class="btn btn-sm btn-warning me-2" @click="editItem(item)">Editar</button>
-                <button class="btn btn-sm btn-danger" @click="deactivateItem(item)">Dar de baja</button>
-            </td>
-        </tr>
-        <tr v-if="activeAdditionals.length === 0">
-            <td colspan="3" class="text-center text-muted">No hay adicionales activos.</td>
-        </tr>
-        </tbody>
-    </table>
+    <!-- Contenido -->
+    <div class="container my-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">Adicionales</h2>
+        </div>
 
-    <!-- Inactivos -->
-    <h4 class="text-secondary">Inactivos</h4>
-    <table class="table table-bordered table-striped">
-        <thead class="table-secondary">
-        <tr>
-            <th>Nombre</th>
-            <th>Precio</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-for="item in inactiveAdditionals" :key="'inactivo-' + item.id">
-            <td>{{ item.name }}</td>
-            <td>${{ item.price.toFixed(2) }}</td>
-            <td>
-                <button class="btn btn-sm btn-success" @click="activateItem(item)">Reactivar</button>
-            </td>
-        </tr>
-        <tr v-if="inactiveAdditionals.length === 0">
-            <td colspan="3" class="text-center text-muted">No hay adicionales inactivos.</td>
-        </tr>
-        </tbody>
-    </table>
+        <!-- Activos -->
+        <h4 class="text-success">Activos</h4>
+        <table class="table table-bordered table-striped mb-5">
+            <thead class="table-success">
+            <tr>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="item in activeAdditionals" :key="item.id">
+                <td>{{ item.name }}</td>
+                <td>${{ item.price.toFixed(2) }}</td>
+                <td>
+                    <button class="btn btn-sm btn-warning me-2" @click="editItem(item)">Editar</button>
+                    <button class="btn btn-sm btn-danger" @click="deactivateItem(item)">Dar de baja</button>
+                </td>
+            </tr>
+            <tr v-if="activeAdditionals.length === 0">
+                <td colspan="3" class="text-center text-muted">No hay adicionales activos.</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!-- Inactivos -->
+        <h4 class="text-secondary">Inactivos</h4>
+        <table class="table table-bordered table-striped">
+            <thead class="table-secondary">
+            <tr>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="item in inactiveAdditionals" :key="'inactivo-' + item.id">
+                <td>{{ item.name }}</td>
+                <td>${{ item.price.toFixed(2) }}</td>
+                <td>
+                    <button class="btn btn-sm btn-success" @click="activateItem(item)">Reactivar</button>
+                </td>
+            </tr>
+            <tr v-if="inactiveAdditionals.length === 0">
+                <td colspan="3" class="text-center text-muted">No hay adicionales inactivos.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 
+<!-- Scripts -->
 <script src="../scripts/listAdditionals.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
 </body>

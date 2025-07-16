@@ -101,13 +101,40 @@ public class VehicleController {
 
 
         @GetMapping("/listVehicles/active")
-        public List<VehicleGetDTO> getActiveVehicles() {
-            return vehicleRepository.findByActiveTrue().stream().map(VehicleGetDTO::new).toList();
+        public List<VehicleGetDTO> getActiveVehicles(Authentication auth) {
+            AppUser appUser = appUserRepository.findByEmail(auth.getName()).get();
+
+            if (appUser.getRol().equals(UserRol.ADMIN)) {
+                // Admin: ver todos los vehículos activos
+                return vehicleRepository.findByActiveTrue().stream()
+                        .map(VehicleGetDTO::new)
+                        .toList();
+            }
+
+            // Empleado: vehículos activos de su sucursal
+            return vehicleRepository.findByActiveTrue().stream()
+                    .filter(v -> v.getBranch().equals(appUser.getBranch()))
+                    .map(VehicleGetDTO::new)
+                    .toList();
         }
 
         @GetMapping("/listVehicles/inactive")
-        public List<VehicleGetDTO> getInactiveVehicles() {
-            return vehicleRepository.findByActiveFalse().stream().map(VehicleGetDTO::new).toList();
+        public List<VehicleGetDTO> getInactiveVehicles(Authentication auth) {
+            AppUser appUser = appUserRepository.findByEmail(auth.getName()).get();
+
+            if (appUser.getRol().equals(UserRol.ADMIN)) {
+                // Admin: ver todos los vehículos activos
+                return vehicleRepository.findByActiveFalse().stream()
+                        .map(VehicleGetDTO::new)
+                        .toList();
+            }
+
+            // Empleado: vehículos inactivos de su sucursal
+            return vehicleRepository.findByActiveFalse().stream()
+                    .filter(v -> v.getBranch().equals(appUser.getBranch()))
+                    .map(VehicleGetDTO::new)
+                    .toList();
+
         }
 
         @GetMapping("/listVehicles")

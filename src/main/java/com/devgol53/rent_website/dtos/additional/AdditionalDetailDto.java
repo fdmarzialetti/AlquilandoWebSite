@@ -11,6 +11,7 @@ public class AdditionalDetailDto {
     private Long id;
     private String name;
     private Double price;
+    private Boolean state ;
 
     public AdditionalDetailDto(Long id, String name, Double price) {
         this.id = id;
@@ -22,6 +23,7 @@ public class AdditionalDetailDto {
         this.id = additional.getId();
         this.name = additional.getName();
         this.price = additional.getPrice();
+        this.state= additional.isState();
     }
 
 
