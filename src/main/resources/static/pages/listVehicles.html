@@ -92,14 +92,13 @@
 
 <!-- Tabla de vehiculos -->
 <div id="app" class="container mt-5">
-  <h2 class="mb-4">Lista de Vehiculos</h2>
-  <div v-if="vehicles.length === 0" class="alert alert-info text-center">
-    Aún no se ha cargado ningún vehiculo.
-  </div>
+
 <!-- Lista de vehículos -->
 <div class="container mt-5">
   <h2 class="mb-4">Vehículos</h2>
-
+  <div v-if="vehicles.length === 0" class="alert alert-info text-center">
+    Aún no se ha cargado ningún vehiculo.
+  </div>
   <!-- Activos -->
   <h4 class="text-success">Activos</h4>
   <table class="table table-bordered table-striped mb-5">
@@ -109,6 +108,7 @@
       <th>Año</th>
       <th>Modelo</th>
       <th>Sucursal</th>
+      <th>En Mantenimiento</th>
       <th>Acciones</th>
     </tr>
     </thead>
@@ -118,6 +118,7 @@
       <td>{{ v.yearV }}</td>
       <td>{{ v.model }}</td>
       <td>{{ v.branch }}</td>
+      <td>{{ v.maintence ? 'SI' : 'NO' }}</td>
       <td>
         <button class="btn btn-sm btn-warning me-2" @click="editVehicle(v)">Editar</button>
         <button class="btn btn-sm btn-danger" @click="deactivateVehicle(v)">Dar de baja</button>
@@ -148,7 +149,7 @@
       <td>{{ v.yearV }}</td>
       <td>{{ v.model }}</td>
       <td>{{ v.branch }}</td>
-        <td>{{ vehicle.maintence ? 'SI' : 'NO' }}</td>
+        <td>{{ v.maintence ? 'SI' : 'NO' }}</td>
       <td>
         <button class="btn btn-sm btn-success" @click="activateVehicle(v)">Reactivar</button>
       </td>
