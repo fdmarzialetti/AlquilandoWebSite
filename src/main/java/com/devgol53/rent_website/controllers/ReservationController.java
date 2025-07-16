@@ -482,6 +482,23 @@ public class ReservationController {
                 .orElseGet(() -> ResponseEntity.notFound().build()); // 404 si no existe
     }
 
+    @GetMapping("/reservationModelId/{code}")
+    public ResponseEntity<?> getReservationModelId(@PathVariable String code, Authentication auth) {
+        Optional<Reservation> optionalReservation = reservationRepository.findByCode(code);
+        if(optionalReservation.isEmpty()){
+            return ResponseEntity.badRequest().body("No se encuentra la reserva con codigo "+code);
+        }
+        Reservation reserva = optionalReservation.get();
+        Optional<Vehicle> vehiculo = vehicleRepository.findAll().stream()
+                .filter(v -> !v.getMaintence())
+                .filter(Vehicle::isActive)
+                .filter(v -> v.getModel().getId()==(reserva.getModel().getId()))
+                .filter(v -> v.getBranch().equals(reserva.getBranch()))
+                .filter(v -> !v.hasOngoingReservationToday()) // si tenés lógica para esto
+                .findFirst();
+        ReservationModelAndVehicleIDsDTO reservationModelAndVehicleIDsDTO = new ReservationModelAndVehicleIDsDTO(reserva,vehiculo.get().getId());
+        return ResponseEntity.ok().body(reservationModelAndVehicleIDsDTO);
+    }
 
 }
 
