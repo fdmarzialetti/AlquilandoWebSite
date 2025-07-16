@@ -35,6 +35,8 @@
             font-size: 1.2rem;
             letter-spacing: 4px;
         }
+
+       
     </style>
 </head>
 
@@ -124,9 +126,11 @@
                 <h3 class="border-bottom pb-2 mb-3"><i class="bi bi-calendar-range me-2"></i>Reservas entre fechas</h3>
                 <div class="d-flex align-items-center gap-1">
                     <label for="startDate" class="form-label mb-0">Inicio:</label>
-                    <input type="date" id="startDate" v-model="startDate" :max="endDate" class="form-control" style="max-width:180px;" />
+                    <input type="date" id="startDate" v-model="startDate" :max="endDate" class="form-control"
+                        style="max-width:180px;" />
                     <label for="endDate" class="form-label mb-0">Fin:</label>
-                    <input type="date" id="endDate" v-model="endDate" :min="startDate" class="form-control" style="max-width: 180px;" />
+                    <input type="date" id="endDate" v-model="endDate" :min="startDate" class="form-control"
+                        style="max-width: 180px;" />
                     <button class="btn btn-outline-primary" @click="obtenerReservas">Actualizar</button>
                 </div>
             </div>
@@ -139,7 +143,56 @@
                 <div class="card shadow-sm mb-4">
                     <div class="card-header d-flex align-items-center justify-content-between">
                         <h5 class="mb-0 d-flex align-items-center gap-1">
-                            <i class="bi bi-card-list me-2"></i> Todas
+                            <i class="bi bi-card-list me-2"></i>
+                            <div class="dropdown">
+                                <button class="btn dropdown-toggle"
+                                    :class="['btn', 'dropdown-toggle', claseBadgeEstado(estadoSeleccionado)]"
+                                    type="button" data-bs-toggle="dropdown" ref="dropdownBtn">
+                                    <span v-if="estadoSeleccionado" class="badge bg-transparent text-white">
+                                        {{ estadoSeleccionado }}
+                                    </span>
+                                    <span v-else class="">Todas</span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><button class="dropdown-item" @click="seleccionarEstado('')">Todas</button></li>
+                                    <li>
+                                        <button class="dropdown-item text-warning"
+                                            @click="seleccionarEstado('Retiro Pendiente')">
+                                            <span class="badge text-bg-warning">Retiro Pendiente</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="dropdown-item text-warning"
+                                            @click="seleccionarEstado('Devolución Pendiente')">
+                                            <span class="badge text-bg-warning">Devolución Pendiente</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="dropdown-item text-secondary"
+                                            @click="seleccionarEstado('Retiro Próximo')">
+                                            <span class="badge text-bg-secondary">Retiro Próximo</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="dropdown-item text-secondary"
+                                            @click="seleccionarEstado('Devolución Próxima')">
+                                            <span class="badge text-bg-secondary">Devolución Próxima</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="dropdown-item text-success"
+                                            @click="seleccionarEstado('Reserva Finalizada')">
+                                            <span class="badge text-bg-success">Reserva Finalizada</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button class="dropdown-item text-danger"
+                                            @click="seleccionarEstado('Reserva Cancelada')">
+                                            <span class="badge text-bg-danger">Reserva Cancelada</span>
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
                         </h5>
                         <div class="d-flex align-items-center gap-2">
                             <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalRetiro">
@@ -150,6 +203,7 @@
                             </button>
                         </div>
                     </div>
+
 
                     <div class="table-responsive overflow-auto" style="max-height: 32rem;">
                         <table class="table table-hover mb-0 text-center">
@@ -164,7 +218,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="r in reservations" :key="r.id">
+                                <tr v-for="r in reservasFiltradas" :key="r.id">
                                     <td>{{ r.code }}</td>
                                     <td>{{ r.clientName || '—' }}</td>
                                     <td>{{ r.modelName }}</td>
@@ -222,6 +276,7 @@
                     <div class="card-header d-flex align-items-center justify-content-between">
                         <h5 class="mb-0 d-flex align-items-center gap-1">
                             <i class="bi bi-arrow-return-left me-2"></i> Devoluciones pendientes
+                            <span class="badge bg-warning ms-2">{{ devolucionesPendientesHoy.length }}</span>
                         </h5>
                         <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalDevolucion">
                             <i class="bi bi-journal-check me-2"></i>Registrar Devolución
