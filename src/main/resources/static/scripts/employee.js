@@ -27,12 +27,13 @@ createApp({
             startDate: today,
             endDate: today,
             employeeName: "Martin",
+            estadoSeleccionado: "",
 
             /* -----------------  NUEVOS  ----------------- */
             codigoRetiro: "",
             codigoDevolucion: "",
             comentarioDevolucion: "",
-            cambiarClave: ""
+            cambiarClave: "",
         };
     },
 
@@ -64,6 +65,30 @@ createApp({
     },
 
     methods: {
+        seleccionarEstado(estado) {
+            this.estadoSeleccionado = estado;
+
+            // Cerrar el dropdown
+            const dropdownEl = this.$refs.dropdownBtn;
+            const dropdown = bootstrap.Dropdown.getInstance(dropdownEl);
+            if (dropdown) dropdown.hide();
+        },
+        claseBadgeEstado(estado) {
+            switch (estado) {
+                case "Reserva Cancelada":
+                    return "btn-danger";
+                case "Retiro Pendiente":
+                case "Devolución Pendiente":
+                    return "btn-warning";
+                case "Retiro Próximo":
+                case "Devolución Próxima":
+                    return "btn-secondary";
+                case "Reserva Finalizada":
+                    return "btn-success";
+                default:
+                    return "btn-outline-dark";
+            }
+        },
         /* ---------- UTILIDADES ---------- */
         formatDate(iso) {
             if (!iso) return "—";
@@ -74,7 +99,7 @@ createApp({
         /* ---------- RETIRO ESTADOS ---------- */
         estadoTexto(r) {
             const hoy = todayISO_AR();
-            if (r.isCancelled) return "Cancelado";
+            if (r.isCancelled) return "Reserva Cancelada";
             if (r.startDate > hoy) return "Retiro Proximo";          // ← NUEVO
             if (r.vehicleId === 0) return "Retiro Pendiente";
             return "Reserva Finalizada";
@@ -100,7 +125,7 @@ createApp({
         estadoGeneralReserva(r) {
             const hoy = todayISO_AR();
 
-            if (r.isCancelled) return "Cancelado";
+            if (r.isCancelled) return "Reserva Cancelada";
 
             // Primero: ver estado de retiro
             if (r.startDate > hoy) return "Retiro Próximo";
@@ -332,6 +357,10 @@ createApp({
                 !r.isCancelled &&
                 this.estadoTexto(r) != "Reserva Finalizada"
             );
+        },
+        reservasFiltradas() {
+            if (!this.estadoSeleccionado) return this.reservations;
+            return this.reservations.filter(r => this.estadoGeneralReserva(r) === this.estadoSeleccionado);
         }
     },
     watch: {
