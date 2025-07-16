@@ -36,6 +36,8 @@
       <li class="list-group-item d-flex justify-content-between align-items-center" v-for="a in addicionalesVehiculo" :key="a.id">
         <span>{{ a.name }}</span>
         <span class="badge bg-primary rounded-pill">{{ formatPriceArg(a.price) }}</span>
+        <i class="bi bi-x-circle-fill text-danger" style="cursor: pointer;" title="Quitar adicional"
+       @click="eliminarAdicional(index)"></i>
       </li>
     </ul>
 
@@ -43,6 +45,12 @@
     <div v-if="mostrarMensajeVacio" class="alert alert-info">
       Aún no se han cargado adicionales.
     </div>
+
+    <div class="text-end fw-bold mb-4" >
+      Total adicionales: {{ formatPriceArg(totalAdicionales) }}
+    </div>
+
+    <div class="text-end fw-bold mb-4">Precio total : {{ formatPriceArg(precioTotal) }}</div>
 
     <!-- Botones -->
     <div class="d-flex justify-content-between">

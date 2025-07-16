@@ -34,6 +34,12 @@ createApp({
       if (!this.fechasReserva) return "";
       return new Date(this.fechasReserva.endDate).toLocaleDateString("es-AR");
     },
+    totalAdicionales() {
+      return this.addicionalesVehiculo.reduce((total, adicional) => total + adicional.price, 0);
+    },
+    precioTotal() {
+      return this.precioFinal + this.totalAdicionales;
+    },
   },
   methods: {
     obtenerAdicionales() {
@@ -118,6 +124,9 @@ createApp({
     console.error(error);
   });
 },
+eliminarAdicional(index) {
+    this.addicionalesVehiculo.splice(index, 1);
+  },
     formatPriceArg(value) {
       return new Intl.NumberFormat("es-AR", {
         style: "currency",
