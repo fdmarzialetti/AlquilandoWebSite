@@ -225,10 +225,17 @@ createApp({
 
                         /* ---------- 2) ADICIONALES ---------- */
                     } else if (data === "../pages/additional.html") {
-                        const params = new URLSearchParams({ code: codigo });
-
-                        console.log("data:", data);
-                        window.location.href = `${data.trim()}?${params.toString()}`;
+                        
+                        axios.get(`/api/reservation/reservationModelId/${codigo}`).then(res=>{
+                            console.log("res.data: ")
+                            console.log(res.data)
+                            const params = new URLSearchParams({
+                                code:codigo,
+                                vehiculoId:res.data.vehicleId,
+                                modelo:res.data.model
+                            });
+                            window.location.href = `${data.trim()}?${params.toString()}`;          
+                        });
                     }
                 })
                 .catch(err =>
