@@ -332,6 +332,10 @@ createApp({
                 !r.isCancelled &&
                 this.estadoTexto(r) != "Reserva Finalizada"
             );
+        },
+        reservasFiltradas() {
+            if (!this.estadoSeleccionado) return this.reservations;
+            return this.reservations.filter(r => this.estadoGeneralReserva(r) === this.estadoSeleccionado);
         }
     },
     watch: {
