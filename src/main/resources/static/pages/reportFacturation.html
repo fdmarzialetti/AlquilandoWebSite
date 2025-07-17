@@ -42,6 +42,10 @@
             align-items: center;
           }
         }
+        .scrollable-table {
+    max-height: 400px; /* Ajustá este valor según el alto de 10 filas */
+    overflow-y: auto;
+}
     </style>
 </head>
 <body id="app" class="bg-white">
@@ -134,29 +138,29 @@
     </div>
 
     <!-- Tabla -->
-    <div class="table-responsive">
-        <table class="table table-hover table-sm align-middle">
-            <thead class="table-light">
-            <tr>
-                <th>Código</th>
-                <th>Sucursal</th>
-                <th>Modelo</th>
-                <th class="text-end">Pago</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="res in filteredReservations" :key="res.id">
-                <td>{{ res.code }}</td>
-                <td>{{ res.branchName }}</td>
-                <td>{{ res.modelName }}</td>
-                <td class="text-end">${{ res.payment.toFixed(2) }}</td>
-            </tr>
-            <tr v-if="filteredReservations.length === 0">
-                <td colspan="4" class="text-center text-muted">No hay reservas para mostrar.</td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+   <div class="table-responsive scrollable-table">
+    <table class="table table-hover table-sm align-middle">
+        <thead class="table-light">
+        <tr>
+            <th>Código</th>
+            <th>Sucursal</th>
+            <th>Modelo</th>
+            <th class="text-end">Pago</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="res in filteredReservations" :key="res.id">
+            <td>{{ res.code }}</td>
+            <td>{{ res.branchName }}</td>
+            <td>{{ res.modelName }}</td>
+            <td class="text-end">${{ res.payment.toFixed(2) }}</td>
+        </tr>
+        <tr v-if="filteredReservations.length === 0">
+            <td colspan="4" class="text-center text-muted">No hay reservas para mostrar.</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 </div>
 
 <script src="../scripts/reportFacturation.js"></script>
