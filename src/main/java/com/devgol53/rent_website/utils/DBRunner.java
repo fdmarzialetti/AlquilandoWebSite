@@ -106,6 +106,48 @@ public class DBRunner implements CommandLineRunner {
         autonuevo9.addBranch(branch2);
         autonuevo10.addBranch(branch2);
 
+        Vehicle autonuevo11 = new Vehicle("hjk111", true, 2017);
+        Vehicle autonuevo12 = new Vehicle("lmn222", false, 2019);
+        Vehicle autonuevo13 = new Vehicle("opq333", true, 2016);
+        Vehicle autonuevo14 = new Vehicle("rst444", false, 2022);
+        Vehicle autonuevo15 = new Vehicle("uvw555", true, 2015);
+        Vehicle autonuevo16 = new Vehicle("cde666", false, 2020);
+        Vehicle autonuevo17 = new Vehicle("bgt777", true, 2014);
+        Vehicle autonuevo18 = new Vehicle("nhy888", false, 2018);
+        Vehicle autonuevo19 = new Vehicle("mju999", true, 2013);
+        Vehicle autonuevo20 = new Vehicle("ikl000", false, 2021);
+
+// Asociar modelos (model2 a model10 en bucle)
+        autonuevo11.addModel(model2);
+        autonuevo12.addModel(model3);
+        autonuevo13.addModel(model4);
+        autonuevo14.addModel(model5);
+        autonuevo15.addModel(model6);
+        autonuevo16.addModel(model7);
+        autonuevo17.addModel(model8);
+        autonuevo18.addModel(model9);
+        autonuevo19.addModel(model10);
+        autonuevo20.addModel(model2); // vuelve a empezar
+
+// Asociar branch1
+        autonuevo11.addBranch(branch1);
+        autonuevo12.addBranch(branch1);
+        autonuevo13.addBranch(branch1);
+        autonuevo14.addBranch(branch1);
+        autonuevo15.addBranch(branch1);
+        autonuevo16.addBranch(branch1);
+        autonuevo17.addBranch(branch1);
+        autonuevo18.addBranch(branch1);
+        autonuevo19.addBranch(branch1);
+        autonuevo20.addBranch(branch1);
+
+// Guardar en el repositorio
+        vehicleRepository.saveAll(List.of(
+                autonuevo11, autonuevo12, autonuevo13, autonuevo14, autonuevo15,
+                autonuevo16, autonuevo17, autonuevo18, autonuevo19, autonuevo20
+        ));
+
+
         // Guardarlos en el repositorio
 
 
@@ -618,6 +660,135 @@ public class DBRunner implements CommandLineRunner {
         reservaACancelar.addModel(model1);
         reservationRepository.save(reservaACancelar);
 
+        // Reserva en curso para client2
+        Reservation reservaEnCurso = new Reservation("ENCUR2", LocalDate.now().minusDays(2), LocalDate.now().plusDays(3), 18000.0);
+        reservaEnCurso.addClient(client2);
+        reservaEnCurso.addModel(model1);
+        reservaEnCurso.addBranch(branch1);
+        reservaEnCurso.addVehicle(autonuevo2);
+        reservationRepository.save(reservaEnCurso);
+
+// Reserva futura para client3
+        Reservation reservaFuturaC3 = new Reservation("FUTC31", LocalDate.now().plusDays(10), LocalDate.now().plusDays(15), 25000.0);
+        reservaFuturaC3.addClient(client3);
+        reservaFuturaC3.addModel(model1);
+        reservaFuturaC3.addBranch(branch1);
+        reservationRepository.save(reservaFuturaC3);
+
+// Reserva sin vehículo para client4
+        Reservation reservaSinVehC4 = new Reservation("SINVE8", LocalDate.now().plusDays(4), LocalDate.now().plusDays(8), 19000.0);
+        reservaSinVehC4.addClient(client4);
+        reservaSinVehC4.addModel(model1);
+        reservaSinVehC4.addBranch(branch1);
+        reservationRepository.save(reservaSinVehC4);
+
+// Reserva entregada hoy para client5
+        Reservation reservaHoyC5 = new Reservation("HOYC52", LocalDate.now().minusDays(5), LocalDate.now(), 17000.0);
+        reservaHoyC5.addClient(client5);
+        reservaHoyC5.addModel(model1);
+        reservaHoyC5.addBranch(branch1);
+        reservaHoyC5.addVehicle(autonuevo3);
+        reservationRepository.save(reservaHoyC5);
+
+// Reserva finalizada sin devolución registrada (para probar botón de valorar sin devolución)
+        Reservation reservaFinalSinDev = new Reservation("FINALS", LocalDate.now().minusDays(10), LocalDate.now().minusDays(3), 23000.0);
+        reservaFinalSinDev.addClient(client2);
+        reservaFinalSinDev.addModel(model1);
+        reservaFinalSinDev.addBranch(branch1);
+        reservaFinalSinDev.addVehicle(autonuevo4);
+        reservationRepository.save(reservaFinalSinDev);
+
+// Reserva finalizada con devolución registrada
+        Reservation reservaFinalConDev = new Reservation("CONDEV", LocalDate.now().minusDays(7), LocalDate.now().minusDays(1), 22000.0);
+        reservaFinalConDev.addClient(client4);
+        reservaFinalConDev.addModel(model1);
+        reservaFinalConDev.addBranch(branch1);
+        reservaFinalConDev.addVehicle(autonuevo5);
+        EmployeeComment commentFinalDev = new EmployeeComment(empleadoM, "Todo en orden en la devolución.");
+        reservaFinalConDev.addEmployeeComment(commentFinalDev);
+        empleadoM.addEmployeeComment(commentFinalDev);
+        reservationRepository.save(reservaFinalConDev);
+
+// Reserva cancelada por anticipado
+        Reservation reservaCancelada = new Reservation("CANCEL5", LocalDate.now().plusDays(6), LocalDate.now().plusDays(9), 21000.0);
+        reservaCancelada.addClient(client5);
+        reservaCancelada.addModel(model1);
+        reservaCancelada.addBranch(branch1);
+        reservaCancelada.setCancelled(true);
+        reservationRepository.save(reservaCancelada);
+
+        // Reserva que empieza hoy (CLIENT2)
+        Reservation reservaInicioHoy1 = new Reservation("INIHOY", LocalDate.now(), LocalDate.now().plusDays(3), 18000.0);
+        reservaInicioHoy1.addClient(client2);
+        reservaInicioHoy1.addModel(model1);
+        reservaInicioHoy1.addBranch(branch1);
+        reservationRepository.save(reservaInicioHoy1);
+
+// Reserva que termina hoy (CLIENT3)
+        Reservation reservaFinHoy1 = new Reservation("INHOY5", LocalDate.now().minusDays(7), LocalDate.now(), 22000.0);
+        reservaFinHoy1.addClient(client3);
+        reservaFinHoy1.addModel(model1);
+        reservaFinHoy1.addBranch(branch1);
+        reservationRepository.save(reservaFinHoy1);
+
+// Reserva de 1 día hoy (CLIENT4)
+        Reservation reservaSoloHoy = new Reservation("SOLHOY", LocalDate.now(), LocalDate.now(), 10000.0);
+        reservaSoloHoy.addClient(client4);
+        reservaSoloHoy.addModel(model1);
+        reservaSoloHoy.addBranch(branch1);
+        reservationRepository.save(reservaSoloHoy);
+
+// Reserva empieza hoy y dura 5 días (CLIENT5)
+        Reservation reservaInicioHoy2 = new Reservation("INIHO2", LocalDate.now(), LocalDate.now().plusDays(5), 25000.0);
+        reservaInicioHoy2.addClient(client5);
+        reservaInicioHoy2.addModel(model1);
+        reservaInicioHoy2.addBranch(branch1);
+        reservationRepository.save(reservaInicioHoy2);
+
+// Reserva termina hoy y empezó hace 10 días (CLIENT2)
+        Reservation reservaFinHoy2 = new Reservation("FIHOY2", LocalDate.now().minusDays(10), LocalDate.now(), 27000.0);
+        reservaFinHoy2.addClient(client2);
+        reservaFinHoy2.addModel(model1);
+        reservaFinHoy2.addBranch(branch1);
+        reservationRepository.save(reservaFinHoy2);
+
+// Reserva larga que termina hoy (CLIENT3)
+        Reservation reservaFinHoy3 = new Reservation("FNHOY3", LocalDate.now().minusDays(30), LocalDate.now(), 50000.0);
+        reservaFinHoy3.addClient(client3);
+        reservaFinHoy3.addModel(model1);
+        reservaFinHoy3.addBranch(branch1);
+        reservationRepository.save(reservaFinHoy3);
+
+// Reserva futura que empieza hoy (CLIENT4)
+        Reservation reservaInicioHoy3 = new Reservation("I5HOY3", LocalDate.now(), LocalDate.now().plusDays(7), 21000.0);
+        reservaInicioHoy3.addClient(client4);
+        reservaInicioHoy3.addModel(model1);
+        reservaInicioHoy3.addBranch(branch1);
+        reservationRepository.save(reservaInicioHoy3);
+
+// Reserva empieza hoy y termina mañana (CLIENT5)
+        Reservation reservaInicioHoy4 = new Reservation("INIHOR", LocalDate.now(), LocalDate.now().plusDays(1), 12000.0);
+        reservaInicioHoy4.addClient(client5);
+        reservaInicioHoy4.addModel(model1);
+        reservaInicioHoy4.addBranch(branch1);
+        reservationRepository.save(reservaInicioHoy4);
+
+// Reserva con devolución hoy registrada (CLIENT2)
+        Reservation reservaDevolucionHoy = new Reservation("REGHOP", LocalDate.now().minusDays(4), LocalDate.now(), 19000.0);
+        reservaDevolucionHoy.addClient(client2);
+        reservaDevolucionHoy.addModel(model1);
+        reservaDevolucionHoy.addBranch(branch1);
+        reservaDevolucionHoy.addVehicle(autonuevo1);
+        EmployeeComment devolucionHoy = new EmployeeComment(empleadoM, "Devolución realizada hoy");
+        reservaDevolucionHoy.addEmployeeComment(devolucionHoy);
+        reservationRepository.save(reservaDevolucionHoy);
+
+// Reserva inicia hoy sin vehículo (CLIENT3)
+        Reservation reservaInicioHoySinVehiculo = new Reservation("SIRTTT", LocalDate.now(), LocalDate.now().plusDays(4), 15000.0);
+        reservaInicioHoySinVehiculo.addClient(client3);
+        reservaInicioHoySinVehiculo.addModel(model1);
+        reservaInicioHoySinVehiculo.addBranch(branch1);
+        reservationRepository.save(reservaInicioHoySinVehiculo);
 
     }
 }
