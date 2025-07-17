@@ -92,13 +92,15 @@
 
 <!-- Tabla de vehiculos -->
 <div id="app" class="container mt-5">
-
-<!-- Lista de vehículos -->
-<div class="container mt-5">
-  <h2 class="mb-4">Vehículos</h2>
-  <div v-if="vehicles.length === 0" class="alert alert-info text-center">
-    Aún no se ha cargado ningún vehiculo.
+<!-- SPINER LOADING -->
+  <div v-if="!cargado" class="text-center p-5">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Cargando...</span>
   </div>
+</div>
+<!-- Lista de vehículos -->
+<div class="container mt-5" v-show="cargado">
+  <h2 class="mb-4">Vehículos</h2>
   <!-- Activos -->
   <h4 class="text-success">Activos</h4>
   <table class="table table-bordered table-striped mb-5">

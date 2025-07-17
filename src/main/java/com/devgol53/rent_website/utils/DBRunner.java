@@ -139,25 +139,25 @@ public class DBRunner implements CommandLineRunner {
         AppUser client11 = new AppUser("Leandro", "Rivas",      "39122458", "", "leandro.rivas@hotmail.com",  passwordEncoder.encode("123456"), UserRol.CLIENT);
 
         Reservation reservation1 = new Reservation("ABCDEF", LocalDate.of(2025, 6, 3), LocalDate.of(2025, 6, 25), 20000.0);
-        reservation1.addClient(client1);
+        reservation1.addClient(client2);
         reservation1.addModel(model1);
         reservation1.addBranch(branch1);
         reservation1.addVehicle(autonuevo1);
 
         Reservation reservation2 = new Reservation("AAAAAA", LocalDate.now(), LocalDate.of(2025, 7, 25), 20000.0);
-        reservation2.addClient(client1);
+        reservation2.addClient(client2);
         reservation2.addModel(model1);
         reservation2.addBranch(branch1);
 
         Reservation reservation3 = new Reservation("BBBBBB", LocalDate.of(2025, 7, 1), LocalDate.of(2025, 7, 25), 45000.0);
-        reservation3.addClient(client1);
+        reservation3.addClient(client2);
         reservation3.addModel(model4);
         reservation3.addBranch(branch2);
         reservation3.setVehicle(autonuevo4);
 
 
         Reservation reservation4 = new Reservation("ZZZZZZ", LocalDate.now(), LocalDate.of(2025, 7, 25), 45000.0);
-        reservation4.addClient(client1);
+        reservation4.addClient(client2);
         reservation4.addModel(model5);
         reservation4.addBranch(branch2);
         reservation4.addBranch(branch3);
@@ -440,7 +440,7 @@ public class DBRunner implements CommandLineRunner {
         reservation26.addClient(client10);
         reservation27.addClient(client11);
         Reservation reservation5 = new Reservation("XXXXXX", LocalDate.of(2025, 6, 3), LocalDate.of(2025, 7, 25), 20000.0);
-        reservation5.addClient(client1);
+        reservation5.addClient(client2);
         reservation5.addModel(model1);
         reservation5.addBranch(branch1);
         reservation5.setVehicle(autonuevo1);
@@ -540,7 +540,6 @@ public class DBRunner implements CommandLineRunner {
         AppUser empleado2 = new AppUser("Augusto","Esquercia","11111112","","augusto@gmail.com", passwordEncoder.encode("123456"), UserRol.EMPLOYEE);
         empleado2.setBranch(branch3);
         userRepository.save(empleado2);
-        userRepository.save(new AppUser("Agustina","Sar","000020001","","agus99cabj12@gmail.com", passwordEncoder.encode("123456"), UserRol.CLIENT));
         userRepository.save(new AppUser("Emiliano","Sar","000020003","","emilianoross649@gmail.com", passwordEncoder.encode("123456"), UserRol.CLIENT));
 
         userRepository.saveAll(List.of(client2,client3,client4,client5,client6,client7,client8,client9,client10,client11));
@@ -599,5 +598,26 @@ public class DBRunner implements CommandLineRunner {
         reservaYaRegistrada.addEmployeeComment(comment);
         empleadoM.addEmployeeComment(comment);
         reservationRepository.save(reservaYaRegistrada);
+
+        //HU CANCELAR Y VALORAR
+
+        //Reserva a Valorar
+        Reservation reservaAValorar = new Reservation("AVALOR", LocalDate.now().minusDays(5), LocalDate.now().minusDays(1), 20000.0);
+        reservaAValorar.addClient(client1);
+        reservaAValorar.addBranch(branch1);
+        reservaAValorar.addModel(model1);
+        reservaAValorar.addVehicle(autonuevo1);
+        EmployeeComment comment2 = new EmployeeComment(empleadoM, "Devolucion ya registrada");
+        reservaAValorar.addEmployeeComment(comment2);
+        reservationRepository.save(reservaAValorar);
+
+        //Reserva a Cancelar
+        Reservation reservaACancelar = new Reservation("CANCEL", LocalDate.now().plusDays(5), LocalDate.now().plusDays(10), 20000.0);
+        reservaACancelar.addClient(client1);
+        reservaACancelar.addBranch(branch1);
+        reservaACancelar.addModel(model1);
+        reservationRepository.save(reservaACancelar);
+
+
     }
 }
