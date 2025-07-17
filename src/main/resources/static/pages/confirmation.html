@@ -9,12 +9,57 @@
   <title>Confirmación de Reserva</title>
 </head>
 <body id="app">
-  <nav class="navbar navbar-expand-lg bg-white shadow-sm px-4 py-2">
-    <a class="navbar-brand" href="#">
-      <img src="../images/AlquilandoLogo.png" width="120" />
-    </a>
-    <h1>Alquilando</h1>
-  </nav>
+
+    <div class="d-flex justify-content-between align-items-center p-2"
+         style="background-image: url('../images/backgroundHeader.jpg');">
+
+
+      <a href="../index.html" class="d-flex align-items-center text-decoration-none">
+        <img src="../images/AlquilandoLogo.png" alt="Alquilando" width="120" />
+        <span class="fs-3 fw-bold text-dark ms-2">Alquilando</span>
+      </a>
+      <button class="btn btn-custom fw-bold dropdown-toggle boton-cuenta" type="button" id="dropdownCuenta"
+              data-bs-toggle="dropdown" aria-expanded="false">
+        Cuenta
+      </button>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownCuenta">
+        <li><a class="dropdown-item" href="#" @click="mostrarModalCambioClaveVoluntario(true)">Cambiar Contraseña</a></li>
+        <li><a class="dropdown-item" href="#" @click="logout">Cerrar sesión</a></li>
+      </ul>
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark " style="font-family: sans-serif; width: 100%;">
+      <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mx-auto d-flex flex-row gap-4">
+            <li class="nav-item">
+              <a class="nav-link text-white" href="../pages/Employee.html">Grilla Reservas</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-white" href="../pages/listVehicles.html">Vehículos</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle text-white" href="#" data-bs-toggle="dropdown">
+                Acciones
+              </a>
+              <ul class="dropdown-menu dropdown-menu-dark">
+                <li><a class="dropdown-item" href="../pages/formClient.html">Registrar Cliente</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <div class="bg-secondary py-3 border-bottom shadow-sm mb-4">
+      <div class="container text-center">
+        <h2 class="fw-semibold text-white m-0">Confirmación de Reserva</h2>
+      </div>
+    </div>
 
   <main class="container mt-5">
     <div class="card shadow p-4">
@@ -42,7 +87,12 @@
     </div>
   </main>
 
-  <script src="../scripts/confirmation.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../scripts/confirmation.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
 </body>
 </html>
 

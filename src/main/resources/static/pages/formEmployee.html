@@ -11,25 +11,52 @@
 <body id="appForm">
 
 <!-- Encabezado -->
-<div class="d-flex justify-content-between align-items-center p-3">
-    <h1>Admin Page</h1>
-    <button class="btn btn-outline-dark" @click="logout">Cerrar Sesión</button>
+<div class="d-flex justify-content-between align-items-center p-2"
+     style="background-image: url('../images/backgroundHeader.jpg');">
+
+
+    <a href="../index.html" class="d-flex align-items-center text-decoration-none">
+        <img src="../images/AlquilandoLogo.png" alt="Alquilando" width="120" />
+        <span class="fs-3 fw-bold text-dark ms-2">Alquilando</span>
+    </a>
+    <button class="btn btn-custom fw-bold dropdown-toggle boton-cuenta" type="button" id="dropdownCuenta"
+            data-bs-toggle="dropdown" aria-expanded="false">
+        Cuenta
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownCuenta">
+        <li><a class="dropdown-item" href="#" @click="mostrarModalCambioClaveVoluntario(true)">Cambiar Contraseña</a></li>
+        <li><a class="dropdown-item" href="#" @click="logout">Cerrar sesión</a></li>
+    </ul>
 </div>
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="font-family: sans-serif;">
     <div class="container-fluid">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <div class="mx-auto">
-                <ul class="navbar-nav mb-2 mb-lg-0">
+                <ul class="navbar-nav mb-2 mb-lg-0 barra-de-navegacion">
                     <li class="nav-item"><a class="nav-link text-white" href="listModels.html">Modelos</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="listBranches.html">Sucursales</a></li>
+                    <li class="nav-item"><a class="nav-link active text-white" href="listBranches.html">Sucursales</a></li>
                     <li class="nav-item"><a class="nav-link text-white" href="listVehicles.html">Vehículos</a></li>
-                    <li class="nav-item"><a class="nav-link active text-white" href="listEmployees.html">Empleados</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="listEmployees.html">Empleados</a></li>
                     <li class="nav-item"><a class="nav-link text-white" href="listAdditionals.html">Adicionales</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown">
+                            Acciones
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark">
+                            <li><a class="dropdown-item" href="../pages/formBranch.html">Crear Sucursal</a></li>
+                            <li><a class="dropdown-item" href="../pages/addModel.html">Crear Modelo</a></li>
+                            <li><a class="dropdown-item" href="../pages/addVehicle.html">Crear Vehículo</a></li>
+                            <li><a class="dropdown-item" href="../pages/formAdditional.html">Crear Adicional</a></li>
+                            <li><a class="dropdown-item" href="../pages/formEmployee.html">Crear Empleado</a></li>
+                            <li><a class="dropdown-item" href="../pages/commentsReport.html">Comentarios y Valoraciones</a></li>
+                            <li><a class="dropdown-item" href="../pages/reportFacturation.html">Reporte De Facturación</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>

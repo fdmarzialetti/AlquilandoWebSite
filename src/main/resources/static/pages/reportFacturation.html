@@ -51,9 +51,22 @@
 <body id="app" class="bg-white">
 
 <!-- Encabezado -->
-<div class="d-flex justify-content-between align-items-center p-3">
-    <h1 class="m-0">Admin Page</h1>
-    <button class="btn btn-outline-dark" @click="logout">Cerrar Sesión</button>
+<div class="d-flex justify-content-between align-items-center p-2"
+     style="background-image: url('../images/backgroundHeader.jpg');">
+
+
+    <a href="../index.html" class="d-flex align-items-center text-decoration-none">
+        <img src="../images/AlquilandoLogo.png" alt="Alquilando" width="120" />
+        <span class="fs-3 fw-bold text-dark ms-2">Alquilando</span>
+    </a>
+    <button class="btn btn-custom fw-bold dropdown-toggle boton-cuenta" type="button" id="dropdownCuenta"
+            data-bs-toggle="dropdown" aria-expanded="false">
+        Cuenta
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownCuenta">
+        <li><a class="dropdown-item" href="#" @click="mostrarModalCambioClaveVoluntario(true)">Cambiar Contraseña</a></li>
+        <li><a class="dropdown-item" href="#" @click="logout">Cerrar sesión</a></li>
+    </ul>
 </div>
 
 <!-- Navbar -->

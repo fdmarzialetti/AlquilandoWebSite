@@ -10,10 +10,25 @@
 </head>
 <body>
 <!-- Encabezado -->
-<div class="d-flex justify-content-between align-items-center p-3">
-    <h1 class="m-0">Admin Page</h1>
-    <button class="btn btn-outline-dark" @click="logout">Cerrar Sesión</button>
-</div>
+<div id="appList">
+    <!-- ... -->
+
+    <!-- Pegalo acá adentro por ejemplo, justo al principio: -->
+    <div class="d-flex justify-content-between align-items-center p-2"
+         style="background-image: url('../images/backgroundHeader.jpg');">
+        <a href="../index.html" class="d-flex align-items-center text-decoration-none">
+            <img src="../images/AlquilandoLogo.png" alt="Alquilando" width="120" />
+            <span class="fs-3 fw-bold text-dark ms-2">Alquilando</span>
+        </a>
+        <button class="btn btn-custom fw-bold dropdown-toggle boton-cuenta" type="button" id="dropdownCuenta"
+                data-bs-toggle="dropdown" aria-expanded="false">
+            Cuenta
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownCuenta">
+            <li><a class="dropdown-item" href="#" @click="mostrarModalCambioClaveVoluntario">Cambiar Contraseña</a></li>
+            <li><a class="dropdown-item" href="#" @click="logout">Cerrar sesión</a></li>
+        </ul>
+    </div>
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="font-family: sans-serif;">
@@ -50,7 +65,7 @@
 </nav>
 
 <!-- VUE APP: appList -->
-<div id="appList">
+
     <!-- Banner -->
     <div class="banner bg-secondary text-white fw-semibold fs-4 p-3">
         Panel de administrador
@@ -112,7 +127,6 @@
         </table>
     </div>
 </div>
-
 <!-- Scripts -->
 <script src="../scripts/listAdditionals.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
