@@ -28,6 +28,8 @@ createApp({
       ordenSeleccionado: "marca-asc",
       precioDesde: null,
       precioHasta: null,
+      isAdmin: false,
+      isEmployee: false
     };
   },
   mounted() {
@@ -42,6 +44,7 @@ createApp({
 
     this.getBranchById(this.branchId);
     this.getAvailableModels();
+    this.verificarRolUsuario();
   },
   watch: {
     ordenSeleccionado(nuevoOrden) {
@@ -70,6 +73,30 @@ createApp({
         }
       });
     },
+    async verificarRolUsuario() {
+                try {
+                    const adminRes = await axios.get('/api/user/isAdmin');
+                    this.isAdmin = adminRes.data === true;
+
+                    const employeeRes = await axios.get('/api/user/isEmployee');
+                    this.isEmployee = employeeRes.data === true;
+
+                    // Si no es ni admin ni empleado, lo consideramos cliente
+                    if (!this.isAdmin && !this.isEmployee) {
+                        this.cliente.rol = 'CLIENT';
+                    } else if (this.isAdmin) {
+                        this.cliente.rol = 'ADMIN';
+                    } else if (this.isEmployee) {
+                        this.cliente.rol = 'EMPLOYEE';
+                    }
+
+                    this.isAuthenticated = true;
+
+                } catch (error) {
+                    console.error('Error al verificar el rol:', error);
+                    this.isAuthenticated = false;
+                }
+            },
     resetearFiltros() {
       this.filtroMarca = null;
       this.filtroModelo = null;

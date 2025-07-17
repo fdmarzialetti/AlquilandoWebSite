@@ -12,18 +12,22 @@
 </head>
 <body id="app">
 
-<div v-if="rol === 'ADMIN'" class="d-flex justify-content-between">
-  <h1>Admin Page</h1>
-  <button class="btn btn-outline-dark" @click="logout">Cerrar Sesion</button>
-</div>
-
-<div v-if="rol === 'EMPLOYEE'" class="d-flex justify-content-between align-items-center p-2"
+<div class="d-flex justify-content-between align-items-center p-2"
      style="background-image: url('../images/backgroundHeader.jpg');">
+
+
   <a href="../index.html" class="d-flex align-items-center text-decoration-none">
     <img src="../images/AlquilandoLogo.png" alt="Alquilando" width="120" />
     <span class="fs-3 fw-bold text-dark ms-2">Alquilando</span>
   </a>
-  <button class="btn btn-outline-dark" @click="logout">Cerrar Sesión</button>
+  <button class="btn btn-custom fw-bold dropdown-toggle boton-cuenta" type="button" id="dropdownCuenta"
+          data-bs-toggle="dropdown" aria-expanded="false">
+    Cuenta
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownCuenta">
+    <li><a class="dropdown-item" href="#" @click="mostrarModalCambioClaveVoluntario(true)">Cambiar Contraseña</a></li>
+    <li><a class="dropdown-item" href="#" @click="logout">Cerrar sesión</a></li>
+  </ul>
 </div>
 
 <nav v-if="rol === 'ADMIN'" class="navbar navbar-expand-lg navbar-dark bg-dark" style="font-family: sans-serif;">
@@ -63,6 +67,9 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mx-auto d-flex flex-row gap-4">
         <li class="nav-item">
+          <a class="nav-link text-white" href="../pages/Employee.html">Grilla Reservas</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link text-white" href="../pages/listVehicles.html">Vehículos</a>
         </li>
         <li class="nav-item dropdown">
@@ -70,7 +77,6 @@
             Acciones
           </a>
           <ul class="dropdown-menu dropdown-menu-dark">
-            <li><a class="dropdown-item" href="../pages/confirmWhitdraw.html">Confirmar Retiro</a></li>
             <li><a class="dropdown-item" href="../pages/formClient.html">Registrar Cliente</a></li>
           </ul>
         </li>
