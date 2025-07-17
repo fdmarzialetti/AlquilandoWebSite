@@ -41,6 +41,8 @@ public class AdditionalController {
         return additionalRepository.findAll().stream().map(AdditionalDetailDto::new).toList();
     }
 
+
+
     @GetMapping("/{id}")
     public Additional getAdditionalById(@PathVariable Long id) {
         return additionalRepository.findById(id)

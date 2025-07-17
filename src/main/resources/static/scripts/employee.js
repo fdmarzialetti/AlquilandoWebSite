@@ -220,6 +220,7 @@ createApp({
                             text: "No se encontró un vehículo disponible para esta reserva. Será redirigido para reasignar uno nuevo.",
                             confirmButtonText: "Continuar"
                         }).then(() => {
+
                             window.location.href = `${data.redirect}?${params.toString()}`;
                         });
 
@@ -238,8 +239,9 @@ createApp({
                         });
                     }
                 })
-                .catch(err =>
-                    Swal.fire("Error", err.response?.data || "Verificación fallida", "error")
+                .catch(err =>{
+                    console.log(err)
+                    Swal.fire("Error", err.response.data || "Verificación fallida", "error")  }
                 );
         },
         async registrarDevolucion() {
@@ -262,9 +264,9 @@ createApp({
                  * --------------------------------------------------------------- */
                 if (!reserva.vehicle || reserva.vehicle.id === 0) {
                     Swal.fire(
-                        "Sin vehículo asignado",
-                        "Esta reserva no tiene un vehículo asignado, por lo que no se puede registrar la devolución.",
-                        "warning"
+                        "Retiro Pendiente",
+                        "Esta reserva tiene un retiro pendiente, no se puede registrar la devolucion",
+                        "error"
                     );
                     return;
                 }

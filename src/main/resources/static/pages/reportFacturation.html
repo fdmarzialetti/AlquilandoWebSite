@@ -121,6 +121,9 @@
             <div class="chart-legend">
                 <h6 class="mb-2">Sucursales:</h6>
                 <ul class="list-unstyled">
+                    <tr v-if="facturacionPorSucursal.length === 0">
+                        <td colspan="4" class="text-center text-muted">Esta sucursal no tiene reportes de facturacion disponibles para mostrar.</td>
+                    </tr>
                     <li v-for="(valor, sucursal, index) in facturacionPorSucursal" :key="sucursal">
             <span :style="{ backgroundColor: colors[index % colors.length] }"
                   class="d-inline-block rounded-circle me-2"

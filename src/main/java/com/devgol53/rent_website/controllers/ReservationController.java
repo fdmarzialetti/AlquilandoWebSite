@@ -333,7 +333,7 @@ public class ReservationController {
 
         Optional<Reservation> optionalReserva = reservationRepository.findByCode(codigoReserva);
         if (optionalReserva.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reserva no encontrada.");
+            return ResponseEntity.badRequest().body("Reserva no encontrada.");
         }
 
         Reservation reserva = optionalReserva.get();

@@ -45,7 +45,7 @@ createApp({
     obtenerAdicionales() {
       axios.get('/api/additionals/all')
         .then(response => {
-          this.adicionales = response.data;
+          this.adicionales = response.data.filter(a=>a.state==true);
           console.log("Response:", response);
           console.log("Adicionales:", JSON.parse(JSON.stringify(this.adicionales))); // para ver sin proxy
         })

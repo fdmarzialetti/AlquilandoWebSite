@@ -53,9 +53,21 @@
 <div class="container mt-5 mb-5" style="max-width: 700px;">
   <form @submit.prevent="submitModel" enctype="multipart/form-data">
     <div class="mb-3">
-      <label class="form-label">Marca</label>
-      <input type="text" class="form-control" v-model="model.brand" required />
-    </div>
+    <label for="inputMarca" class="form-label">Marca</label>
+    <select id="inputMarca" v-model="model.brand" class="form-select" required>
+    <option value="" disabled>Seleccione una marca</option>
+    <option value="Toyota">Toyota</option>
+    <option value="Fiat">Fiat</option>
+    <option value="Peugeot">Peugeot</option>
+    <option value="Volkswagen">Volkswagen</option>
+    <option value="Renault">Renault</option>
+    <option value="Ford">Ford</option>
+    <option value="Chevrolet">Chevrolet</option>
+    <option value="Nissan">Nissan</option>
+    <option value="Citroën">Citroën</option>
+    <option value="Jeep">Jeep</option>
+  </select>
+</div>
     <div class="mb-3">
       <label class="form-label">Nombre</label>
       <input type="text" class="form-control" v-model="model.name" required />
@@ -80,9 +92,7 @@
     <div class="mb-3">
       <label class="form-label">Imagen</label>
       <input type="file" class="form-control" @change="handleImageUpload" :required="!isEditMode" />
-      <div v-if="previewImage" class="mt-2 text-center">
-        <img :src="previewImage" alt="Vista previa" class="img-fluid rounded" style="max-height: 200px;" />
-      </div>
+      
     </div>
     <div class="d-grid">
       <button type="submit" class="btn btn-primary">

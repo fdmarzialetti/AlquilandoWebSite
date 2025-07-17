@@ -54,8 +54,9 @@
 
     <!-- Botones -->
     <div class="d-flex justify-content-between">
-      <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalAdicional">Agregar Adicional</button>
-      <button class="btn btn-primary" @click="finalizar">Finalizar</button>
+<button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#modalAdicional" v-show="adicionales.length > 0">
+  Agregar Adicional
+</button>      <button class="btn btn-primary" @click="finalizar">Finalizar</button>
     </div>
   </div>
 
