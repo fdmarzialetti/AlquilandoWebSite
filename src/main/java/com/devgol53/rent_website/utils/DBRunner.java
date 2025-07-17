@@ -720,7 +720,7 @@ public class DBRunner implements CommandLineRunner {
         // Reserva que empieza hoy (CLIENT2)
         Reservation reservaInicioHoy1 = new Reservation("INIHOY", LocalDate.now(), LocalDate.now().plusDays(3), 18000.0);
         reservaInicioHoy1.addClient(client2);
-        reservaInicioHoy1.addModel(model1);
+        reservaInicioHoy1.addModel(model2);
         reservaInicioHoy1.addBranch(branch1);
         reservationRepository.save(reservaInicioHoy1);
 
