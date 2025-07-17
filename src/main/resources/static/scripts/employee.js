@@ -65,6 +65,10 @@ createApp({
     },
 
     methods: {
+        esHoy(fechaISO) {
+            const hoy = todayISO_AR(); // string "YYYY-MM-DD"
+            return fechaISO === hoy;
+        },
         seleccionarEstado(estado) {
             this.estadoSeleccionado = estado;
 
@@ -74,66 +78,66 @@ createApp({
             if (dropdown) dropdown.hide();
         },
         mostrarModalCambioClaveVoluntario() {
-                    Swal.fire({
-                      icon: "info",
-                      title: "Cambiar contraseña",
-                      html: `
+            Swal.fire({
+                icon: "info",
+                title: "Cambiar contraseña",
+                html: `
                         <input type="password" id="currentPassword" class="swal2-input" placeholder="Contraseña actual">
                         <input type="password" id="newPassword" class="swal2-input" placeholder="Nueva contraseña">
                         <input type="password" id="confirmPassword" class="swal2-input" placeholder="Confirmar contraseña">
                       `,
-                      showCancelButton: true,
-                      confirmButtonText: "Guardar",
-                      cancelButtonText: "Cancelar",
-                      preConfirm: () => {
-                        const currentPassword = document.getElementById('currentPassword').value;
-                        const newPassword = document.getElementById('newPassword').value;
-                        const confirmPassword = document.getElementById('confirmPassword').value;
+                showCancelButton: true,
+                confirmButtonText: "Guardar",
+                cancelButtonText: "Cancelar",
+                preConfirm: () => {
+                    const currentPassword = document.getElementById('currentPassword').value;
+                    const newPassword = document.getElementById('newPassword').value;
+                    const confirmPassword = document.getElementById('confirmPassword').value;
 
-                        if (!currentPassword || !newPassword || !confirmPassword) {
-                          Swal.showValidationMessage("Todos los campos son obligatorios");
-                          return false;
-                        }
+                    if (!currentPassword || !newPassword || !confirmPassword) {
+                        Swal.showValidationMessage("Todos los campos son obligatorios");
+                        return false;
+                    }
 
-                        if (newPassword !== confirmPassword) {
-                          Swal.showValidationMessage("Las contraseñas no coinciden");
-                          return false;
-                        }
+                    if (newPassword !== confirmPassword) {
+                        Swal.showValidationMessage("Las contraseñas no coinciden");
+                        return false;
+                    }
 
-                        if (newPassword.length < 6) {
-                          Swal.showValidationMessage("La nueva contraseña debe tener al menos 6 caracteres");
-                          return false;
-                        }
+                    if (newPassword.length < 6) {
+                        Swal.showValidationMessage("La nueva contraseña debe tener al menos 6 caracteres");
+                        return false;
+                    }
 
-                        return { currentPassword, newPassword };
-                      }
-                    }).then(result => {
-                      if (result.isConfirmed) {
-                        this.actualizarClaveVoluntaria(result.value.currentPassword, result.value.newPassword);
-                      }
+                    return { currentPassword, newPassword };
+                }
+            }).then(result => {
+                if (result.isConfirmed) {
+                    this.actualizarClaveVoluntaria(result.value.currentPassword, result.value.newPassword);
+                }
+            });
+        },
+        actualizarClaveVoluntaria(actualPassword, nuevaPassword) {
+            axios.post('/api/user/change-password', {
+                actualPassword: actualPassword,
+                nuevaPassword: nuevaPassword
+            })
+                .then(() => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Contraseña actualizada',
+                        text: 'Tu nueva contraseña ha sido guardada correctamente.'
                     });
-                  },
-                  actualizarClaveVoluntaria(actualPassword, nuevaPassword) {
-                              axios.post('/api/user/change-password', {
-                                  actualPassword: actualPassword,
-                                  nuevaPassword: nuevaPassword
-                                })
-                                .then(() => {
-                                  Swal.fire({
-                                    icon: 'success',
-                                    title: 'Contraseña actualizada',
-                                    text: 'Tu nueva contraseña ha sido guardada correctamente.'
-                                  });
-                                })
-                                .catch(err => {
-                                  console.error("Error al cambiar contraseña voluntariamente", err);
-                                  Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error',
-                                    text: err.response?.data?.message || 'No se pudo actualizar la contraseña. Verifica tu contraseña actual e inténtalo de nuevo.'
-                                  });
-                                });
-                            },
+                })
+                .catch(err => {
+                    console.error("Error al cambiar contraseña voluntariamente", err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: err.response?.data?.message || 'No se pudo actualizar la contraseña. Verifica tu contraseña actual e inténtalo de nuevo.'
+                    });
+                });
+        },
         claseBadgeEstado(estado) {
             switch (estado) {
                 case "Reserva Cancelada":
@@ -287,22 +291,23 @@ createApp({
 
                         /* ---------- 2) ADICIONALES ---------- */
                     } else if (data === "../pages/additional.html") {
-                        
-                        axios.get(`/api/reservation/reservationModelId/${codigo}`).then(res=>{
+
+                        axios.get(`/api/reservation/reservationModelId/${codigo}`).then(res => {
                             console.log("res.data: ")
                             console.log(res.data)
                             const params = new URLSearchParams({
-                                code:codigo,
-                                vehiculoId:res.data.vehicleId,
-                                modelo:res.data.model
+                                code: codigo,
+                                vehiculoId: res.data.vehicleId,
+                                modelo: res.data.model
                             });
-                            window.location.href = `${data.trim()}?${params.toString()}`;          
+                            window.location.href = `${data.trim()}?${params.toString()}`;
                         });
                     }
                 })
-                .catch(err =>{
+                .catch(err => {
                     console.log(err)
-                    Swal.fire("Error", err.response.data || "Verificación fallida", "error")  }
+                    Swal.fire("Error", err.response.data || "Verificación fallida", "error")
+                }
                 );
         },
         async registrarDevolucion() {
