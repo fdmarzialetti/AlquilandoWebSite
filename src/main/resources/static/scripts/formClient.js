@@ -62,7 +62,7 @@ createApp({
                         icon: 'success',
                         title: 'Registro exitoso',
                         text: mensaje, // podés mostrar el mensaje real del backend
-                        confirmButtonText: 'Ir al Login'
+                        confirmButtonText: 'Aceptar'
                     }).then(() => {
                         window.location.href = 'http://localhost:8080/pages/formClient.html';
                     });
