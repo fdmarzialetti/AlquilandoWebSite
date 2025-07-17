@@ -15,20 +15,18 @@ createApp({
   methods: {
     async verificarRolUsuario() {
       try {
-        const [adminRes, employeeRes] = await Promise.all([
-          axios.get('/api/user/isAdmin'),
-          axios.get('/api/user/isEmployee')
-        ]);
-
-        this.isAdmin = adminRes.data === true;
-        this.isEmployee = employeeRes.data === true;
-
-        if (this.isAdmin) {
-          this.rol = 'ADMIN';
-        } else if (this.isEmployee) {
+        const employeeRes = await axios.get('/api/user/isEmployee')
+        
+        this.isEmployee = employeeRes.data;
+        console.log(employeeRes)
+        if (this.isEmployee) {
           this.rol = 'EMPLOYEE';
+          this.isEmployee = true;
+          this.isAdmin= false;
         } else {
-          this.rol = 'CLIENT';
+          this.rol = 'ADMIN';
+          this.isAdmin = true;
+          this.isEmployee = false;
         }
 
       } catch (error) {

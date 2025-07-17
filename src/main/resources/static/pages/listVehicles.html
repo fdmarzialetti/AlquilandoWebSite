@@ -30,7 +30,7 @@
   </ul>
 </div>
 
-<nav v-if="rol === 'ADMIN'" class="navbar navbar-expand-lg navbar-dark bg-dark" style="font-family: sans-serif;">
+<nav v-show="rol != 'EMPLOYEE'" class="navbar navbar-expand-lg navbar-dark bg-dark" style="font-family: sans-serif;">
   <div class="container-fluid">
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
       <div class="mx-auto">
@@ -58,7 +58,7 @@
   </div>
 </nav>
 
-<nav v-if="rol === 'EMPLOYEE'" class="navbar navbar-expand-lg navbar-dark bg-dark " style="font-family: sans-serif; width: 100%;">
+<nav v-show="rol == 'EMPLOYEE'" class="navbar navbar-expand-lg navbar-dark bg-dark " style="font-family: sans-serif; width: 100%;">
   <div class="container-fluid">
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
             data-bs-target="#navbarSupportedContent">
